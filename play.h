@@ -26,8 +26,8 @@ protected:
 
 private:
     QGraphicsScene* scene;
-    QGraphicsRectItem* redItem;
-//    Character redItem;
+//    QGraphicsRectItem* redItem;
+    Character* redItem;
     QGraphicsRectItem* blueItem;
     QGraphicsPixmapItem* imageItem;
     bool isMoving;

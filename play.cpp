@@ -15,9 +15,9 @@ PlayView::PlayView(QWidget* parent) : QGraphicsView(parent)
    //        imageItem->setScale(2.0);
 
    // Create a movable rectangle and add it to the scene
-   redItem = new QGraphicsRectItem(100, 100, 50, 50);
+   redItem = new Character(QRectF(100, 100, 50, 50), Qt::red);//new QGraphicsRectItem(100, 100, 50, 50);
    //        redItem->setPos(100, 100);
-   redItem->setBrush(QColor(255, 0, 0));  // Red color
+//   redItem->setBrush(QColor(255, 0, 0));  // Red color
    scene->addItem(redItem);
 
    blueItem = new QGraphicsRectItem(100, 200, 100, 200);
@@ -109,15 +109,16 @@ void PlayView::keyPressEvent(QKeyEvent* event)
    else if (event->key() == Qt::Key_Right)
        //            redItem->moveBy(step, 0);
        dx=step;
-   else if (event->key() == Qt::Key_Up)
+   else if (event->key() == Qt::Key_Up){
        //            redItem->moveBy(0, -step);
        dy=-step;
-   else if (event->key() == Qt::Key_Down)
+        redItem->jump();
+   }else if (event->key() == Qt::Key_Down)
        //            redItem->moveBy(0, step);
        dy=step;
 
    // Move to Character::advance
-   redItem->moveBy(dx, dy); // maybe create a other object so we don't move this
+   /*redItem->moveBy(dx, dy); // maybe create a other object so we don't move this
    QList<QGraphicsItem *> collidingItems=redItem->collidingItems();
 
 
@@ -150,7 +151,7 @@ void PlayView::keyPressEvent(QKeyEvent* event)
        }
    }
 
-   redItem->moveBy(dx, dy);
+   redItem->moveBy(dx, dy);*/
 
    this->centerOn(redItem);
 
