@@ -2,6 +2,8 @@
 #define MAINAPP_H
 
 #include <QWidget>
+#include <QGraphicsScene>
+
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainApp; }
@@ -17,5 +19,6 @@ public:
 
 private:
     Ui::MainApp *ui;
+    QGraphicsScene m_scene;
 };
 #endif // MAINAPP_H

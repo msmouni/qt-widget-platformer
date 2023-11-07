@@ -23,7 +23,13 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(qt-widget-platformer
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
+        play.h play.cpp
+        character.h character.cpp
     )
+
+# https://stackoverflow.com/questions/18471827/qtcreator-cant-find-the-class-header-file-after-promoting-a-widget-to-that-clas
+include_directories(${CMAKE_CURRENT_SOURCE_DIR})
+
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET qt-widget-platformer APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
 #                 ${CMAKE_CURRENT_SOURCE_DIR}/android)
