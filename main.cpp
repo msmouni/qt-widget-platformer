@@ -1,11 +1,19 @@
+#include <QApplication>
 #include "app.h"
 
-#include <QApplication>
 
 int main(int argc, char *argv[])
 {
-    QApplication a(argc, argv);
-    MainApp w;
-    w.show();
-    return a.exec();
+    QApplication app(argc, argv);
+
+//    PlayView game;
+
+//    game.setWindowTitle("Qt platformer");
+//    game.show();
+
+    MainApp game;
+    game.show();
+    game.setVisible(true);
+
+    return app.exec();
 }
