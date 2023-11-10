@@ -16,14 +16,16 @@ PlayView::PlayView(QWidget* parent) : QGraphicsView(parent)
 
    // Create a movable rectangle and add it to the scene
    redItem = new Character(QRectF(100, 100, 50, 50), Qt::red);//new QGraphicsRectItem(100, 100, 50, 50);
-   //        redItem->setPos(100, 100);
+//           redItem->setPos(100, 100);
 //   redItem->setBrush(QColor(255, 0, 0));  // Red color
    scene->addItem(redItem);
 
-   blueItem = new QGraphicsRectItem(100, 200, 100, 200);
+   blueItem = new QGraphicsRectItem(-50, -100, 100, 200); // we use center
+   blueItem->setPos(150,300); // Relative position to the one at which it was created (center)
+   qDebug()<<"HERRE B"<<blueItem->pos();
    blueItem->setBrush(QColor(0, 0, 255));  // Blue color
    // add to group later
-   blueItem->setData(0,"Enemy");
+   blueItem->setData(0,"Platform");
    scene->addItem(blueItem);
 
    /*QRectF recPos=redItem->sceneBoundingRect();//>mapRectToScene(;//mapToScene(redItem->rect());
@@ -96,7 +98,7 @@ void PlayView::mouseMoveEvent(QMouseEvent* event)
    }
 }
 
-void PlayView::keyPressEvent(QKeyEvent* event)
+/*void PlayView::keyPressEvent(QKeyEvent* event)
 {
 
    qreal step = 10.0; // Adjust the step size as needed.
@@ -151,9 +153,41 @@ void PlayView::keyPressEvent(QKeyEvent* event)
        }
    }
 
-   redItem->moveBy(dx, dy);*/
+   redItem->moveBy(dx, dy);
 
    this->centerOn(redItem);
+
+}*/
+
+void PlayView::keyPressEvent(QKeyEvent* event)
+{
+   if (event->key() == Qt::Key_Left){
+       redItem->left_pressed();
+   }
+   else if (event->key() == Qt::Key_Right){
+        redItem->right_pressed();
+   }
+   else if (event->key() == Qt::Key_Up){
+        redItem->up_pressed();
+   }else if (event->key() == Qt::Key_Down){
+        redItem->down_pressed();
+   }
+
+}
+
+void PlayView::keyReleaseEvent(QKeyEvent *event)
+{
+   if (event->key() == Qt::Key_Left){
+        redItem->left_released();
+   }
+   else if (event->key() == Qt::Key_Right){
+        redItem->right_released();
+   }
+   else if (event->key() == Qt::Key_Up){
+        redItem->up_released();
+   }else if (event->key() == Qt::Key_Down){
+        redItem->down_released();
+   }
 
 }
 
