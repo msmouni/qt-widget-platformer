@@ -4,7 +4,10 @@
 #include <QWidget>
 
 QT_BEGIN_NAMESPACE
-namespace Ui { class MainApp; }
+namespace Ui
+{
+    class MainApp;
+}
 QT_END_NAMESPACE
 
 class MainApp : public QWidget
