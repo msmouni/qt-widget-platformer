@@ -16,6 +16,12 @@ protected:
     void keyReleaseEvent(QKeyEvent *event) override;
 
 private:
+    //    bool m_up_pressed;
+    //    bool m_down_pressed;
+    //    bool m_right_pressed;
+    //    bool m_left_pressed;
+
+    //    qreal m_g=700;//9.8; // Pixel not meter
     qreal m_speed_x;
     qreal m_speed_y;
     qreal m_acc_x;

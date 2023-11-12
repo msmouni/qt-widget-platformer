@@ -5,6 +5,7 @@
 #include <QGraphicsScene>
 #include <QTimer>
 #include "player.h"
+#include "platform.h"
 
 class PlayView : public QGraphicsView
 {
@@ -17,6 +18,24 @@ private:
     Player *m_player;
     QTimer *m_update_timer;
     int m_update_timeout_ms;
+
+    // To move later to Map class (or World)
+//    QGraphicsPixmapItem *m_map_img;
+
+    Platform *m_platform;
+
+    /*protected:
+        void keyPressEvent(QKeyEvent* event) override;
+        void keyReleaseEvent(QKeyEvent* event) override;
+
+        void resizeEvent(QResizeEvent *event) override;
+
+    private:
+        QGraphicsScene* scene;
+        qreal m_init_height;
+        qreal m_init_width;
+        QPointF m_init_pos;
+        qreal m_old_scale=1;*/
 private slots:
     void updateItems();
 };

@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file>Pirate_bomb/map_64_64_w30_h20.png</file>
+        <file>Pirate_bomb/map_64_64_w30_h20.csv</file>
+    </qresource>
+</RCC>
