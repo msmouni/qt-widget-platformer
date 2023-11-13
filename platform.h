@@ -3,6 +3,7 @@
 
 #include <QGraphicsItem>
 #include <QPainter>
+#include "tile.h"
 
 class Platform : public QGraphicsItemGroup
 {
@@ -22,12 +23,12 @@ private:
     QSizeF m_tile_size;
     int m_nb_rows;
     int m_nb_columns;
-    QRectF m_rect;
+//    QRectF m_rect;
 
     // Maybe to move elsewhere and use it for other items also
     QVector<QVector<int>> m_map;
 //    QPainterPath m_path;
-    QVector<QGraphicsRectItem *> m_tiles;
+    QVector<Tile *> m_tiles;
 };
 
 #endif // PLATFORM_H

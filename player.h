@@ -28,7 +28,7 @@ private:
     qreal m_acc_y;
 
     qreal m_acc_max;
-    qreal m_speed_max;
+//    qreal m_speed_max;
     qreal m_friction;
     qreal m_gravity;
 };

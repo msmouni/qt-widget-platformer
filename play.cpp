@@ -17,7 +17,11 @@ PlayView::PlayView(QWidget *parent) : QGraphicsView(parent)
 
     m_platform->setData(0,"Platform");
 
-    m_scene->addItem(m_platform);
+//    m_scene->addItem(m_platform);
+
+    for (QGraphicsItem* child_items: m_platform->childItems()){
+        m_scene->addItem(child_items);
+    }
 
     m_player = new Player(QRectF(200, 200, 58, 58), Qt::red);
 
@@ -25,6 +29,7 @@ PlayView::PlayView(QWidget *parent) : QGraphicsView(parent)
 
     m_scene->addItem(m_player);
 
+//    m_scene->add
     m_update_timer = new QTimer;
 
     m_update_timeout_ms = 50;

@@ -11,8 +11,8 @@ Platform::Platform(QSizeF tile_size, QString map_csv_path)
         m_nb_rows=m_map.size();
         m_nb_columns=m_map[0].size();
 
-        m_rect=QRectF(0,0,tile_size.width()*m_nb_columns,tile_size.height()*m_nb_rows);
-        qDebug()<<"platform:"<<m_rect<<"m_nb_rows"<<m_nb_rows<<"m_nb_columns"<<m_nb_columns;
+//        m_rect=QRectF(0,0,tile_size.width()*m_nb_columns,tile_size.height()*m_nb_rows);
+        qDebug()<<"platform:"<<"m_nb_rows"<<m_nb_rows<<"m_nb_columns"<<m_nb_columns;
     }else {
         m_nb_rows=0;
         m_nb_columns=0;
@@ -28,7 +28,7 @@ Platform::Platform(QSizeF tile_size, QString map_csv_path)
             if (m_map[i][j]>=0)
             {
 //                QGraphicsRectItem rect(j * m_tile_size.width(), i * m_tile_size.height(), m_tile_size.width(), m_tile_size.height());
-                m_tiles.append(new QGraphicsRectItem(j * m_tile_size.width(), i * m_tile_size.height(), m_tile_size.width(), m_tile_size.height()));
+                m_tiles.append(new Tile(QRectF(j * m_tile_size.width(), i * m_tile_size.height(), m_tile_size.width(), m_tile_size.height())));
 
                 this->addToGroup(m_tiles.last());
 //                m_path.addRect(QRect(j * m_tile_size.width(), i * m_tile_size.height(), m_tile_size.width(), m_tile_size.height()));

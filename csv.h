@@ -38,7 +38,7 @@ QVector<QVector<int>> loadCSV(const QString& file_path)
     // Close the file
     file.close();
 
-    qDebug()<<csv_mat;
+//    qDebug()<<csv_mat;
 
     return csv_mat;
 }

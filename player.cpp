@@ -35,20 +35,58 @@ void Player::update()
         // Check if item is not itself
         if (item!=this) {
             // The qgraphicsitem_cast function takes care of checking whether the conversion is valid and returns the derived class pointer if successful, or nullptr if the conversion is not possible.
-            if (Platform *platform= qgraphicsitem_cast<Platform *>(item)){
+            /*if (Platform *platform= qgraphicsitem_cast<Platform *>(item)){
                 // Use platform to detect collision: 1)- use custom shape and only get the collision rect | 2)- check collision each time by yourself
-            }
-//            if (item->data(0) =="Platform"){
-////                for (QGraphicsItem* child :item->childItems()){
+            }*/
+            if (Tile *tile= qgraphicsitem_cast<Tile *>(item)){
+                QRectF tile_rect=tile->sceneBoundingRect();
+                QRectF player_rect=this->sceneBoundingRect();
 
-////                }
-//// Use with shape:
-////                    if (item->collidesWithItem(this)){
-////                        qDebug() << "Plt";
-////                    }
-//            }
-//            qDebug()<<"Collision";
-////            item->collidesWithItem(this);
+//                qDebug()<<"tile"<<tile_rect<<"| player:"<<player_rect;
+
+                /*if (m_speed_x>0.01){
+                    m_speed_x=0;
+                    this->setX(tile_rect.left()-  player_rect.width()/2);
+                }else if (m_speed_x<-0.01){
+                    m_speed_x=0;
+                    this->setX(tile_rect.right()+  player_rect.width()/2);
+                }else if (m_speed_y>0.01){
+                    qDebug()<<m_speed_y;
+                    m_speed_y=0;
+                    this->setY(tile_rect.top()-  player_rect.height()/2);
+                }else if (m_speed_y<-0.01){
+                    qDebug()<<m_speed_y;
+                    m_speed_y=0;
+                    this->setY(tile_rect.bottom()+  player_rect.height()/2);
+                }*/
+                QRectF inter_rect=tile_rect.intersected(player_rect);
+//                qreal r_w=9999;
+//                qreal r_h=9999;
+                qreal r_pos=sqrt(pow(m_speed_x,2) + pow(m_speed_y,2));
+                qreal r=9999;
+                bool move=false;
+                if (abs(m_speed_x)>0.1){
+                    r = fmin(r,(inter_rect.width() *r_pos)/abs(m_speed_x));
+                    move=true;
+                }
+                if (abs(m_speed_y)>0.1){
+                    r = fmin(r,(inter_rect.height() *r_pos)/abs(m_speed_y));
+                    move=true;
+                }
+
+//                qreal r = fmin(r_w,r_h);
+
+                if (move){
+                    // set position at the end
+                    qDebug()<< r;
+                    moveBy(-r*m_speed_x/r_pos,-r*m_speed_y/r_pos);
+                    m_speed_x=0;
+                    m_speed_y=0;
+                    // NOTE: do not return posio (slide on walls ...)
+                }
+
+            }
+
         }
     }
 
