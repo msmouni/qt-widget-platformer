@@ -29,64 +29,166 @@ void Player::update()
 
     QList<QGraphicsItem *> collidingItems=this->collidingItems();
 
+    if (!collidingItems.empty()){
+        QRectF inter_all_rect=collidingItems[0]->sceneBoundingRect().intersected(this->sceneBoundingRect());//inter_all_rect(0,0,0,0);//
+//        first_rect.set
 
-    // Handle collisions with other items
-    foreach (QGraphicsItem *item, collidingItems) {
-        // Check if item is not itself
-        if (item!=this) {
-            // The qgraphicsitem_cast function takes care of checking whether the conversion is valid and returns the derived class pointer if successful, or nullptr if the conversion is not possible.
-            /*if (Platform *platform= qgraphicsitem_cast<Platform *>(item)){
-                // Use platform to detect collision: 1)- use custom shape and only get the collision rect | 2)- check collision each time by yourself
-            }*/
-            if (Tile *tile= qgraphicsitem_cast<Tile *>(item)){
-                QRectF tile_rect=tile->sceneBoundingRect();
-                QRectF player_rect=this->sceneBoundingRect();
+        qreal dx=0;
+        qreal dy=0;
 
-//                qDebug()<<"tile"<<tile_rect<<"| player:"<<player_rect;
-
-                /*if (m_speed_x>0.01){
-                    m_speed_x=0;
-                    this->setX(tile_rect.left()-  player_rect.width()/2);
-                }else if (m_speed_x<-0.01){
-                    m_speed_x=0;
-                    this->setX(tile_rect.right()+  player_rect.width()/2);
-                }else if (m_speed_y>0.01){
-                    qDebug()<<m_speed_y;
-                    m_speed_y=0;
-                    this->setY(tile_rect.top()-  player_rect.height()/2);
-                }else if (m_speed_y<-0.01){
-                    qDebug()<<m_speed_y;
-                    m_speed_y=0;
-                    this->setY(tile_rect.bottom()+  player_rect.height()/2);
+        // Handle collisions with other items
+        foreach (QGraphicsItem *item, collidingItems) {
+            // Check if item is not itself
+            if (item!=this) {
+                // The qgraphicsitem_cast function takes care of checking whether the conversion is valid and returns the derived class pointer if successful, or nullptr if the conversion is not possible.
+                /*if (Platform *platform= qgraphicsitem_cast<Platform *>(item)){
+                    // Use platform to detect collision: 1)- use custom shape and only get the collision rect | 2)- check collision each time by yourself
                 }*/
-                QRectF inter_rect=tile_rect.intersected(player_rect);
-//                qreal r_w=9999;
-//                qreal r_h=9999;
-                qreal r_pos=sqrt(pow(m_speed_x,2) + pow(m_speed_y,2));
-                qreal r=9999;
-                bool move=false;
-                if (abs(m_speed_x)>0.1){
-                    r = fmin(r,(inter_rect.width() *r_pos)/abs(m_speed_x));
-                    move=true;
-                }
-                if (abs(m_speed_y)>0.1){
-                    r = fmin(r,(inter_rect.height() *r_pos)/abs(m_speed_y));
-                    move=true;
-                }
+                if (Tile *tile= qgraphicsitem_cast<Tile *>(item)){
+                    QRectF tile_rect=tile->sceneBoundingRect();
+                    QRectF player_rect=this->sceneBoundingRect();
 
-//                qreal r = fmin(r_w,r_h);
+    //                qDebug()<<"tile"<<tile_rect<<"| player:"<<player_rect;
 
-                if (move){
-                    // set position at the end
-                    qDebug()<< r;
-                    moveBy(-r*m_speed_x/r_pos,-r*m_speed_y/r_pos);
-                    m_speed_x=0;
-                    m_speed_y=0;
-                    // NOTE: do not return posio (slide on walls ...)
+                    /*if (m_speed_x>0.01){
+                        m_speed_x=0;
+                        this->setX(tile_rect.left()-  player_rect.width()/2);
+                    }else if (m_speed_x<-0.01){
+                        m_speed_x=0;
+                        this->setX(tile_rect.right()+  player_rect.width()/2);
+                    }else if (m_speed_y>0.01){
+                        qDebug()<<m_speed_y;
+                        m_speed_y=0;
+                        this->setY(tile_rect.top()-  player_rect.height()/2);
+                    }else if (m_speed_y<-0.01){
+                        qDebug()<<m_speed_y;
+                        m_speed_y=0;
+                        this->setY(tile_rect.bottom()+  player_rect.height()/2);
+                    }*/
+                    /////////////////////////////////////////////////////////////////////////////////
+    //                QRectF inter_rect=tile_rect.intersected(player_rect);
+    ////                qreal r_w=9999;
+    ////                qreal r_h=9999;
+    //                qreal r_pos=sqrt(pow(m_speed_x,2) + pow(m_speed_y,2));
+    //                qreal r=9999;
+    //                bool move=false;
+    //                if (abs(m_speed_x)>0.1){
+    //                    r = fmin(r,(inter_rect.width() *r_pos)/abs(m_speed_x));
+    //                    move=true;
+    //                }
+    //                if (abs(m_speed_y)>0.1){
+    //                    r = fmin(r,(inter_rect.height() *r_pos)/abs(m_speed_y));
+    //                    move=true;
+    //                }
+
+    ////                qreal r = fmin(r_w,r_h);
+
+    //                if (move){
+    //                    // set position at the end
+    //                    qDebug()<< r;
+    //                    moveBy(-r*m_speed_x/r_pos,-r*m_speed_y/r_pos);
+    //                    m_speed_x=0;
+    //                    m_speed_y=0;
+    //                    // NOTE: do not return posion (slide on walls ...)
+    //                }
+                    /////////////////////////////////////////////////////////////////////////////////
+                    QRectF inter_rect=tile_rect.intersected(player_rect);
+                    qDebug()<<inter_rect;
+                    // Factorize later
+                    /*if (abs(inter_rect.width()-inter_rect.height())<1 ){
+                        qDebug()<<"1";
+    //                    m_speed_x=0;
+                        if (player_rect.center().x() <= tile_rect.center().x()){
+                            setX(x()-inter_rect.width()-1);
+                        }else {
+                            setX(x()+inter_rect.width()+1);
+                        }
+
+    //                    m_speed_y=0;
+                        if (player_rect.center().y() <= tile_rect.center().y()){
+                            setY(y()-inter_rect.height()-1);
+                        }else {
+                            setY(y()+inter_rect.height()+1);
+                        }
+
+                    }else */
+                    /*if ((inter_rect.height()-inter_rect.width())>0.001){
+                        qDebug()<<"2";
+                        m_speed_x=0;
+                        if (player_rect.center().x() <= tile_rect.center().x()){
+                            setX(x()-inter_rect.width());
+                        }else {
+                            setX(x()+inter_rect.width());
+                        }
+                    }else if ((inter_rect.width()-inter_rect.height())>0.001){
+                        qDebug()<<"3";
+                        m_speed_y=0;
+                        if (player_rect.center().y() <= tile_rect.center().y()){
+                            setY(y()-inter_rect.height());
+                        }else {
+                            setY(y()+inter_rect.height());
+                        }
+                    }*/
+                    //////////////////////////////////////////////
+                    inter_all_rect.setLeft(fmin(inter_all_rect.left(),inter_rect.left()));
+                    inter_all_rect.setRight(fmax(inter_all_rect.right(),inter_rect.right()));
+                    inter_all_rect.setTop(fmin(inter_all_rect.top(),inter_rect.top()));
+                    inter_all_rect.setBottom(fmax(inter_all_rect.bottom(),inter_rect.bottom()));
+                    /////////////////////////////////////////////////////////////////////////////////
+                    if ((inter_rect.height()-inter_rect.width())>0.001){
+                        dx= fmax(dx,abs(inter_rect.width()));
+                    }else if ((inter_rect.width()-inter_rect.height())>0.001){
+                        dy= fmax(dy,inter_rect.height());
+                    }
                 }
 
             }
+        }
+        /*qDebug()<<"inter_all_rect"<<inter_all_rect;
 
+        if ((inter_all_rect.height()-inter_all_rect.width())>0.001){
+            qDebug()<<"2";
+
+            if (m_speed_x>0.001){
+                setX(x()-(inter_all_rect.width()));
+            }else {
+                setX(x()+inter_all_rect.width());
+            }
+            m_speed_x=0;
+        }else if ((inter_all_rect.width()-inter_all_rect.height())>0.001){
+            qDebug()<<"3";
+
+            if (m_speed_y>0.001){
+                setY(y()-inter_all_rect.height());
+            }else {
+                setY(y()+inter_all_rect.height());
+            }
+
+            m_speed_y=0;
+        }*/
+        /////////////////////////////////////////////////////////////////////////////////
+        qDebug()<<"dx"<<dx<<"dy"<<dy;
+        if (dx>0.001){
+            qDebug()<<"2";
+
+            if (m_speed_x>0.001){
+                setX(x()-dx);
+            }else if (m_speed_x<-0.001) {
+                setX(x()+dx);
+            }
+            m_speed_x=0;
+        }
+
+        if (dy>0.001){
+            qDebug()<<"3";
+
+            if (m_speed_y>0.001){
+                setY(y()-dy);
+            }else  if (m_speed_y<-0.001){
+                setY(y()+dy);
+            }
+
+            m_speed_y=0;
         }
     }
 
