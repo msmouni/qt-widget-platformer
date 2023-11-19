@@ -2,6 +2,9 @@
 
 PlayView::PlayView(QWidget *parent) : QGraphicsView(parent)
 {
+    this->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    this->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+
     m_scene = new QGraphicsScene(this);
     this->setScene(m_scene);
 
@@ -37,4 +40,6 @@ void PlayView::updateItems()
 {
     m_platform->update();
     m_player->update(m_platform);
+
+    this->centerOn(m_player);
 }
