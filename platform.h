@@ -18,6 +18,9 @@ public:
 
 //    QPainterPath shape() const override;
 
+    QRectF handleCollision(QRectF rect, qreal& dx, qreal& dy) const;
+    void update();
+
 
 private:
     QSizeF m_tile_size;

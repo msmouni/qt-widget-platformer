@@ -43,6 +43,7 @@ PlayView::PlayView(QWidget *parent) : QGraphicsView(parent)
 void PlayView::updateItems()
 {
     //    qDebug()<<"update PlayView";
-    m_player->update();
+    m_platform->update();
+    m_player->update(m_platform);
 }
 

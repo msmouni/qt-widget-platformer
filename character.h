@@ -3,6 +3,7 @@
 
 #include <QGraphicsItem>
 #include <QPainter>
+#include "platform.h"
 
 enum class CharacterType
 {
@@ -19,7 +20,7 @@ public:
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
                QWidget *widget) override;
 
-    virtual void update() = 0;
+    virtual void update(const Platform *platform) = 0;
 
 protected:
     QRectF m_bounding_rect;
