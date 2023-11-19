@@ -29,6 +29,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         Pirate_bomb/map_64_64_w30_h20.png
         Pirate_bomb/map_64_64_w30_h20.csv
         res_files.qrc
+        csv.h
     )
 
 # https://stackoverflow.com/questions/18471827/qtcreator-cant-find-the-class-header-file-after-promoting-a-widget-to-that-clas
