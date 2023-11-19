@@ -5,6 +5,7 @@
 #include <QGraphicsScene>
 #include <QTimer>
 #include "player.h"
+#include "platform.h"
 
 class PlayView : public QGraphicsView
 {
@@ -17,6 +18,8 @@ private:
     Player *m_player;
     QTimer *m_update_timer;
     int m_update_timeout_ms;
+
+    Platform *m_platform;
 private slots:
     void updateItems();
 };

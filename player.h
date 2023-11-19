@@ -9,7 +9,7 @@ class Player : public Character
 public:
     Player(const QRectF &rect, const QColor &color);
 
-    void update() override;
+    void update(const Platform *platform) override;
 
 protected:
     void keyPressEvent(QKeyEvent *event) override;
@@ -22,7 +22,6 @@ private:
     qreal m_acc_y;
 
     qreal m_acc_max;
-    qreal m_speed_max;
     qreal m_friction;
     qreal m_gravity;
 };

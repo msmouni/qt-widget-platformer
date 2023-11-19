@@ -1,4 +1,5 @@
 #include "player.h"
+#include "platform.h"
 
 Player::Player(const QRectF &rect, const QColor &color) : Character(rect, color)
 {
@@ -15,7 +16,7 @@ Player::Player(const QRectF &rect, const QColor &color) : Character(rect, color)
     m_friction = 0.5;
 }
 
-void Player::update()
+void Player::update(const Platform *platform)
 {
     // with this model: S_n = S_{n-1} * f + Acc => Sn = Acc *(1 - f^n)/(1-f) => #with f < 1 and n >> 0: Sn = Acc/(1-f)
     m_speed_x *= m_friction; // Friction
@@ -24,7 +25,9 @@ void Player::update()
     m_speed_y *= m_friction; // Friction
     m_speed_y += m_acc_y;
 
-    setPos(x() + m_speed_x, y() + m_speed_y);
+    QRectF res = platform->handleCollision(sceneBoundingRect(), m_speed_x, m_speed_y);
+
+    this->setPos(res.center());
 }
 
 void Player::keyPressEvent(QKeyEvent *event)
