@@ -10,11 +10,34 @@ PlayView::PlayView(QWidget *parent) : QGraphicsView(parent)
 
     m_scene->setBackgroundBrush(Qt::blue); // TMP
 
-    m_platform = new Platform(QSizeF(64, 64), ":Pirate_bomb/map_64_64_w30_h20.csv");
+    //    // Reverse the y-axis by setting a vertical flip transformation
+    //    this->setTransform(QTransform(1, 0, 0, -1, 0, height()));
+
+    // Load an image and add it to the scene (Resource File (.qrc))
+    //    m_map_img=m_scene->addPixmap(QPixmap(":Pirate_bomb/map_64_64_w30_h20.png"));
+    //    QPixmap pix(":Pirate_bomb/map_64_64_w30_h20.png");
+
+    QHash<int, TileType> tiles_hash;
+
+    tiles_hash.insert(-1, TileType::Empty);
+    for (int i = 0; i <= 21; i++)
+    {
+        tiles_hash.insert(i, TileType::Solid);
+    }
+    tiles_hash.insert(22, TileType::JumpThrough);
+    tiles_hash.insert(23, TileType::JumpThrough);
+    tiles_hash.insert(24, TileType::Solid);
+    tiles_hash.insert(25, TileType::Solid);
+    tiles_hash.insert(26, TileType::Solid);
+    tiles_hash.insert(27, TileType::Solid);
+    tiles_hash.insert(28, TileType::JumpThrough);
+    tiles_hash.insert(29, TileType::JumpThrough);
+
+    m_platform = new Platform(QSizeF(64, 64), ":Pirate_bomb/map_64_64_w30_h20.csv", ":/Pirate_bomb/8-Tile-Sets/Tile-Sets (64-64).png", tiles_hash);
 
     m_platform->setData(0, "Platform");
 
-    m_platform->setData(0,"Platform");
+    //    m_scene->addItem(m_platform);
 
     m_scene->addItem(m_platform);
 
@@ -24,6 +47,9 @@ PlayView::PlayView(QWidget *parent) : QGraphicsView(parent)
 
     m_scene->addItem(m_player);
 
+    m_camera_pos = m_player->pos();
+
+    //    m_scene->add
     m_update_timer = new QTimer;
 
     m_update_timeout_ms = 50;
@@ -48,6 +74,7 @@ void PlayView::updateCam()
 
 void PlayView::updateItems()
 {
+    //    qDebug()<<"update PlayView";
     m_platform->update();
     m_player->update(m_platform);
 

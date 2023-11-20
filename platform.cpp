@@ -1,16 +1,21 @@
 #include "platform.h"
 #include "csv.h"
 
-Platform::Platform(QSizeF tile_size, QString map_csv_path)
+Platform::Platform(QSizeF tile_size, QString map_csv_path, QString tileset_png_path, QHash<int, TileType> tiles_hash)
 {
     m_tile_size = tile_size;
 
-    m_map = loadCSV(map_csv_path);
+    m_tileset_pixmap = QPixmap(tileset_png_path);
 
-    if (!m_map.isEmpty())
+    QVector<QVector<int>> map = loadCSV(map_csv_path);
+
+    if (!map.isEmpty())
     {
-        m_nb_rows = m_map.size();
-        m_nb_columns = m_map[0].size();
+        m_nb_rows = map.size();
+        m_nb_columns = map[0].size();
+
+        qDebug() << "platform:"
+                 << "m_nb_rows" << m_nb_rows << "m_nb_columns" << m_nb_columns;
     }
     else
     {
@@ -20,20 +25,27 @@ Platform::Platform(QSizeF tile_size, QString map_csv_path)
 
     for (int i = 0; i < m_nb_rows; i++)
     {
+        QVector<Tile *> tile_line;
         for (int j = 0; j < m_nb_columns; j++)
         {
-            if (m_map[i][j] >= 0)
-            {
-                m_tiles.append(new Tile(QRectF(j * m_tile_size.width(), i * m_tile_size.height(), m_tile_size.width(), m_tile_size.height())));
+            //            if (m_map[i][j] >= 0)
+            //            {
+            //                QGraphicsRectItem rect(j * m_tile_size.width(), i * m_tile_size.height(), m_tile_size.width(), m_tile_size.height());
+            tile_line.append(new Tile(map[i][j], QRectF(j * m_tile_size.width(), i * m_tile_size.height(), m_tile_size.width(), m_tile_size.height()), tiles_hash.value(map[i][j]), m_tileset_pixmap));
 
-                this->addToGroup(m_tiles.last());
-            }
+            this->addToGroup(tile_line.last());
+            //                //                m_path.addRect(QRect(j * m_tile_size.width(), i * m_tile_size.height(), m_tile_size.width(), m_tile_size.height()));
+            //            }
         }
+        m_tiles.append(tile_line);
     }
+
+    qDebug() << "m_tile_size" << m_tile_size;
 }
 
 QRectF Platform::boundingRect() const
 {
+    //    return m_rect;
     return childrenBoundingRect();
 }
 
@@ -41,6 +53,7 @@ void Platform::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, 
 {
 }
 
+// To factorize later
 QRectF Platform::handleCollision(QRectF rect, qreal &dx, qreal &dy) const
 {
     int left_idx = fmax(0, fmin(rect.left(), rect.left() + dx) / m_tile_size.width());
@@ -77,13 +90,17 @@ QRectF Platform::handleCollision(QRectF rect, qreal &dx, qreal &dy) const
                 i_y = ind_y;
             }
 
-            if (m_map[i_y][i_x] >= 0)
-            {
-                qreal left = i_x * m_tile_size.width();
-                qreal right = (i_x + 1) * m_tile_size.width();
+            qreal left = i_x * m_tile_size.width();
+            qreal right = (i_x + 1) * m_tile_size.width();
 
-                qreal top = i_y * m_tile_size.height();
-                qreal bottom = (i_y + 1) * m_tile_size.height();
+            qreal top = i_y * m_tile_size.height();
+            qreal bottom = (i_y + 1) * m_tile_size.height();
+
+            if (!m_tiles[i_y][i_x]->isEmpty() &&
+                (m_tiles[i_y][i_x]->isSolid() ||
+                 (m_tiles[i_y][i_x]->checkUp() && !going_down && (bottom < rect.top())) ||
+                 (m_tiles[i_y][i_x]->checkDown() && going_down && (top > rect.bottom()))))
+            {
 
                 if (moving_ver && !moving_hor)
                 {

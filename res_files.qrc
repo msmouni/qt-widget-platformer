@@ -2,5 +2,6 @@
     <qresource prefix="/">
         <file>Pirate_bomb/map_64_64_w30_h20.png</file>
         <file>Pirate_bomb/map_64_64_w30_h20.csv</file>
+        <file>Pirate_bomb/8-Tile-Sets/Tile-Sets (64-64).png</file>
     </qresource>
 </RCC>
