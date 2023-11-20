@@ -13,6 +13,9 @@ class PlayView : public QGraphicsView
 public:
     PlayView(QWidget *parent = nullptr);
 
+protected:
+    void wheelEvent(QWheelEvent *event) override;
+
 private:
     QGraphicsScene *m_scene;
     Player *m_player;
@@ -20,6 +23,10 @@ private:
     int m_update_timeout_ms;
 
     Platform *m_platform;
+
+    QPointF m_camera_pos;
+
+    void updateCam();
 private slots:
     void updateItems();
 };

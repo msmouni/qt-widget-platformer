@@ -36,10 +36,23 @@ PlayView::PlayView(QWidget *parent) : QGraphicsView(parent)
     connect(m_update_timer, SIGNAL(timeout()), this, SLOT(updateItems()));
 }
 
+void PlayView::wheelEvent(QWheelEvent *event)
+{
+    event->ignore();
+}
+
+void PlayView::updateCam()
+{
+    QPointF player_pos = m_player->pos();
+    m_camera_pos.setX(m_camera_pos.x() + (player_pos.x() - m_camera_pos.x()) / 5);
+    m_camera_pos.setY(m_camera_pos.y() + (player_pos.y() - m_camera_pos.y()) / 5);
+    this->centerOn(m_camera_pos);
+}
+
 void PlayView::updateItems()
 {
     m_platform->update();
     m_player->update(m_platform);
 
-    this->centerOn(m_player);
+    updateCam();
 }
