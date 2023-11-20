@@ -39,17 +39,6 @@ QRectF Platform::boundingRect() const
 
 void Platform::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
-    // TMP
-    QPen pen(Qt::black);
-    pen.setWidth(2);
-    painter->setPen(pen);
-    painter->setBrush(Qt::green);
-    painter->setFont(QFont("Arial", 10));
-
-    for (Tile *tile : m_tiles)
-    {
-        tile->paint(painter, option, widget);
-    }
 }
 
 QRectF Platform::handleCollision(QRectF rect, qreal &dx, qreal &dy) const
