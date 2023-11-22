@@ -9,7 +9,8 @@ class Player : public Character
 public:
     Player(const QRectF &rect, const QColor &color);
 
-    void update(const Platform *platform) override;
+    void gameUpdate(const Platform *platform) override;
+    void updateAnimation();
 
 protected:
     void keyPressEvent(QKeyEvent *event) override;

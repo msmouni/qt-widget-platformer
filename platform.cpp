@@ -39,8 +39,7 @@ Platform::Platform(QSizeF tile_size, QString map_csv_path, QString tileset_png_p
         }
         m_tiles.append(tile_line);
     }
-
-    qDebug() << "m_tile_size" << m_tile_size;
+//    qDebug() << "m_tile_size" << m_tile_size;
 }
 
 QRectF Platform::boundingRect() const

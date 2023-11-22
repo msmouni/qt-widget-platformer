@@ -76,7 +76,7 @@ void PlayView::updateItems()
 {
     //    qDebug()<<"update PlayView";
     m_platform->update();
-    m_player->update(m_platform);
+    m_player->gameUpdate(m_platform);
 
     updateCam();
 }
