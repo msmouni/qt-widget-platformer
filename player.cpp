@@ -6,7 +6,25 @@ Player::Player(const QRectF &rect, const QColor &color) : Character(rect, color)
     setFlag(QGraphicsItem::ItemIsFocusable);
     setFocus();
 
-    m_animation = new SpriteAnimation(":/Pirate_bomb/1-Player-Bomb Guy/1-Idle", 50);
+    /*
+    Idle =0,
+    Run=1,
+    Jump=2,
+    Fall=3,
+    Ground=4,
+    Hit=5,
+    DeadHit=6,
+     */
+    QHash<uint8_t, QString> animations_ids;
+    animations_ids.insert(0,":/Pirate_bomb/1-Player-Bomb Guy/1-Idle");
+    animations_ids.insert(1,":/Pirate_bomb/1-Player-Bomb Guy/2-Run");
+    animations_ids.insert(2,":/Pirate_bomb/1-Player-Bomb Guy/4-Jump");
+    animations_ids.insert(3,":/Pirate_bomb/1-Player-Bomb Guy/5-Fall");
+    animations_ids.insert(4,":/Pirate_bomb/1-Player-Bomb Guy/6-Ground");
+    animations_ids.insert(5,":/Pirate_bomb/1-Player-Bomb Guy/7-Hit");
+    animations_ids.insert(6,":/Pirate_bomb/1-Player-Bomb Guy/8-Dead Hit");
+
+    m_animation = new SpriteAnimation(animations_ids, 50);
 
     setPixmap(m_animation->getPixmap());
 
@@ -40,6 +58,7 @@ void Player::gameUpdate(const Platform *platform)
     m_speed_y += m_acc_y + m_gravity;
 
     // TODO: Better handle for State and direction
+
     if (m_speed_x >0.001){
         m_direction =CharacterDirection::Right;
     }else if (m_speed_x <-0.001){
@@ -61,7 +80,7 @@ void Player::gameUpdate(const Platform *platform)
         m_state =CharacterState::Ground;
     }else if (m_speed_y>0.01){
         m_state =CharacterState::Fall;
-    }else if (abs(m_speed_x)>0.01){
+    }else if (abs(m_speed_x)>1){
         m_state =CharacterState::Run;
     }else if (abs(m_speed_y)<=0.01){
         m_state =CharacterState::Idle;
@@ -102,6 +121,7 @@ void Player::gameUpdate(const Platform *platform)
 
 void Player::updateAnimation()
 {
+    m_animation->setId(static_cast<uint8_t>(m_state));
     switch (m_state) {
     case CharacterState::Idle:
         qDebug()<<"Idle";

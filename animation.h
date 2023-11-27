@@ -84,33 +84,52 @@ private:
 #include <QDir>
 #include <QStringList>
 #include <QObject>
+#include <QHash>
 
 // To adjust later (NOte: QObject for SIGNAL and SLOT)
 class SpriteAnimation : public QObject
 {
     Q_OBJECT
 public:
-    explicit SpriteAnimation(const QString& folder_path, int frame_dur_ms)
-        : QObject(), current_frame(0)
+    explicit SpriteAnimation(QHash<uint8_t, QString> paths, int frame_dur_ms)
+        : QObject()
     {
-        loadFramesFromFolder(folder_path);
+        if (!paths.isEmpty()){
+            for (uint8_t id: paths.keys()) {
+                loadFramesFromFolder(id,paths[id]);
+            }
 
-        if (!frames.isEmpty()) {
-//            setPixmap(frames.first());
+            m_current_id =paths.keys().first();
+            m_current_frame=0;
 
-            // Timer for controlling the animation
-            animation_timer = new QTimer;
-            connect(animation_timer, &QTimer::timeout, this, &SpriteAnimation::nextFrame);
-            animation_timer->start(frame_dur_ms);
+            if (!m_frames_id[m_current_id].isEmpty()) {
+                //            setPixmap(frames.first());
+
+                // Timer for controlling the animation
+                m_animation_timer = new QTimer;
+                connect(m_animation_timer, &QTimer::timeout, this, &SpriteAnimation::nextFrame);
+                m_animation_timer->start(frame_dur_ms);
+
+                m_frame_dur_ms=frame_dur_ms;
+
+                m_rect=m_frames_id[m_current_id][0].rect().toRectF();
+            }
         }
-
-        m_rect=frames[0].rect().toRectF();
 
     }
 
 
+    void setId(uint8_t id){
+        if (m_frames_id.keys().contains(id)){
+            if (m_current_id !=id){
+                m_current_id=id;
+                m_current_frame=0;
+            }
+        }
+
+    }
     QPixmap& getPixmap(){
-        return frames[current_frame];
+        return m_frames_id[m_current_id][m_current_frame];
     }
 
     QRectF& getRect(){
@@ -119,16 +138,18 @@ public:
 
 private slots:
     void nextFrame() {
-        current_frame = (current_frame + 1) % frames.size();
+        m_current_frame = (m_current_frame + 1) % m_frames_id[m_current_id].size();
         emit updatePixmap();
     }
 signals:
     void updatePixmap();
 
 private:
-    QList<QPixmap> frames;
-    int current_frame;
-    QTimer* animation_timer;
+    QHash<uint8_t, QList<QPixmap>> m_frames_id;
+    uint8_t m_current_id;
+    int m_current_frame;
+    int m_frame_dur_ms;
+    QTimer* m_animation_timer;
     QRectF m_rect;
 
 //    void updatePixmap() {
@@ -136,7 +157,8 @@ private:
 //    }
 
 
-    void loadFramesFromFolder(const QString& folder_path) {
+    void loadFramesFromFolder(uint8_t frame_id, const QString& folder_path) {
+        QList<QPixmap> frames;
         QDir dir(folder_path);
         QStringList name_filters;
         name_filters << "*.png";  // Assuming sprite frames are PNG files, adjust accordingly
@@ -145,6 +167,8 @@ private:
         foreach (const QString& file_name, file_names) {
             frames.append(QPixmap(dir.filePath(file_name)));
         }
+
+        m_frames_id.insert(frame_id, frames);
     }
 };
 

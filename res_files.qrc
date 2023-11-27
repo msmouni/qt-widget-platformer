@@ -29,5 +29,42 @@
         <file>Pirate_bomb/1-Player-Bomb Guy/1-Idle/11.png</file>
         <file>Pirate_bomb/1-Player-Bomb Guy/1-Idle/10.png</file>
         <file>Pirate_bomb/1-Player-Bomb Guy/1-Idle/1.png</file>
+        <file>Pirate_bomb/1-Player-Bomb Guy/2-Run/9.png</file>
+        <file>Pirate_bomb/1-Player-Bomb Guy/2-Run/8.png</file>
+        <file>Pirate_bomb/1-Player-Bomb Guy/2-Run/7.png</file>
+        <file>Pirate_bomb/1-Player-Bomb Guy/2-Run/6.png</file>
+        <file>Pirate_bomb/1-Player-Bomb Guy/2-Run/5.png</file>
+        <file>Pirate_bomb/1-Player-Bomb Guy/2-Run/4.png</file>
+        <file>Pirate_bomb/1-Player-Bomb Guy/2-Run/3.png</file>
+        <file>Pirate_bomb/1-Player-Bomb Guy/2-Run/2.png</file>
+        <file>Pirate_bomb/1-Player-Bomb Guy/2-Run/14.png</file>
+        <file>Pirate_bomb/1-Player-Bomb Guy/2-Run/13.png</file>
+        <file>Pirate_bomb/1-Player-Bomb Guy/2-Run/12.png</file>
+        <file>Pirate_bomb/1-Player-Bomb Guy/2-Run/11.png</file>
+        <file>Pirate_bomb/1-Player-Bomb Guy/2-Run/10.png</file>
+        <file>Pirate_bomb/1-Player-Bomb Guy/2-Run/1.png</file>
+        <file>Pirate_bomb/1-Player-Bomb Guy/5-Fall/2.png</file>
+        <file>Pirate_bomb/1-Player-Bomb Guy/5-Fall/1.png</file>
+        <file>Pirate_bomb/1-Player-Bomb Guy/6-Ground/3.png</file>
+        <file>Pirate_bomb/1-Player-Bomb Guy/6-Ground/2.png</file>
+        <file>Pirate_bomb/1-Player-Bomb Guy/6-Ground/1.png</file>
+        <file>Pirate_bomb/1-Player-Bomb Guy/4-Jump/4.png</file>
+        <file>Pirate_bomb/1-Player-Bomb Guy/4-Jump/3.png</file>
+        <file>Pirate_bomb/1-Player-Bomb Guy/4-Jump/2.png</file>
+        <file>Pirate_bomb/1-Player-Bomb Guy/4-Jump/1.png</file>
+        <file>Pirate_bomb/1-Player-Bomb Guy/7-Hit/8.png</file>
+        <file>Pirate_bomb/1-Player-Bomb Guy/7-Hit/7.png</file>
+        <file>Pirate_bomb/1-Player-Bomb Guy/7-Hit/6.png</file>
+        <file>Pirate_bomb/1-Player-Bomb Guy/7-Hit/5.png</file>
+        <file>Pirate_bomb/1-Player-Bomb Guy/7-Hit/4.png</file>
+        <file>Pirate_bomb/1-Player-Bomb Guy/7-Hit/3.png</file>
+        <file>Pirate_bomb/1-Player-Bomb Guy/7-Hit/2.png</file>
+        <file>Pirate_bomb/1-Player-Bomb Guy/7-Hit/1.png</file>
+        <file>Pirate_bomb/1-Player-Bomb Guy/8-Dead Hit/6.png</file>
+        <file>Pirate_bomb/1-Player-Bomb Guy/8-Dead Hit/5.png</file>
+        <file>Pirate_bomb/1-Player-Bomb Guy/8-Dead Hit/4.png</file>
+        <file>Pirate_bomb/1-Player-Bomb Guy/8-Dead Hit/3.png</file>
+        <file>Pirate_bomb/1-Player-Bomb Guy/8-Dead Hit/2.png</file>
+        <file>Pirate_bomb/1-Player-Bomb Guy/8-Dead Hit/1.png</file>
     </qresource>
 </RCC>

@@ -12,14 +12,14 @@ enum class CharacterType
     Enemy
 };
 
-enum class CharacterState{
-    Idle,
-    Run,
-    Jump,
-    Fall,
-    Ground,
-    Hit,
-    DeadHit,
+enum class CharacterState: uint8_t{
+    Idle =0,
+    Run=1,
+    Jump=2,
+    Fall=3,
+    Ground=4,
+    Hit=5,
+    DeadHit=6,
 };
 
 enum class CharacterDirection{
