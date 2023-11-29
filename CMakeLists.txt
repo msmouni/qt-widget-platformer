@@ -33,6 +33,8 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         csv.h
         tile.h tile.cpp
         animation.h animation.cpp
+        enemy.h enemy.cpp
+        shared.h
 
     )
 

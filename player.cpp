@@ -32,24 +32,13 @@ Player::Player(const QRectF &rect, const QColor &color) : Character(rect, color)
 
     m_type = CharacterType::Player;
 
-    m_state =CharacterState::Idle;
-    m_direction = CharacterDirection::Right;
-
-    m_speed_x = 0;
-    m_speed_y = 0;
-    m_acc_x = 0;
-    m_acc_y = 0;
-
-    m_acc_max = 15;
-    m_friction = 0.5;
-    m_gravity = 13;
-
     m_jump = false;
 }
 
 void Player::gameUpdate(const Platform *platform)
 {
-    //    qDebug()<<"m_acc_x"<<m_acc_x;
+    updateCharacter(platform);
+    /* //    qDebug()<<"m_acc_x"<<m_acc_x;
     // with this model: S_n = S_{n-1} * f + Acc => Sn = Acc *(1 - f^n)/(1-f) => #with f < 1 and n >> 0: Sn = Acc/(1-f)
     m_speed_x *= m_friction; // Friction
     m_speed_x += m_acc_x;
@@ -89,7 +78,7 @@ void Player::gameUpdate(const Platform *platform)
     updateAnimation();
 
 
-    this->setPos(res.center());
+    this->setPos(res.center());*/
 
     //    setPos(x() + m_speed_x, y() + m_speed_y);
 
@@ -119,7 +108,7 @@ void Player::gameUpdate(const Platform *platform)
     }*/
 }
 
-void Player::updateAnimation()
+/*void Player::updateAnimation()
 {
     m_animation->setId(static_cast<uint8_t>(m_state));
     switch (m_state) {
@@ -141,7 +130,7 @@ void Player::updateAnimation()
     default:
         break;
     }
-}
+}*/
 
 void Player::keyPressEvent(QKeyEvent *event)
 {

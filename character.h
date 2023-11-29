@@ -45,8 +45,21 @@ protected:
     CharacterType m_type;
     QColor m_color; // To change later with sprite
     SpriteAnimation *m_animation;
+
+    qreal m_speed_x;
+    qreal m_speed_y;
+    qreal m_acc_x;
+    qreal m_acc_y;
+
+    qreal m_acc_max;
+    qreal m_friction;
+    qreal m_gravity;
+
     CharacterState m_state;
     CharacterDirection m_direction;
+
+    void updateCharacter(const Platform *platform);
+    virtual void updateAnimation();
 };
 
 #endif // CHARACTER_H

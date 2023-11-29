@@ -48,6 +48,12 @@ PlayView::PlayView(QWidget *parent) : QGraphicsView(parent)
     m_scene->addItem(m_player);
 
     m_camera_pos = m_player->pos();
+    m_player_rect = m_player->sceneBoundingRect();
+
+    Enemy* enemy = new Enemy(QRectF(200, 200, 58, 58), Qt::red, m_player_rect);
+    enemy->setData(0, "Enemy");
+    m_scene->addItem(enemy);
+    m_enemies.append( enemy);
 
     //    m_scene->add
     m_update_timer = new QTimer;
@@ -77,6 +83,11 @@ void PlayView::updateItems()
     //    qDebug()<<"update PlayView";
     m_platform->update();
     m_player->gameUpdate(m_platform);
+
+    m_player_rect = m_player->sceneBoundingRect();
+    for (Enemy* enemy: m_enemies){
+        enemy->gameUpdate(m_platform);
+    }
 
     updateCam();
 }

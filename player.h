@@ -10,7 +10,6 @@ public:
     Player(const QRectF &rect, const QColor &color);
 
     void gameUpdate(const Platform *platform) override;
-    void updateAnimation();
 
 protected:
     void keyPressEvent(QKeyEvent *event) override;
@@ -23,14 +22,6 @@ private:
     //    bool m_left_pressed;
 
     //    qreal m_g=700;//9.8; // Pixel not meter
-    qreal m_speed_x;
-    qreal m_speed_y;
-    qreal m_acc_x;
-    qreal m_acc_y;
-
-    qreal m_acc_max;
-    qreal m_friction;
-    qreal m_gravity;
     bool m_jump;
 };
 
