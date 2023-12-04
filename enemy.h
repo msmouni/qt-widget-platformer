@@ -17,6 +17,9 @@ public:
 private:
     const QRectF & m_player_rect;
 
+    // TMP
+    bool m_jumping_to_point;
+
 //    void updateAnimation() override;
 };
 

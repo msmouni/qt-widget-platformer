@@ -21,6 +21,9 @@ public:
     QRectF handleCollision(QRectF rect, qreal &dx, qreal &dy) const;
     void update();
 
+//    const TileType& getTileType(poin)
+    QVector<QPointF> getReachedTiles(QRectF rect, qreal dx, qreal dy) const;
+
 private:
     QSizeF m_tile_size;
     int m_nb_rows;
@@ -32,6 +35,8 @@ private:
     //    QPainterPath m_path;
     QVector<QVector<Tile *>> m_tiles;
     QPixmap m_tileset_pixmap;
+
+    QRect getIndexRect(QRectF rect, qreal &dx, qreal &dy) const;
 };
 
 #endif // PLATFORM_H

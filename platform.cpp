@@ -197,3 +197,36 @@ QRectF Platform::handleCollision(QRectF rect, qreal &dx, qreal &dy) const
 void Platform::update()
 {
 }
+
+QVector<QPointF> Platform::getReachedTiles(QRectF rect, qreal dx, qreal dy) const
+{
+    QVector<QPointF> reached_tiles;
+
+    QRect indexes = getIndexRect(rect,dx,dy);
+
+    for (int ind_x = indexes.right(); indexes.left()<=ind_x; ind_x--)
+    {
+        for (int ind_y = indexes.top(); ind_y <= indexes.bottom(); ind_y++)
+        {
+            if (ind_y!=0 &&  m_tiles[ind_y][ind_x]->isSolid() && (m_tiles[ind_y-1][ind_x]->isEmpty() || !m_tiles[ind_y-1][ind_x]->checkUp())){
+                reached_tiles.append(QPointF((ind_x + 0.5) * m_tile_size.width(), (ind_y + 0.5) * m_tile_size.height()));
+            }
+
+        }
+    }
+
+    return reached_tiles;
+}
+
+QRect Platform::getIndexRect(QRectF rect, qreal &dx, qreal &dy) const
+{
+    int left_idx = fmax(0, fmin(rect.left(), rect.left() + dx) / m_tile_size.width());
+    int right_idx = fmin(m_nb_columns - 1, fmax(rect.right(), rect.right() + dx) / m_tile_size.width());
+    int top_idx = fmax(0, fmin(rect.top(), rect.top() + dy) / m_tile_size.height());
+    int bottom_idx = fmin(m_nb_rows - 1, fmax(rect.bottom(), rect.bottom() + dy) / m_tile_size.height());
+
+    return QRect(QPoint(left_idx,top_idx),QPoint(right_idx,bottom_idx));
+
+}
+
+
