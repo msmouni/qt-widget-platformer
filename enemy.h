@@ -2,6 +2,8 @@
 #define ENEMY_H
 
 #include "character.h"
+#include <QMediaPlayer>
+#include <QAudioOutput>
 
 class Enemy : public Character
 {
@@ -16,6 +18,8 @@ public:
 
 private:
     const QRectF & m_player_rect;
+    QMediaPlayer *m_media_player;
+    QAudioOutput* m_audio_output;
 
 //    void updateAnimation() override;
 };

@@ -19,6 +19,12 @@ Enemy::Enemy(const QRectF &rect, const QColor &color,const QRectF & player_rect)
 
     connect(m_animation, SIGNAL(updatePixmap()), this, SLOT(updateView()));
 
+    m_media_player=new QMediaPlayer(this);
+    m_audio_output = new QAudioOutput;
+    m_media_player->setAudioOutput(m_audio_output);
+    m_media_player->setSource(QUrl::fromLocalFile("/home/marwan/Téléchargements/na7wi_mok_short.mp3"));
+    m_audio_output->setVolume(50);
+
     m_type = CharacterType::Enemy;
 
 }
@@ -29,6 +35,9 @@ void Enemy::gameUpdate(const Platform *platform)
 
     // TMP
     if (abs(m_player_rect.x() - sceneBoundingRect().x())<500){
+        if (m_state== CharacterState::Idle && abs(m_player_rect.x() - sceneBoundingRect().x())>100){
+            m_media_player->play();
+        }
         m_acc_x = (m_player_rect.x() - sceneBoundingRect().x())/50;
     //    m_acc_y = (m_player_rect.y() - sceneBoundingRect().y())/10;
         if (m_player_rect.y() < sceneBoundingRect().y()){
