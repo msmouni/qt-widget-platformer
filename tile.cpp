@@ -48,4 +48,13 @@ void Tile::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWid
         painter->drawTiledPixmap(m_rect, m_tileset_pixmap, m_tileset_pos);
     }
     //    painter->drawTiledPixmap()
+
+    // Set the pen and brush for the rectangle
+    QPen pen(Qt::black);
+    pen.setWidth(2);
+    painter->setPen(pen);
+    painter->setFont(QFont("Arial", 5));
+
+    QString txt = "(" + QString::number(sceneBoundingRect().center().x()) + "," + QString::number(sceneBoundingRect().center().y()) + ")";
+    painter->drawText(sceneBoundingRect().center(),txt);
 }

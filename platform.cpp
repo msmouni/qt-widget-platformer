@@ -204,16 +204,40 @@ QVector<QPointF> Platform::getReachedTiles(QRectF rect, qreal dx, qreal dy) cons
 
     QRect indexes = getIndexRect(rect,dx,dy);
 
-    for (int ind_x = indexes.right(); indexes.left()<=ind_x; ind_x--)
-    {
-        for (int ind_y = indexes.top(); ind_y <= indexes.bottom(); ind_y++)
-        {
-            if (ind_y!=0 &&  m_tiles[ind_y][ind_x]->isSolid() && (m_tiles[ind_y-1][ind_x]->isEmpty() || !m_tiles[ind_y-1][ind_x]->checkUp())){
-                reached_tiles.append(QPointF((ind_x + 0.5) * m_tile_size.width(), (ind_y + 0.5) * m_tile_size.height()));
-            }
+    qDebug()<<"\nstart";
 
+    // TMP
+    if (dx>0){
+        for (int ind_x = indexes.right(); indexes.left()<=ind_x; ind_x--)
+        {
+            for (int ind_y = indexes.top(); ind_y <= indexes.bottom(); ind_y++)
+            {
+                if (ind_y!=0 &&  (m_tiles[ind_y][ind_x]->isSolid() || !m_tiles[ind_y][ind_x]->checkUp()) && (m_tiles[ind_y-1][ind_x]->isEmpty() || !m_tiles[ind_y-1][ind_x]->checkUp())){
+                    QPointF pnt=QPointF((ind_x + 0.5) * m_tile_size.width(), (ind_y + 0.5) * m_tile_size.height());
+                    //                qDebug()<<"pnt"<<pnt<<"tile"<<m_tiles[ind_y][ind_x]->sceneBoundingRect().center();
+                    reached_tiles.append(pnt);
+                }
+//                qDebug()<<"tile"<<m_tiles[ind_y][ind_x]->sceneBoundingRect().center();
+
+            }
+        }
+    }else {
+        for (int ind_x = indexes.left(); ind_x<=indexes.right(); ind_x++)
+        {
+            for (int ind_y = indexes.top(); ind_y <= indexes.bottom(); ind_y++)
+            {
+                if (ind_y!=0 &&  (m_tiles[ind_y][ind_x]->isSolid() || !m_tiles[ind_y][ind_x]->checkUp()) && (m_tiles[ind_y-1][ind_x]->isEmpty() || !m_tiles[ind_y-1][ind_x]->checkUp())){
+                    QPointF pnt=QPointF((ind_x + 0.5) * m_tile_size.width(), (ind_y + 0.5) * m_tile_size.height());
+                    //                qDebug()<<"pnt"<<pnt<<"tile"<<m_tiles[ind_y][ind_x]->sceneBoundingRect().center();
+                    reached_tiles.append(pnt);
+                }
+//                qDebug()<<"tile"<<m_tiles[ind_y][ind_x]->sceneBoundingRect().center();
+
+            }
         }
     }
+
+
 
     return reached_tiles;
 }

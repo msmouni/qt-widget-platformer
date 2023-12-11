@@ -47,6 +47,16 @@ void Character::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
         break;
     }
 
+    // Set the pen and brush for the rectangle
+    QPen pen(Qt::red);
+    pen.setWidth(2);
+    painter->setPen(pen);
+    painter->setFont(QFont("Arial", 15));
+
+    /*QString txt = "(" + QString::number(sceneBoundingRect().center().x()) + "," + QString::number(sceneBoundingRect().center().y()) + ")";
+//    qDebug()<<txt;
+    painter->drawText(0,0,txt);*/
+
 }
 
 void Character::updateView()
@@ -95,9 +105,7 @@ void Character::updateCharacter(const Platform *platform)
 
     updateAnimation();
 
-
     this->setPos(res.center());
-
 }
 
 void Character::updateAnimation()
@@ -122,5 +130,10 @@ void Character::updateAnimation()
     default:
         break;
     }*/
+}
+
+bool Character::isOnGround()
+{
+    return m_state == CharacterState::Ground | m_state == CharacterState::Idle | m_state == CharacterState::Run;
 }
 

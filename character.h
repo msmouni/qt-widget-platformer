@@ -60,6 +60,7 @@ protected:
 
     void updateCharacter(const Platform *platform);
     virtual void updateAnimation();
+    bool isOnGround();
 };
 
 #endif // CHARACTER_H
