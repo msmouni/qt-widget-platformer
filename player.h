@@ -3,27 +3,24 @@
 
 #include "character.h"
 #include <QKeyEvent>
+#include <QTimer>
 
 class Player : public Character
 {
 public:
-    Player(const QRectF &rect, const QColor &color);
+    Player(const QRectF &rect, const QString &res_path);
 
-    void update(const Platform *platform) override;
-
-protected:
-    void keyPressEvent(QKeyEvent *event) override;
-    void keyReleaseEvent(QKeyEvent *event) override;
+    void gameUpdate(const Platform *platform) override;
+private slots:
+    void jumpTimeout();
 
 private:
-    qreal m_speed_x;
-    qreal m_speed_y;
-    qreal m_acc_x;
-    qreal m_acc_y;
+    const int M_JUMP_ACCEL = -50;
+    const int M_JUMP_TIMEOUT_MS = 250;
+    QTimer m_jump_timer;
 
-    qreal m_acc_max;
-    qreal m_friction;
-    qreal m_gravity;
+    void keyPressEvent(QKeyEvent *event) override;
+    void keyReleaseEvent(QKeyEvent *event) override;
 };
 
 #endif // PLAYER_H

@@ -38,10 +38,7 @@ QRectF Platform::boundingRect() const
     return childrenBoundingRect();
 }
 
-void Platform::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
-{
-}
-
+// To factorize later
 QRectF Platform::handleCollision(QRectF rect, qreal &dx, qreal &dy) const
 {
     int left_idx = fmax(0, fmin(rect.left(), rect.left() + dx) / m_tile_size.width());
@@ -78,13 +75,17 @@ QRectF Platform::handleCollision(QRectF rect, qreal &dx, qreal &dy) const
                 i_y = ind_y;
             }
 
-            if (m_map[i_y][i_x] >= 0)
-            {
-                qreal left = i_x * m_tile_size.width();
-                qreal right = (i_x + 1) * m_tile_size.width();
+            qreal left = i_x * m_tile_size.width();
+            qreal right = (i_x + 1) * m_tile_size.width();
 
-                qreal top = i_y * m_tile_size.height();
-                qreal bottom = (i_y + 1) * m_tile_size.height();
+            qreal top = i_y * m_tile_size.height();
+            qreal bottom = (i_y + 1) * m_tile_size.height();
+
+            if (!m_tiles[i_y][i_x]->isEmpty() &&
+                (m_tiles[i_y][i_x]->isSolid() ||
+                 (m_tiles[i_y][i_x]->checkUp() && !going_down && (bottom < rect.top())) ||
+                 (m_tiles[i_y][i_x]->checkDown() && going_down && (top > rect.bottom()))))
+            {
 
                 if (moving_ver && !moving_hor)
                 {
@@ -179,6 +180,12 @@ QRectF Platform::handleCollision(QRectF rect, qreal &dx, qreal &dy) const
     return rect.translated(dx, dy);
 }
 
-void Platform::update()
+QRect Platform::getIndexRect(QRectF rect, qreal &dx, qreal &dy) const
 {
+    int left_idx = fmax(0, fmin(rect.left(), rect.left() + dx) / m_tile_size.width());
+    int right_idx = fmin(m_nb_columns - 1, fmax(rect.right(), rect.right() + dx) / m_tile_size.width());
+    int top_idx = fmax(0, fmin(rect.top(), rect.top() + dy) / m_tile_size.height());
+    int bottom_idx = fmin(m_nb_rows - 1, fmax(rect.bottom(), rect.bottom() + dy) / m_tile_size.height());
+
+    return QRect(QPoint(left_idx, top_idx), QPoint(right_idx, bottom_idx));
 }

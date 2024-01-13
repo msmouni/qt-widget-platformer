@@ -31,11 +31,11 @@ PlayView::PlayView(QWidget *parent) : QGraphicsView(parent)
     m_platform->setData(0, "Platform");
     m_scene->addItem(m_platform);
 
-    m_player = new Player(QRectF(200, 200, 58, 58), Qt::red);
-
+    // Player
+    m_player = new Player(QRectF(200, 200, 58, 58), ":/Pirate_bomb/Player-Bomb Guy");
     m_player->setData(0, "Player");
-
     m_scene->addItem(m_player);
+    m_camera_pos = m_player->pos();
 
     m_update_timer = new QTimer;
 
@@ -62,7 +62,7 @@ void PlayView::updateCam()
 void PlayView::updateItems()
 {
     m_platform->update();
-    m_player->update(m_platform);
+    m_player->gameUpdate(m_platform);
 
     updateCam();
 }

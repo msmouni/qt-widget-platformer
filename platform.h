@@ -20,6 +20,8 @@ private:
     int m_nb_columns;
     QVector<QVector<Tile *>> m_tiles;
     QPixmap m_tileset_pixmap;
+
+    QRect getIndexRect(QRectF rect, qreal &dx, qreal &dy) const;
 };
 
 #endif // PLATFORM_H
