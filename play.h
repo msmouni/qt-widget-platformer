@@ -6,6 +6,7 @@
 #include <QTimer>
 #include "player.h"
 #include "platform.h"
+#include "enemy.h"
 
 class PlayView : public QGraphicsView
 {
@@ -26,7 +27,11 @@ private:
 
     QPointF m_camera_pos;
 
+    QRectF m_player_rect;
+    QVector<Enemy *> m_enemies;
+
     void updateCam();
+
 private slots:
     void updateItems();
 };
