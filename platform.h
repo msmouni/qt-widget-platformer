@@ -8,21 +8,18 @@
 class Platform : public QGraphicsItemGroup
 {
 public:
-    Platform(QSizeF tile_size, QString map_csv_path);
+    Platform(QSizeF tile_size, QString map_csv_path, QString tileset_png_path, QHash<int, TileType> tiles_hash);
 
     QRectF boundingRect() const override;
 
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
-
     QRectF handleCollision(QRectF rect, qreal &dx, qreal &dy) const;
-    void update();
 
 private:
     QSizeF m_tile_size;
     int m_nb_rows;
     int m_nb_columns;
-    QVector<QVector<int>> m_map;
-    QVector<Tile *> m_tiles;
+    QVector<QVector<Tile *>> m_tiles;
+    QPixmap m_tileset_pixmap;
 };
 
 #endif // PLATFORM_H

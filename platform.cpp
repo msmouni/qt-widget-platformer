@@ -1,16 +1,18 @@
 #include "platform.h"
 #include "csv.h"
 
-Platform::Platform(QSizeF tile_size, QString map_csv_path)
+Platform::Platform(QSizeF tile_size, QString map_csv_path, QString tileset_png_path, QHash<int, TileType> tiles_hash)
 {
     m_tile_size = tile_size;
 
-    m_map = loadCSV(map_csv_path);
+    m_tileset_pixmap = QPixmap(tileset_png_path);
 
-    if (!m_map.isEmpty())
+    QVector<QVector<int>> map = loadCSV(map_csv_path);
+
+    if (!map.isEmpty())
     {
-        m_nb_rows = m_map.size();
-        m_nb_columns = m_map[0].size();
+        m_nb_rows = map.size();
+        m_nb_columns = map[0].size();
     }
     else
     {
@@ -20,15 +22,14 @@ Platform::Platform(QSizeF tile_size, QString map_csv_path)
 
     for (int i = 0; i < m_nb_rows; i++)
     {
+        QVector<Tile *> tile_line;
         for (int j = 0; j < m_nb_columns; j++)
         {
-            if (m_map[i][j] >= 0)
-            {
-                m_tiles.append(new Tile(QRectF(j * m_tile_size.width(), i * m_tile_size.height(), m_tile_size.width(), m_tile_size.height())));
+            tile_line.append(new Tile(map[i][j], QRectF(j * m_tile_size.width(), i * m_tile_size.height(), m_tile_size.width(), m_tile_size.height()), tiles_hash.value(map[i][j]), m_tileset_pixmap));
 
-                this->addToGroup(m_tiles.last());
-            }
+            this->addToGroup(tile_line.last());
         }
+        m_tiles.append(tile_line);
     }
 }
 

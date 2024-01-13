@@ -10,12 +10,25 @@ PlayView::PlayView(QWidget *parent) : QGraphicsView(parent)
 
     m_scene->setBackgroundBrush(Qt::blue); // TMP
 
-    m_platform = new Platform(QSizeF(64, 64), ":Pirate_bomb/map_64_64_w30_h20.csv");
+    // Tiles
+    QHash<int, TileType> tiles_hash;
+    tiles_hash.insert(-1, TileType::Empty);
+    for (int i = 0; i <= 21; i++)
+    {
+        tiles_hash.insert(i, TileType::Solid);
+    }
+    tiles_hash.insert(22, TileType::JumpThrough);
+    tiles_hash.insert(23, TileType::JumpThrough);
+    tiles_hash.insert(24, TileType::Solid);
+    tiles_hash.insert(25, TileType::Solid);
+    tiles_hash.insert(26, TileType::Solid);
+    tiles_hash.insert(27, TileType::Solid);
+    tiles_hash.insert(28, TileType::JumpThrough);
+    tiles_hash.insert(29, TileType::JumpThrough);
 
+    // Platform
+    m_platform = new Platform(QSizeF(64, 64), ":Pirate_bomb/map_64_64_w30_h20.csv", ":/Pirate_bomb/Tile-Sets/Tile-Sets (64-64).png", tiles_hash);
     m_platform->setData(0, "Platform");
-
-    m_platform->setData(0,"Platform");
-
     m_scene->addItem(m_platform);
 
     m_player = new Player(QRectF(200, 200, 58, 58), Qt::red);

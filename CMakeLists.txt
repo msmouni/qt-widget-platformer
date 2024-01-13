@@ -26,8 +26,6 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         play.h play.cpp
         character.h character.cpp
         player.h player.cpp
-        Pirate_bomb/map_64_64_w30_h20.png
-        Pirate_bomb/map_64_64_w30_h20.csv
         res_files.qrc
         platform.h platform.cpp
         csv.h
