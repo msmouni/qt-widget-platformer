@@ -1,6 +1,157 @@
 <RCC>
     <qresource prefix="/">
-        <file>Pirate_bomb/map_64_64_w30_h20.png</file>
         <file>Pirate_bomb/map_64_64_w30_h20.csv</file>
+        <file>Pirate_bomb/Tile-Sets/Tile-Sets (64-64).png</file>
+        <file>Pirate_bomb/Player-Bomb Guy/Idle/9.png</file>
+        <file>Pirate_bomb/Player-Bomb Guy/Idle/8.png</file>
+        <file>Pirate_bomb/Player-Bomb Guy/Idle/7.png</file>
+        <file>Pirate_bomb/Player-Bomb Guy/Idle/6.png</file>
+        <file>Pirate_bomb/Player-Bomb Guy/Idle/5.png</file>
+        <file>Pirate_bomb/Player-Bomb Guy/Idle/4.png</file>
+        <file>Pirate_bomb/Player-Bomb Guy/Idle/3.png</file>
+        <file>Pirate_bomb/Player-Bomb Guy/Idle/26.png</file>
+        <file>Pirate_bomb/Player-Bomb Guy/Idle/25.png</file>
+        <file>Pirate_bomb/Player-Bomb Guy/Idle/24.png</file>
+        <file>Pirate_bomb/Player-Bomb Guy/Idle/23.png</file>
+        <file>Pirate_bomb/Player-Bomb Guy/Idle/22.png</file>
+        <file>Pirate_bomb/Player-Bomb Guy/Idle/21.png</file>
+        <file>Pirate_bomb/Player-Bomb Guy/Idle/20.png</file>
+        <file>Pirate_bomb/Player-Bomb Guy/Idle/2.png</file>
+        <file>Pirate_bomb/Player-Bomb Guy/Idle/19.png</file>
+        <file>Pirate_bomb/Player-Bomb Guy/Idle/18.png</file>
+        <file>Pirate_bomb/Player-Bomb Guy/Idle/17.png</file>
+        <file>Pirate_bomb/Player-Bomb Guy/Idle/16.png</file>
+        <file>Pirate_bomb/Player-Bomb Guy/Idle/15.png</file>
+        <file>Pirate_bomb/Player-Bomb Guy/Idle/14.png</file>
+        <file>Pirate_bomb/Player-Bomb Guy/Idle/13.png</file>
+        <file>Pirate_bomb/Player-Bomb Guy/Idle/12.png</file>
+        <file>Pirate_bomb/Player-Bomb Guy/Idle/11.png</file>
+        <file>Pirate_bomb/Player-Bomb Guy/Idle/10.png</file>
+        <file>Pirate_bomb/Player-Bomb Guy/Idle/1.png</file>
+        <file>Pirate_bomb/Player-Bomb Guy/Run/9.png</file>
+        <file>Pirate_bomb/Player-Bomb Guy/Run/8.png</file>
+        <file>Pirate_bomb/Player-Bomb Guy/Run/7.png</file>
+        <file>Pirate_bomb/Player-Bomb Guy/Run/6.png</file>
+        <file>Pirate_bomb/Player-Bomb Guy/Run/5.png</file>
+        <file>Pirate_bomb/Player-Bomb Guy/Run/4.png</file>
+        <file>Pirate_bomb/Player-Bomb Guy/Run/3.png</file>
+        <file>Pirate_bomb/Player-Bomb Guy/Run/2.png</file>
+        <file>Pirate_bomb/Player-Bomb Guy/Run/14.png</file>
+        <file>Pirate_bomb/Player-Bomb Guy/Run/13.png</file>
+        <file>Pirate_bomb/Player-Bomb Guy/Run/12.png</file>
+        <file>Pirate_bomb/Player-Bomb Guy/Run/11.png</file>
+        <file>Pirate_bomb/Player-Bomb Guy/Run/10.png</file>
+        <file>Pirate_bomb/Player-Bomb Guy/Run/1.png</file>
+        <file>Pirate_bomb/Player-Bomb Guy/Fall/2.png</file>
+        <file>Pirate_bomb/Player-Bomb Guy/Fall/1.png</file>
+        <file>Pirate_bomb/Player-Bomb Guy/Ground/3.png</file>
+        <file>Pirate_bomb/Player-Bomb Guy/Ground/2.png</file>
+        <file>Pirate_bomb/Player-Bomb Guy/Ground/1.png</file>
+        <file>Pirate_bomb/Player-Bomb Guy/Jump/4.png</file>
+        <file>Pirate_bomb/Player-Bomb Guy/Jump/3.png</file>
+        <file>Pirate_bomb/Player-Bomb Guy/Jump/2.png</file>
+        <file>Pirate_bomb/Player-Bomb Guy/Jump/1.png</file>
+        <file>Pirate_bomb/Player-Bomb Guy/Hit/8.png</file>
+        <file>Pirate_bomb/Player-Bomb Guy/Hit/7.png</file>
+        <file>Pirate_bomb/Player-Bomb Guy/Hit/6.png</file>
+        <file>Pirate_bomb/Player-Bomb Guy/Hit/5.png</file>
+        <file>Pirate_bomb/Player-Bomb Guy/Hit/4.png</file>
+        <file>Pirate_bomb/Player-Bomb Guy/Hit/3.png</file>
+        <file>Pirate_bomb/Player-Bomb Guy/Hit/2.png</file>
+        <file>Pirate_bomb/Player-Bomb Guy/Hit/1.png</file>
+        <file>Pirate_bomb/Player-Bomb Guy/Dead Hit/6.png</file>
+        <file>Pirate_bomb/Player-Bomb Guy/Dead Hit/5.png</file>
+        <file>Pirate_bomb/Player-Bomb Guy/Dead Hit/4.png</file>
+        <file>Pirate_bomb/Player-Bomb Guy/Dead Hit/3.png</file>
+        <file>Pirate_bomb/Player-Bomb Guy/Dead Hit/2.png</file>
+        <file>Pirate_bomb/Player-Bomb Guy/Dead Hit/1.png</file>
+        <file>Pirate_bomb/Enemy-Bald Pirate/Idle/9.png</file>
+        <file>Pirate_bomb/Enemy-Bald Pirate/Idle/8.png</file>
+        <file>Pirate_bomb/Enemy-Bald Pirate/Idle/7.png</file>
+        <file>Pirate_bomb/Enemy-Bald Pirate/Idle/6.png</file>
+        <file>Pirate_bomb/Enemy-Bald Pirate/Idle/5.png</file>
+        <file>Pirate_bomb/Enemy-Bald Pirate/Idle/4.png</file>
+        <file>Pirate_bomb/Enemy-Bald Pirate/Idle/34.png</file>
+        <file>Pirate_bomb/Enemy-Bald Pirate/Idle/33.png</file>
+        <file>Pirate_bomb/Enemy-Bald Pirate/Idle/32.png</file>
+        <file>Pirate_bomb/Enemy-Bald Pirate/Idle/31.png</file>
+        <file>Pirate_bomb/Enemy-Bald Pirate/Idle/30.png</file>
+        <file>Pirate_bomb/Enemy-Bald Pirate/Idle/3.png</file>
+        <file>Pirate_bomb/Enemy-Bald Pirate/Idle/29.png</file>
+        <file>Pirate_bomb/Enemy-Bald Pirate/Idle/28.png</file>
+        <file>Pirate_bomb/Enemy-Bald Pirate/Idle/27.png</file>
+        <file>Pirate_bomb/Enemy-Bald Pirate/Idle/26.png</file>
+        <file>Pirate_bomb/Enemy-Bald Pirate/Idle/25.png</file>
+        <file>Pirate_bomb/Enemy-Bald Pirate/Idle/24.png</file>
+        <file>Pirate_bomb/Enemy-Bald Pirate/Idle/23.png</file>
+        <file>Pirate_bomb/Enemy-Bald Pirate/Idle/22.png</file>
+        <file>Pirate_bomb/Enemy-Bald Pirate/Idle/21.png</file>
+        <file>Pirate_bomb/Enemy-Bald Pirate/Idle/20.png</file>
+        <file>Pirate_bomb/Enemy-Bald Pirate/Idle/2.png</file>
+        <file>Pirate_bomb/Enemy-Bald Pirate/Idle/19.png</file>
+        <file>Pirate_bomb/Enemy-Bald Pirate/Idle/18.png</file>
+        <file>Pirate_bomb/Enemy-Bald Pirate/Idle/17.png</file>
+        <file>Pirate_bomb/Enemy-Bald Pirate/Idle/16.png</file>
+        <file>Pirate_bomb/Enemy-Bald Pirate/Idle/15.png</file>
+        <file>Pirate_bomb/Enemy-Bald Pirate/Idle/14.png</file>
+        <file>Pirate_bomb/Enemy-Bald Pirate/Idle/13.png</file>
+        <file>Pirate_bomb/Enemy-Bald Pirate/Idle/12.png</file>
+        <file>Pirate_bomb/Enemy-Bald Pirate/Idle/11.png</file>
+        <file>Pirate_bomb/Enemy-Bald Pirate/Idle/10.png</file>
+        <file>Pirate_bomb/Enemy-Bald Pirate/Idle/1.png</file>
+        <file>Pirate_bomb/Enemy-Bald Pirate/Dead Ground/1.png</file>
+        <file>Pirate_bomb/Enemy-Bald Pirate/Dead Ground/2.png</file>
+        <file>Pirate_bomb/Enemy-Bald Pirate/Dead Ground/3.png</file>
+        <file>Pirate_bomb/Enemy-Bald Pirate/Dead Ground/4.png</file>
+        <file>Pirate_bomb/Enemy-Bald Pirate/Run/1.png</file>
+        <file>Pirate_bomb/Enemy-Bald Pirate/Run/10.png</file>
+        <file>Pirate_bomb/Enemy-Bald Pirate/Run/11.png</file>
+        <file>Pirate_bomb/Enemy-Bald Pirate/Run/12.png</file>
+        <file>Pirate_bomb/Enemy-Bald Pirate/Run/13.png</file>
+        <file>Pirate_bomb/Enemy-Bald Pirate/Run/14.png</file>
+        <file>Pirate_bomb/Enemy-Bald Pirate/Run/2.png</file>
+        <file>Pirate_bomb/Enemy-Bald Pirate/Run/3.png</file>
+        <file>Pirate_bomb/Enemy-Bald Pirate/Run/4.png</file>
+        <file>Pirate_bomb/Enemy-Bald Pirate/Run/5.png</file>
+        <file>Pirate_bomb/Enemy-Bald Pirate/Run/6.png</file>
+        <file>Pirate_bomb/Enemy-Bald Pirate/Run/7.png</file>
+        <file>Pirate_bomb/Enemy-Bald Pirate/Run/8.png</file>
+        <file>Pirate_bomb/Enemy-Bald Pirate/Run/9.png</file>
+        <file>Pirate_bomb/Enemy-Bald Pirate/Jump Anticipation/1.png</file>
+        <file>Pirate_bomb/Enemy-Bald Pirate/Jump/1.png</file>
+        <file>Pirate_bomb/Enemy-Bald Pirate/Jump/2.png</file>
+        <file>Pirate_bomb/Enemy-Bald Pirate/Jump/3.png</file>
+        <file>Pirate_bomb/Enemy-Bald Pirate/Jump/4.png</file>
+        <file>Pirate_bomb/Enemy-Bald Pirate/Fall/1.png</file>
+        <file>Pirate_bomb/Enemy-Bald Pirate/Fall/2.png</file>
+        <file>Pirate_bomb/Enemy-Bald Pirate/Ground/1.png</file>
+        <file>Pirate_bomb/Enemy-Bald Pirate/Ground/2.png</file>
+        <file>Pirate_bomb/Enemy-Bald Pirate/Ground/3.png</file>
+        <file>Pirate_bomb/Enemy-Bald Pirate/Attack/1.png</file>
+        <file>Pirate_bomb/Enemy-Bald Pirate/Attack/10.png</file>
+        <file>Pirate_bomb/Enemy-Bald Pirate/Attack/11.png</file>
+        <file>Pirate_bomb/Enemy-Bald Pirate/Attack/12.png</file>
+        <file>Pirate_bomb/Enemy-Bald Pirate/Attack/2.png</file>
+        <file>Pirate_bomb/Enemy-Bald Pirate/Attack/3.png</file>
+        <file>Pirate_bomb/Enemy-Bald Pirate/Attack/4.png</file>
+        <file>Pirate_bomb/Enemy-Bald Pirate/Attack/5.png</file>
+        <file>Pirate_bomb/Enemy-Bald Pirate/Attack/6.png</file>
+        <file>Pirate_bomb/Enemy-Bald Pirate/Attack/7.png</file>
+        <file>Pirate_bomb/Enemy-Bald Pirate/Attack/8.png</file>
+        <file>Pirate_bomb/Enemy-Bald Pirate/Attack/9.png</file>
+        <file>Pirate_bomb/Enemy-Bald Pirate/Hit/1.png</file>
+        <file>Pirate_bomb/Enemy-Bald Pirate/Hit/2.png</file>
+        <file>Pirate_bomb/Enemy-Bald Pirate/Hit/3.png</file>
+        <file>Pirate_bomb/Enemy-Bald Pirate/Hit/4.png</file>
+        <file>Pirate_bomb/Enemy-Bald Pirate/Hit/5.png</file>
+        <file>Pirate_bomb/Enemy-Bald Pirate/Hit/6.png</file>
+        <file>Pirate_bomb/Enemy-Bald Pirate/Hit/7.png</file>
+        <file>Pirate_bomb/Enemy-Bald Pirate/Hit/8.png</file>
+        <file>Pirate_bomb/Enemy-Bald Pirate/Dead Hit/1.png</file>
+        <file>Pirate_bomb/Enemy-Bald Pirate/Dead Hit/2.png</file>
+        <file>Pirate_bomb/Enemy-Bald Pirate/Dead Hit/3.png</file>
+        <file>Pirate_bomb/Enemy-Bald Pirate/Dead Hit/4.png</file>
+        <file>Pirate_bomb/Enemy-Bald Pirate/Dead Hit/5.png</file>
+        <file>Pirate_bomb/Enemy-Bald Pirate/Dead Hit/6.png</file>
     </qresource>
 </RCC>
