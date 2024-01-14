@@ -1,6 +1,6 @@
 #include "character.h"
 
-Character::Character(const QRectF &rect, const QString &res_path)
+Character::Character(const QRectF &rect, const QString &res_path, const Platform &platform) : m_platform(platform)
 {
     // pos = center
     m_bounding_rect = QRectF(-rect.width() / 2, -rect.height() / 2, rect.width(), rect.height());
@@ -65,7 +65,7 @@ void Character::updateView()
     setPixmap(m_animation->getPixmap());
 }
 
-void Character::updateCharacter(const Platform *platform)
+void Character::updateCharacter()
 {
     // with this model: S_n = S_{n-1} * f + Acc => Sn = Acc *(1 - f^n)/(1-f) => #with f < 1 and n >> 0: Sn = Acc/(1-f)
     m_speed_x *= m_friction; // Friction
@@ -92,7 +92,7 @@ void Character::updateCharacter(const Platform *platform)
 
     qreal no_collision_speed_y = m_speed_y;
 
-    QRectF res = platform->handleCollision(sceneBoundingRect(), m_speed_x, m_speed_y);
+    QRectF res = m_platform.handleCollision(sceneBoundingRect(), m_speed_x, m_speed_y);
 
     if (no_collision_speed_y > m_speed_y && m_state == CharacterState::Fall)
     {

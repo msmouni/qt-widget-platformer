@@ -8,9 +8,9 @@
 class Player : public Character
 {
 public:
-    Player(const QRectF &rect, const QString &res_path);
+    Player(const QRectF &rect, const QString &res_path, const Platform &platform);
 
-    void gameUpdate(const Platform *platform) override;
+    void gameUpdate() override;
 private slots:
     void jumpTimeout();
 

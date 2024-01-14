@@ -1,7 +1,7 @@
 #include "player.h"
 #include "platform.h"
 
-Player::Player(const QRectF &rect, const QString &res_path) : Character(rect, res_path)
+Player::Player(const QRectF &rect, const QString &res_path, const Platform &platform) : Character(rect, res_path, platform)
 {
     setFlag(QGraphicsItem::ItemIsFocusable);
     setFocus();
@@ -12,9 +12,9 @@ Player::Player(const QRectF &rect, const QString &res_path) : Character(rect, re
     m_type = CharacterType::Player;
 }
 
-void Player::gameUpdate(const Platform *platform)
+void Player::gameUpdate()
 {
-    updateCharacter(platform);
+    updateCharacter();
 }
 
 void Player::jumpTimeout()

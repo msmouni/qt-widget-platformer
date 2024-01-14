@@ -33,13 +33,13 @@ class Character : public QObject, public QGraphicsPixmapItem
 {
     Q_OBJECT
 public:
-    Character(const QRectF &rect, const QString &res_path);
+    Character(const QRectF &rect, const QString &res_path, const Platform &platform);
 
     QRectF boundingRect() const override;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
                QWidget *widget) override;
 
-    virtual void gameUpdate(const Platform *platform) = 0;
+    virtual void gameUpdate() = 0;
 protected slots:
     void updateView();
 
@@ -47,6 +47,7 @@ protected:
     QRectF m_bounding_rect;
     CharacterType m_type;
     SpriteAnimation *m_animation;
+    const Platform &m_platform;
 
     qreal m_speed_x;
     qreal m_speed_y;
@@ -60,7 +61,7 @@ protected:
     CharacterState m_state;
     CharacterDirection m_direction;
 
-    void updateCharacter(const Platform *platform);
+    void updateCharacter();
     virtual void updateAnimation();
     bool isOnGround();
 };

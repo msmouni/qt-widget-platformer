@@ -6,9 +6,9 @@
 class Enemy : public Character
 {
 public:
-    Enemy(const QRectF &rect, const QString &res_path, const QRectF &player_rect);
+    Enemy(const QRectF &rect, const QString &res_path, const Platform &platform, const QRectF &player_rect);
 
-    void gameUpdate(const Platform *platform) override;
+    void gameUpdate() override;
 
 private:
     const QRectF &m_player_rect;
