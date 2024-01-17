@@ -32,6 +32,11 @@ bool Tile::checkDown()
     return m_type != TileType::FallThrough;
 }
 
+const TileType &Tile::getType()
+{
+    return m_type;
+}
+
 QRectF Tile::boundingRect() const
 {
     return m_rect;

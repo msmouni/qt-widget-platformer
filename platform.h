@@ -14,6 +14,11 @@ public:
 
     QRectF handleCollision(QRectF rect, qreal &dx, qreal &dy) const;
 
+    int getNbColumns() const;
+    int getNbRows() const;
+    QSizeF getTileSize() const;
+    const TileType &getTileType(int &x, int &y) const;
+
 private:
     QSizeF m_tile_size;
     int m_nb_rows;

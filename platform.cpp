@@ -172,6 +172,26 @@ QRectF Platform::handleCollision(QRectF rect, qreal &dx, qreal &dy) const
     return rect.translated(dx, dy);
 }
 
+int Platform::getNbColumns() const
+{
+    return m_nb_columns;
+}
+
+int Platform::getNbRows() const
+{
+    return m_nb_rows;
+}
+
+QSizeF Platform::getTileSize() const
+{
+    return m_tile_size;
+}
+
+const TileType &Platform::getTileType(int &x, int &y) const
+{
+    return m_tiles[x][y]->getType();
+}
+
 QRect Platform::getIndexRect(QRectF rect, qreal &dx, qreal &dy) const
 {
     int left_idx = fmax(0, fmin(rect.left(), rect.left() + dx) / m_tile_size.width());
