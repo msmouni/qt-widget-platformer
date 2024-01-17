@@ -6,6 +6,24 @@
 #include <QTextStream>
 #include <QStringList>
 
+QVector<QVector<int>> transposeMatrix(const QVector<QVector<int>> &matrix)
+{
+    int numRows = matrix.size();
+    int numCols = (numRows > 0) ? matrix[0].size() : 0;
+
+    QVector<QVector<int>> transposedMatrix(numCols, QVector<int>(numRows, 0));
+
+    for (int i = 0; i < numRows; ++i)
+    {
+        for (int j = 0; j < numCols; ++j)
+        {
+            transposedMatrix[j][i] = matrix[i][j];
+        }
+    }
+
+    return transposedMatrix;
+}
+
 QVector<QVector<int>> loadCSV(const QString &file_path)
 {
     // NOTE: [ROW][COLUMN] -> [y][x]
@@ -38,7 +56,8 @@ QVector<QVector<int>> loadCSV(const QString &file_path)
 
     file.close();
 
-    return csv_mat;
+    // Transpose: [COLUMN][ROW] -> [x][y]
+    return transposeMatrix(csv_mat);
 }
 
 #endif // CSV_H

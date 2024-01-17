@@ -9,23 +9,15 @@ Platform::Platform(QSizeF tile_size, QString map_csv_path, QString tileset_png_p
 
     QVector<QVector<int>> map = loadCSV(map_csv_path);
 
-    if (!map.isEmpty())
-    {
-        m_nb_rows = map.size();
-        m_nb_columns = map[0].size();
-    }
-    else
-    {
-        m_nb_rows = 0;
-        m_nb_columns = 0;
-    }
+    m_nb_columns = map.size();
+    m_nb_rows = (m_nb_columns > 0) ? map[0].size() : 0;
 
-    for (int i = 0; i < m_nb_rows; i++)
+    for (int idx_x = 0; idx_x < m_nb_columns; idx_x++)
     {
         QVector<Tile *> tile_line;
-        for (int j = 0; j < m_nb_columns; j++)
+        for (int idx_y = 0; idx_y < m_nb_rows; idx_y++)
         {
-            tile_line.append(new Tile(map[i][j], QRectF(j * m_tile_size.width(), i * m_tile_size.height(), m_tile_size.width(), m_tile_size.height()), tiles_hash.value(map[i][j]), m_tileset_pixmap));
+            tile_line.append(new Tile(map[idx_x][idx_y], QRectF(idx_x * m_tile_size.width(), idx_y * m_tile_size.height(), m_tile_size.width(), m_tile_size.height()), tiles_hash.value(map[idx_x][idx_y]), m_tileset_pixmap));
 
             this->addToGroup(tile_line.last());
         }
@@ -81,10 +73,10 @@ QRectF Platform::handleCollision(QRectF rect, qreal &dx, qreal &dy) const
             qreal top = i_y * m_tile_size.height();
             qreal bottom = (i_y + 1) * m_tile_size.height();
 
-            if (!m_tiles[i_y][i_x]->isEmpty() &&
-                (m_tiles[i_y][i_x]->isSolid() ||
-                 (m_tiles[i_y][i_x]->checkUp() && !going_down && (bottom < rect.top())) ||
-                 (m_tiles[i_y][i_x]->checkDown() && going_down && (top > rect.bottom()))))
+            if (!m_tiles[i_x][i_y]->isEmpty() &&
+                (m_tiles[i_x][i_y]->isSolid() ||
+                 (m_tiles[i_x][i_y]->checkUp() && !going_down && (bottom < rect.top())) ||
+                 (m_tiles[i_x][i_y]->checkDown() && going_down && (top > rect.bottom()))))
             {
 
                 if (moving_ver && !moving_hor)
