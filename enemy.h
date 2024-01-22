@@ -22,6 +22,8 @@ private:
     QVector<QPoint> m_path_tiles;
     // The mutex is locked when QMutexLocker is created. If locked, the mutex will be unlocked when the QMutexLocker is destroyed.
     QMutex m_path_mutex;
+    const int M_NB_PATH_ITER = 3;
+    int m_path_iter;
 
     void followPath();
 };

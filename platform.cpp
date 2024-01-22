@@ -221,6 +221,11 @@ const TileType &Platform::getTileType(int &x, int &y) const
     return m_tiles[x][y]->getType();
 }
 
+QPointF Platform::getTileBottomCenter(const QPoint &pos) const
+{
+    return QPointF((pos.x() + 0.5) * m_tile_size.width(), (pos.y() + 1.0) * m_tile_size.height() - M_COLLISION_MARGIN);
+}
+
 QRect Platform::getIndexRect(QRectF rect, qreal &dx, qreal &dy) const
 {
     int left_idx = fmax(0, fmin(rect.left(), rect.left() + dx) / m_tile_size.width());

@@ -18,6 +18,7 @@ public:
     int getNbRows() const;
     QSizeF getTileSize() const;
     const TileType &getTileType(int &x, int &y) const;
+    QPointF getTileBottomCenter(const QPoint &pos) const;
 
 private:
     const qreal M_COLLISION_MARGIN = 1e-3;
