@@ -21,7 +21,7 @@ Character::Character(const QRectF &rect, const QString &res_path, const Platform
 
     connect(m_animation, SIGNAL(updatePixmap()), this, SLOT(updateView()));
 
-    m_state = CharacterState::Idle;
+    m_state = CharacterState::Init;
     m_direction = CharacterDirection::Right;
 
     m_speed_x = 0;

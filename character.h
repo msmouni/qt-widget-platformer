@@ -14,13 +14,14 @@ enum class CharacterType
 
 enum class CharacterState : uint8_t
 {
-    Idle = 0,
-    Run = 1,
-    Jump = 2,
-    Fall = 3,
-    Ground = 4,
-    Hit = 5,
-    DeadHit = 6,
+    Init = 0,
+    Idle = 1,
+    Run = 2,
+    Jump = 3,
+    Fall = 4,
+    Ground = 5,
+    Hit = 6,
+    DeadHit = 7,
 };
 
 enum class CharacterDirection
