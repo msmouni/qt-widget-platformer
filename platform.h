@@ -20,6 +20,7 @@ public:
     const TileType &getTileType(int &x, int &y) const;
 
 private:
+    const qreal M_COLLISION_MARGIN = 1e-3;
     QSizeF m_tile_size;
     int m_nb_rows;
     int m_nb_columns;

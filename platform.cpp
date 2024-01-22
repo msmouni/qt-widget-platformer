@@ -33,15 +33,43 @@ QRectF Platform::boundingRect() const
 // To factorize later
 QRectF Platform::handleCollision(QRectF rect, qreal &dx, qreal &dy) const
 {
-    int left_idx = fmax(0, fmin(rect.left(), rect.left() + dx) / m_tile_size.width());
-    int right_idx = fmin(m_nb_columns - 1, fmax(rect.right(), rect.right() + dx) / m_tile_size.width());
-    int top_idx = fmax(0, fmin(rect.top(), rect.top() + dy) / m_tile_size.height());
-    int bottom_idx = fmin(m_nb_rows - 1, fmax(rect.bottom(), rect.bottom() + dy) / m_tile_size.height());
+    bool moving_ver = false;
+    bool moving_hor = false;
+    bool going_down = false;
+    bool going_right = false;
 
-    bool going_down = dy > 0;
-    bool going_right = dx > 0;
-    bool moving_hor = abs(dx) > 1e-7;
-    bool moving_ver = abs(dy) > 1e-7;
+    if (dx > M_COLLISION_MARGIN)
+    {
+        going_right = true;
+        moving_hor = true;
+    }
+    else if (dx < -M_COLLISION_MARGIN)
+    {
+        moving_hor = true;
+    }
+    else
+    {
+        dx = 0;
+    }
+
+    if (dy > M_COLLISION_MARGIN)
+    {
+        going_down = true;
+        moving_ver = true;
+    }
+    else if (dy < -M_COLLISION_MARGIN)
+    {
+        moving_ver = true;
+    }
+    else
+    {
+        dy = 0;
+    }
+
+    int left_idx = fmax(0, (fmin(rect.left(), rect.left() + dx) + M_COLLISION_MARGIN) / m_tile_size.width());
+    int right_idx = fmin(m_nb_columns - 1, (fmax(rect.right(), rect.right() + dx) - M_COLLISION_MARGIN) / m_tile_size.width());
+    int top_idx = fmax(0, (fmin(rect.top(), rect.top() + dy) + M_COLLISION_MARGIN) / m_tile_size.height());
+    int bottom_idx = fmin(m_nb_rows - 1, (fmax(rect.bottom(), rect.bottom() + dy) - M_COLLISION_MARGIN) / m_tile_size.height());
 
     for (int ind_x = left_idx; ind_x <= right_idx; ind_x++)
     {
@@ -84,11 +112,11 @@ QRectF Platform::handleCollision(QRectF rect, qreal &dx, qreal &dy) const
                     // dx=0
                     if (!going_down && rect.top() + dy < bottom)
                     {
-                        dy = bottom - rect.top() + 0.001;
+                        dy = bottom - rect.top() + M_COLLISION_MARGIN;
                     }
                     else if (going_down && rect.bottom() + dy > top)
                     {
-                        dy = top - rect.bottom() - 0.001;
+                        dy = top - rect.bottom() - M_COLLISION_MARGIN;
                     }
                 }
                 else if (moving_hor && !moving_ver)
@@ -96,11 +124,11 @@ QRectF Platform::handleCollision(QRectF rect, qreal &dx, qreal &dy) const
                     // dy=0
                     if (!going_right && rect.left() + dx < right)
                     {
-                        dx = right - rect.left() + 0.001;
+                        dx = right - rect.left() + M_COLLISION_MARGIN;
                     }
                     else if (going_right && rect.right() + dx > left)
                     {
-                        dx = left - rect.right() - 0.001;
+                        dx = left - rect.right() - M_COLLISION_MARGIN;
                     }
                 }
                 else if (moving_hor && moving_ver)
@@ -119,7 +147,7 @@ QRectF Platform::handleCollision(QRectF rect, qreal &dx, qreal &dy) const
 
                         if ((y_top_right >= top && y_top_right <= bottom) || (y_bottom_right >= top && y_bottom_right <= bottom))
                         {
-                            dx = fmin(dx, left - rect.right() - 0.001);
+                            dx = fmin(dx, left - rect.right() - M_COLLISION_MARGIN);
                         }
                     }
                     else
@@ -131,7 +159,7 @@ QRectF Platform::handleCollision(QRectF rect, qreal &dx, qreal &dy) const
 
                         if ((y_top_left >= top && y_top_left <= bottom) || (y_bottom_left >= top && y_bottom_left <= bottom))
                         {
-                            dx = fmax(dx, right - rect.left() + 0.001);
+                            dx = fmax(dx, right - rect.left() + M_COLLISION_MARGIN);
                         }
                     }
 
@@ -144,7 +172,7 @@ QRectF Platform::handleCollision(QRectF rect, qreal &dx, qreal &dy) const
 
                         if ((x_bottom_right >= left && x_bottom_right <= right) || (x_bottom_left >= left && x_bottom_left <= right))
                         {
-                            dy = fmin(dy, top - rect.bottom() - 0.001);
+                            dy = fmin(dy, top - rect.bottom() - M_COLLISION_MARGIN);
                         }
                     }
                     else
@@ -156,7 +184,7 @@ QRectF Platform::handleCollision(QRectF rect, qreal &dx, qreal &dy) const
 
                         if ((x_top_right >= left && x_top_right <= right) || (x_top_left >= left && x_top_left <= right))
                         {
-                            dy = fmax(dy, bottom - rect.top() + 0.001);
+                            dy = fmax(dy, bottom - rect.top() + M_COLLISION_MARGIN);
                         }
                     }
                 }
@@ -169,6 +197,7 @@ QRectF Platform::handleCollision(QRectF rect, qreal &dx, qreal &dy) const
             }
         }
     }
+
     return rect.translated(dx, dy);
 }
 
