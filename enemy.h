@@ -13,6 +13,10 @@ public:
 
     void gameUpdate() override;
 
+    // TMP
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
+               QWidget *widget) override;
+
 protected slots:
     void setPathFindingResult(QVector<QPoint>);
 

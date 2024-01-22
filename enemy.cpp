@@ -21,6 +21,30 @@ void Enemy::gameUpdate()
     updateCharacter();
 }
 
+void Enemy::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+{
+    if (!m_path_tiles.isEmpty())
+    {
+        QPainterPath path;
+
+        path.moveTo(mapFromScene(QPointF((m_path_tiles[0].x() + 0.5) * m_platform.getTileSize().width(), (m_path_tiles[0].y() + 0.5) * m_platform.getTileSize().height()))); // Move to the first point
+
+        for (int i = 1; i < m_path_tiles.size(); ++i)
+        {
+            QPointF pnt = QPointF((m_path_tiles[i].x() + 0.5) * m_platform.getTileSize().width(), (m_path_tiles[i].y() + 0.5) * m_platform.getTileSize().height());
+            path.lineTo(mapFromScene(pnt)); // Connect subsequent points with lines
+        }
+
+        QPen pen(Qt::red);
+        pen.setWidth(2);
+        painter->setPen(pen);
+
+        painter->drawPath(path);
+    }
+
+    Character::paint(painter, option, widget);
+}
+
 void Enemy::setPathFindingResult(QVector<QPoint> path)
 {
     QMutexLocker ml(&m_path_mutex);

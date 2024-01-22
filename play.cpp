@@ -10,6 +10,13 @@ PlayView::PlayView(QWidget *parent) : QGraphicsView(parent)
     this->setScene(m_scene);
     m_scene->setBackgroundBrush(Qt::blue); // TMP
 
+    //    // Reverse the y-axis by setting a vertical flip transformation
+    //    this->setTransform(QTransform(1, 0, 0, -1, 0, height()));
+
+    // Load an image and add it to the scene (Resource File (.qrc))
+    //    m_map_img=m_scene->addPixmap(QPixmap(":Pirate_bomb/map_64_64_w30_h20.png"));
+    //    QPixmap pix(":Pirate_bomb/map_64_64_w30_h20.png");
+
     // Tiles
     QHash<int, TileType> tiles_hash;
     tiles_hash.insert(-1, TileType::Empty);
