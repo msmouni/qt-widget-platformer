@@ -36,6 +36,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         path_finding.h path_finding.cpp
         a_star.h a_star.cpp
         weapon.h weapon.cpp
+        bomb.h bomb.cpp
         collision.h collision.cpp
     )
 
