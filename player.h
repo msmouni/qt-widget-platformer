@@ -8,7 +8,7 @@
 class Player : public Character
 {
 public:
-    Player(const QRectF &rect, const QString &res_path, const Platform &platform);
+    Player(const QPointF &pos, const QString &res_path, const Platform &platform);
 
     void gameUpdate() override;
 private slots:

@@ -1,10 +1,12 @@
 #include "player.h"
 #include "platform.h"
 
-Player::Player(const QRectF &rect, const QString &res_path, const Platform &platform) : Character(rect, res_path, platform)
+Player::Player(const QPointF &pos, const QString &res_path, const Platform &platform) : Character(pos, res_path, platform)
 {
     setFlag(QGraphicsItem::ItemIsFocusable);
     setFocus();
+
+    setData(0, "Player");
 
     m_jump_timer.setSingleShot(true);
     connect(&m_jump_timer, &QTimer::timeout, this, &Player::jumpTimeout);

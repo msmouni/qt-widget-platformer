@@ -1,11 +1,7 @@
 #include "character.h"
 
-Character::Character(const QRectF &rect, const QString &res_path, const Platform &platform) : m_platform(platform)
+Character::Character(const QPointF &pos, const QString &res_path, const Platform &platform) : m_platform(platform)
 {
-    // pos = center
-    m_bounding_rect = QRectF(-rect.width() / 2, -rect.height() / 2, rect.width(), rect.height());
-    this->setPos(rect.center());
-
     QHash<uint8_t, QString> animations_ids;
     animations_ids.insert((uint8_t)CharacterState::Idle, res_path + "/Idle");
     animations_ids.insert((uint8_t)CharacterState::Run, res_path + "/Run");
@@ -17,12 +13,17 @@ Character::Character(const QRectF &rect, const QString &res_path, const Platform
 
     m_animation = new SpriteAnimation(animations_ids, 50);
 
+    m_bounding_rect = m_animation->getRect();
+    this->setPos(pos);
+
+    m_state = CharacterState::Idle;
+    m_direction = CharacterDirection::Right;
+
+    m_animation->setId(static_cast<uint8_t>(m_state));
+
     setPixmap(m_animation->getPixmap());
 
     connect(m_animation, SIGNAL(updatePixmap()), this, SLOT(updateView()));
-
-    m_state = CharacterState::Init;
-    m_direction = CharacterDirection::Right;
 
     m_speed_x = 0;
     m_speed_y = 0;
@@ -41,23 +42,7 @@ QRectF Character::boundingRect() const
 
 void Character::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
-    switch (m_direction)
-    {
-    case CharacterDirection::Left:
-        painter->drawPixmap(m_bounding_rect, pixmap().transformed(QTransform().scale(-1, 1)), m_animation->getRect());
-        break;
-    case CharacterDirection::Right:
-        painter->drawPixmap(m_bounding_rect, pixmap(), m_animation->getRect());
-        break;
-    default:
-        break;
-    }
-
-    // Set the pen and brush for the rectangle
-    QPen pen(Qt::red);
-    pen.setWidth(2);
-    painter->setPen(pen);
-    painter->setFont(QFont("Arial", 15));
+    painter->drawPixmap(m_bounding_rect, pixmap(), this->shape().boundingRect());
 }
 
 void Character::updateView()
@@ -111,9 +96,14 @@ void Character::updateCharacter()
         m_state = CharacterState::Idle;
     }
 
-    updateAnimation();
+    QPointF scene_adjustmnt = m_bounding_rect.topLeft();
+    if (m_direction == CharacterDirection::Left)
+    {
+        scene_adjustmnt.setX(-scene_adjustmnt.x());
+    }
 
-    this->setPos(res.center());
+    this->setPos(res.topLeft() - scene_adjustmnt);
+    updateAnimation();
 }
 
 void Character::updateAnimation()
