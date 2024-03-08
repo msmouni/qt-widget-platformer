@@ -153,5 +153,25 @@
         <file>Pirate_bomb/Enemy-Bald Pirate/Dead Hit/4.png</file>
         <file>Pirate_bomb/Enemy-Bald Pirate/Dead Hit/5.png</file>
         <file>Pirate_bomb/Enemy-Bald Pirate/Dead Hit/6.png</file>
+        <file>Pirate_bomb/Objects/BOMB/Active/9.png</file>
+        <file>Pirate_bomb/Objects/BOMB/Active/8.png</file>
+        <file>Pirate_bomb/Objects/BOMB/Active/7.png</file>
+        <file>Pirate_bomb/Objects/BOMB/Active/6.png</file>
+        <file>Pirate_bomb/Objects/BOMB/Active/5.png</file>
+        <file>Pirate_bomb/Objects/BOMB/Active/4.png</file>
+        <file>Pirate_bomb/Objects/BOMB/Active/3.png</file>
+        <file>Pirate_bomb/Objects/BOMB/Active/2.png</file>
+        <file>Pirate_bomb/Objects/BOMB/Active/1.png</file>
+        <file>Pirate_bomb/Objects/BOMB/Starting/9.png</file>
+        <file>Pirate_bomb/Objects/BOMB/Starting/8.png</file>
+        <file>Pirate_bomb/Objects/BOMB/Starting/7.png</file>
+        <file>Pirate_bomb/Objects/BOMB/Starting/6.png</file>
+        <file>Pirate_bomb/Objects/BOMB/Starting/5.png</file>
+        <file>Pirate_bomb/Objects/BOMB/Starting/4.png</file>
+        <file>Pirate_bomb/Objects/BOMB/Starting/3.png</file>
+        <file>Pirate_bomb/Objects/BOMB/Starting/2.png</file>
+        <file>Pirate_bomb/Objects/BOMB/Starting/10.png</file>
+        <file>Pirate_bomb/Objects/BOMB/Starting/1.png</file>
+        <file>Pirate_bomb/Objects/BOMB/Idle/1.png</file>
     </qresource>
 </RCC>
