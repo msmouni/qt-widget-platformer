@@ -18,7 +18,8 @@ void Enemy::gameUpdate()
         m_path_iter = M_NB_PATH_ITER;
     }
 
-    followPath();
+//        followPath();
+
     updateCharacter();
 }
 

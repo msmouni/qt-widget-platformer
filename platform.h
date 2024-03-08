@@ -12,7 +12,7 @@ public:
 
     QRectF boundingRect() const override;
 
-    QRectF handleCollision(QRectF rect, qreal &dx, qreal &dy) const;
+    QVector<QRectF> getCollidingRects(QRectF prev_rect, QRectF new_rect) const;
 
     int getNbColumns() const;
     int getNbRows() const;

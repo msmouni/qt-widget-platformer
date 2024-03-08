@@ -2,6 +2,7 @@
 
 Tile::Tile(int id, QRectF rect, TileType type, QPixmap &tileset_pixmap) : m_tileset_pixmap(tileset_pixmap)
 {
+    setData(0, "Tile");
     m_id = id;
     m_rect = rect;
     m_type = type;

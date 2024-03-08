@@ -3,6 +3,8 @@
 
 Platform::Platform(QSizeF tile_size, QString map_csv_path, QString tileset_png_path, QHash<int, TileType> tiles_hash)
 {
+    setData(0, "Platform");
+
     m_tile_size = tile_size;
 
     m_tileset_pixmap = QPixmap(tileset_png_path);
@@ -19,7 +21,10 @@ Platform::Platform(QSizeF tile_size, QString map_csv_path, QString tileset_png_p
         {
             tile_line.append(new Tile(map[idx_x][idx_y], QRectF(idx_x * m_tile_size.width(), idx_y * m_tile_size.height(), m_tile_size.width(), m_tile_size.height()), tiles_hash.value(map[idx_x][idx_y]), m_tileset_pixmap));
 
-            this->addToGroup(tile_line.last());
+            if (tiles_hash.value(map[idx_x][idx_y]) != TileType::Empty)
+            {
+                this->addToGroup(tile_line.last());
+            }
         }
         m_tiles.append(tile_line);
     }
@@ -30,175 +35,39 @@ QRectF Platform::boundingRect() const
     return childrenBoundingRect();
 }
 
-// To factorize later
-QRectF Platform::handleCollision(QRectF rect, qreal &dx, qreal &dy) const
+QVector<QRectF> Platform::getCollidingRects(QRectF prev_rect, QRectF new_rect) const
 {
-    bool moving_ver = false;
-    bool moving_hor = false;
-    bool going_down = false;
-    bool going_right = false;
+    bool moving_up = new_rect.top() - prev_rect.top() < -M_COLLISION_MARGIN;
+    bool moving_down = new_rect.bottom() - prev_rect.bottom() > M_COLLISION_MARGIN;
 
-    if (dx > M_COLLISION_MARGIN)
-    {
-        going_right = true;
-        moving_hor = true;
-    }
-    else if (dx < -M_COLLISION_MARGIN)
-    {
-        moving_hor = true;
-    }
-    else
-    {
-        dx = 0;
-    }
+    int left_idx = fmax(0, (fmin(prev_rect.left(), new_rect.left()) + M_COLLISION_MARGIN) / m_tile_size.width());
+    int right_idx = fmin(m_nb_columns - 1, (fmax(prev_rect.right(), new_rect.right()) - M_COLLISION_MARGIN) / m_tile_size.width());
+    int top_idx = fmax(0, (fmin(prev_rect.top(), new_rect.top()) + M_COLLISION_MARGIN) / m_tile_size.height());
+    int bottom_idx = fmin(m_nb_rows - 1, (fmax(prev_rect.bottom(), new_rect.bottom()) - M_COLLISION_MARGIN) / m_tile_size.height());
 
-    if (dy > M_COLLISION_MARGIN)
-    {
-        going_down = true;
-        moving_ver = true;
-    }
-    else if (dy < -M_COLLISION_MARGIN)
-    {
-        moving_ver = true;
-    }
-    else
-    {
-        dy = 0;
-    }
-
-    int left_idx = fmax(0, (fmin(rect.left(), rect.left() + dx) + M_COLLISION_MARGIN) / m_tile_size.width());
-    int right_idx = fmin(m_nb_columns - 1, (fmax(rect.right(), rect.right() + dx) - M_COLLISION_MARGIN) / m_tile_size.width());
-    int top_idx = fmax(0, (fmin(rect.top(), rect.top() + dy) + M_COLLISION_MARGIN) / m_tile_size.height());
-    int bottom_idx = fmin(m_nb_rows - 1, (fmax(rect.bottom(), rect.bottom() + dy) - M_COLLISION_MARGIN) / m_tile_size.height());
+    QVector<QRectF> colliding_rects;
 
     for (int ind_x = left_idx; ind_x <= right_idx; ind_x++)
     {
         for (int ind_y = top_idx; ind_y <= bottom_idx; ind_y++)
         {
-            int i_x;
-            if (!going_right)
-            {
-                i_x = (right_idx + left_idx) - ind_x;
-            }
-            else
-            {
-                i_x = ind_x;
-            }
-
-            int i_y;
-            if (!going_down)
-            {
-                i_y = (bottom_idx + top_idx) - ind_y;
-            }
-            else
-            {
-                i_y = ind_y;
-            }
-
-            qreal left = i_x * m_tile_size.width();
-            qreal right = (i_x + 1) * m_tile_size.width();
+            int i_x = ind_x;
+            int i_y = ind_y;
 
             qreal top = i_y * m_tile_size.height();
             qreal bottom = (i_y + 1) * m_tile_size.height();
 
             if (!m_tiles[i_x][i_y]->isEmpty() &&
                 (m_tiles[i_x][i_y]->isSolid() ||
-                 (m_tiles[i_x][i_y]->checkUp() && !going_down && (bottom < rect.top())) ||
-                 (m_tiles[i_x][i_y]->checkDown() && going_down && (top > rect.bottom()))))
+                 (m_tiles[i_x][i_y]->checkUp() && moving_up && (bottom < prev_rect.top())) ||
+                 (m_tiles[i_x][i_y]->checkDown() && moving_down && (top > prev_rect.bottom()))))
             {
-
-                if (moving_ver && !moving_hor)
-                {
-                    // dx=0
-                    if (!going_down && rect.top() + dy < bottom)
-                    {
-                        dy = bottom - rect.top() + M_COLLISION_MARGIN;
-                    }
-                    else if (going_down && rect.bottom() + dy > top)
-                    {
-                        dy = top - rect.bottom() - M_COLLISION_MARGIN;
-                    }
-                }
-                else if (moving_hor && !moving_ver)
-                {
-                    // dy=0
-                    if (!going_right && rect.left() + dx < right)
-                    {
-                        dx = right - rect.left() + M_COLLISION_MARGIN;
-                    }
-                    else if (going_right && rect.right() + dx > left)
-                    {
-                        dx = left - rect.right() - M_COLLISION_MARGIN;
-                    }
-                }
-                else if (moving_hor && moving_ver)
-                {
-                    // y = (dy/dx)*(x-x0) + y0
-                    // x = (dx/dy)*(y-y0) + x0
-
-                    qreal dyx = dy / dx;
-                    qreal dxy = dx / dy;
-
-                    if (going_right)
-                    {
-                        qreal y_top_right = dyx * (left - rect.right()) + rect.top();
-
-                        qreal y_bottom_right = dyx * (left - rect.right()) + rect.bottom();
-
-                        if ((y_top_right >= top && y_top_right <= bottom) || (y_bottom_right >= top && y_bottom_right <= bottom))
-                        {
-                            dx = fmin(dx, left - rect.right() - M_COLLISION_MARGIN);
-                        }
-                    }
-                    else
-                    {
-                        // Left
-                        qreal y_top_left = dyx * (right - rect.left()) + rect.top();
-
-                        qreal y_bottom_left = dyx * (right - rect.left()) + rect.bottom();
-
-                        if ((y_top_left >= top && y_top_left <= bottom) || (y_bottom_left >= top && y_bottom_left <= bottom))
-                        {
-                            dx = fmax(dx, right - rect.left() + M_COLLISION_MARGIN);
-                        }
-                    }
-
-                    ///////////////////////////////
-                    if (going_down)
-                    {
-                        qreal x_bottom_right = dxy * (top - rect.bottom()) + rect.right();
-
-                        qreal x_bottom_left = dxy * (top - rect.bottom()) + rect.left();
-
-                        if ((x_bottom_right >= left && x_bottom_right <= right) || (x_bottom_left >= left && x_bottom_left <= right))
-                        {
-                            dy = fmin(dy, top - rect.bottom() - M_COLLISION_MARGIN);
-                        }
-                    }
-                    else
-                    {
-                        // Up
-                        qreal x_top_right = dxy * (bottom - rect.top()) + rect.right();
-
-                        qreal x_top_left = dxy * (bottom - rect.top()) + rect.left();
-
-                        if ((x_top_right >= left && x_top_right <= right) || (x_top_left >= left && x_top_left <= right))
-                        {
-                            dy = fmax(dy, bottom - rect.top() + M_COLLISION_MARGIN);
-                        }
-                    }
-                }
-                else
-                {
-                    // (!moving_ver && !moving_hor)
-                    dy = 0;
-                    dx = 0;
-                }
+                colliding_rects.append(QRectF(i_x * m_tile_size.width(), i_y * m_tile_size.height(), m_tile_size.width(), m_tile_size.height()));
             }
         }
     }
 
-    return rect.translated(dx, dy);
+    return colliding_rects;
 }
 
 int Platform::getNbColumns() const

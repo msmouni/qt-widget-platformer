@@ -28,7 +28,6 @@ PlayView::PlayView(QWidget *parent) : QGraphicsView(parent)
 
     // Platform
     m_platform = new Platform(QSizeF(64, 64), ":Pirate_bomb/map_64_64_w30_h20.csv", ":/Pirate_bomb/Tile-Sets/Tile-Sets (64-64).png", tiles_hash);
-    m_platform->setData(0, "Platform");
     m_scene->addItem(m_platform);
 
     // Player
@@ -76,6 +75,13 @@ void PlayView::updateCam()
 void PlayView::updateItems()
 {
     m_platform->update();
+
+    m_player->updateShapes();
+    for (Enemy *enemy : m_enemies)
+    {
+        enemy->updateShapes();
+    }
+    ////////////////////////////////////////////////////////
     m_player->gameUpdate();
 
     m_player_rect = m_player->sceneBoundingRect();
