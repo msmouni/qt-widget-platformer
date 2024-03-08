@@ -141,8 +141,20 @@ void Character::updateCharacter()
     m_speed_y = m_collision_rect->getSpeedY();
     QRectF res = m_collision_rect->getEntityRect().translated(m_speed_x, m_speed_y);
 
-    /////////////////////////: State
+    updateState();
 
+    QPointF scene_adjustmnt = m_bounding_rect.topLeft();
+    if (m_direction == CharacterDirection::Left)
+    {
+        scene_adjustmnt.setX(-scene_adjustmnt.x());
+    }
+
+    this->setPos(res.topLeft() - scene_adjustmnt);
+    updateAnimation();
+}
+
+void Character::updateState()
+{
     if (m_collision_rect->isBottomCollision() && m_state == CharacterState::Fall)
     {
         m_state = CharacterState::Ground;
@@ -193,17 +205,6 @@ void Character::updateCharacter()
             }
         }
     }
-
-    ////////////////////////////////////////////////////////////////////////////
-
-    QPointF scene_adjustmnt = m_bounding_rect.topLeft();
-    if (m_direction == CharacterDirection::Left)
-    {
-        scene_adjustmnt.setX(-scene_adjustmnt.x());
-    }
-
-    this->setPos(res.topLeft() - scene_adjustmnt);
-    updateAnimation();
 }
 
 void Character::updateAnimation()

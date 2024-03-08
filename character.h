@@ -80,6 +80,7 @@ protected:
     QHash<int, Weapon *> m_weapons;
 
     void updateCharacter();
+    void updateState();
     virtual void updateAnimation();
     bool isOnGround();
 };
