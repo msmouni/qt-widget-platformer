@@ -14,12 +14,15 @@ class SpriteAnimation : public QObject
     Q_OBJECT
 public:
     explicit SpriteAnimation(QHash<uint8_t, QString> paths, int frame_dur_ms);
+    ~SpriteAnimation();
 
     void setId(uint8_t id);
 
     const QPixmap &getPixmap();
 
     const QRectF &getRect();
+
+    void stop();
 
 private slots:
     void nextFrame();
