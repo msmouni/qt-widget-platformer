@@ -6,6 +6,7 @@
 #include "platform.h"
 #include "animation.h"
 #include "collision.h"
+#include "weapon.h"
 
 enum class CharacterType
 {
@@ -53,6 +54,7 @@ shape() returns the shape of the item as a QPainterPath. The shape represents th
     const CollisionRect *getCollisionRect() const;
 protected slots:
     void updateView();
+    void dropWeapon(Weapon *);
 
 protected:
     QRectF m_bounding_rect;
@@ -73,6 +75,9 @@ protected:
     CharacterDirection m_direction;
 
     CollisionRect *m_collision_rect;
+
+    int m_weapons_count;
+    QHash<int, Weapon *> m_weapons;
 
     void updateCharacter();
     virtual void updateAnimation();

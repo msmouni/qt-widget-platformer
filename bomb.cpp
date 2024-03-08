@@ -3,7 +3,7 @@
 
 Bomb::Bomb(int id, const QPointF &pos, qreal speed_x, qreal speed_y, qreal power_x, qreal power_y, const QString &res_path) : Weapon(id, pos, power_x, power_y, res_path)
 {
-    this->setData(0, "Bomb");
+    this->setData(1, "Bomb");
 
     m_explosion_timer = new QTimer(this);
     m_explosion_timer->setSingleShot(true);

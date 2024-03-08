@@ -1,4 +1,6 @@
 #include "character.h"
+#include "bomb.h"
+#include <QGraphicsScene>
 
 Character::Character(const QPointF &pos, const QString &res_path, const Platform &platform) : m_platform(platform)
 {
@@ -59,6 +61,11 @@ void Character::updateShapes()
     m_bounding_rect = this->shape().boundingRect();
 
     m_collision_rect->update(sceneBoundingRect(), m_speed_x, m_speed_y);
+
+    for (QHash<int, Weapon *>::const_iterator weapons_it = m_weapons.constBegin(); weapons_it != m_weapons.constEnd(); ++weapons_it)
+    {
+        weapons_it.value()->updateShapes();
+    }
 }
 
 const CollisionRect *Character::getCollisionRect() const
@@ -71,8 +78,20 @@ void Character::updateView()
     setPixmap(m_animation->getPixmap());
 }
 
+void Character::dropWeapon(Weapon *weapon)
+{
+    m_weapons.remove(weapon->getId());
+
+    weapon->deleteLater();
+}
+
 void Character::updateCharacter()
 {
+    for (QHash<int, Weapon *>::const_iterator weapons_it = m_weapons.constBegin(); weapons_it != m_weapons.constEnd(); ++weapons_it)
+    {
+        weapons_it.value()->updateWeapon();
+    }
+
     if (m_speed_x > 1)
     {
         this->setTransform(QTransform().scale(1, 1));
@@ -93,6 +112,14 @@ void Character::updateCharacter()
         {
             Character *chara = static_cast<Character *>(item);
             dyn_collision_rects.append(chara->m_collision_rect);
+        }
+        else if (item->data(1) == "Bomb")
+        {
+            Bomb *bomb = static_cast<Bomb *>(item);
+            if (!bomb->isActive())
+            {
+                dyn_collision_rects.append(bomb->getCollisionRect());
+            }
         }
         else if (item->data(0) == "Tile")
         {
@@ -120,6 +147,10 @@ void Character::updateCharacter()
     {
         m_state = CharacterState::Ground;
     }
+    else if (abs(m_speed_y) <= 0.01)
+    {
+        m_state = CharacterState::Idle;
+    }
     else if (m_speed_y > 0.01)
     {
         m_state = CharacterState::Fall;
@@ -132,10 +163,38 @@ void Character::updateCharacter()
     {
         m_state = CharacterState::Run;
     }
-    else if (abs(m_speed_y) <= 0.01)
+
+    for (QGraphicsItem *item : this->collidingItems())
     {
-        m_state = CharacterState::Idle;
+        if (item->data(0) == "Weapon")
+        {
+            Weapon *weapon = static_cast<Weapon *>(item);
+            if (weapon->isActive())
+            {
+                m_state = CharacterState::Hit;
+
+                QPointF diff_pos = this->sceneBoundingRect().center() - weapon->sceneBoundingRect().center();
+                qreal dir_x = 1;
+                qreal dir_y = -1;
+
+                if (diff_pos.x() < 0)
+                {
+                    dir_x = -1;
+                }
+
+                if (diff_pos.y() > 0)
+                {
+                    dir_y = 1;
+                }
+
+                m_speed_x += weapon->getPowerX() * dir_x;
+
+                m_speed_y += weapon->getPowerY() * dir_y;
+            }
+        }
     }
+
+    ////////////////////////////////////////////////////////////////////////////
 
     QPointF scene_adjustmnt = m_bounding_rect.topLeft();
     if (m_direction == CharacterDirection::Left)
