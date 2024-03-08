@@ -147,10 +147,6 @@ void Character::updateCharacter()
     {
         m_state = CharacterState::Ground;
     }
-    else if (abs(m_speed_y) <= 0.01)
-    {
-        m_state = CharacterState::Idle;
-    }
     else if (m_speed_y > 0.01)
     {
         m_state = CharacterState::Fall;
@@ -162,6 +158,10 @@ void Character::updateCharacter()
     else if (abs(m_speed_x) > 1)
     {
         m_state = CharacterState::Run;
+    }
+    else
+    {
+        m_state = CharacterState::Idle;
     }
 
     for (QGraphicsItem *item : this->collidingItems())
