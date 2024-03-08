@@ -35,6 +35,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         find.h find.cpp
         path_finding.h path_finding.cpp
         a_star.h a_star.cpp
+        collision.h collision.cpp
     )
 
 # https://stackoverflow.com/questions/18471827/qtcreator-cant-find-the-class-header-file-after-promoting-a-widget-to-that-clas
