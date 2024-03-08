@@ -42,7 +42,7 @@ PlayView::PlayView(QWidget *parent) : QGraphicsView(parent)
     m_enemies.append(enemy);
 
     // Update
-    m_update_timer = new QTimer;
+    m_update_timer = new QTimer(this);
     m_update_timeout_ms = 50;
     m_update_timer->setInterval(m_update_timeout_ms);
     m_update_timer->start();
@@ -85,6 +85,7 @@ void PlayView::updateItems()
     m_player->gameUpdate();
 
     m_player_rect = m_player->sceneBoundingRect();
+
     for (Enemy *enemy : m_enemies)
     {
         enemy->gameUpdate();
