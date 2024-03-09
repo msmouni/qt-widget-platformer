@@ -76,10 +76,10 @@ void PlayView::updateItems()
 {
     m_platform->update();
 
-    m_player->updateShapes();
+    m_player->updateKinematics();
     for (Enemy *enemy : m_enemies)
     {
-        enemy->updateShapes();
+        enemy->updateKinematics();
     }
     ////////////////////////////////////////////////////////
     m_player->gameUpdate();

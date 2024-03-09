@@ -12,15 +12,7 @@ Bomb::Bomb(int id, const QPointF &pos, qreal speed_x, qreal speed_y, qreal power
     m_drop_timer->setSingleShot(true);
     connect(m_drop_timer, &QTimer::timeout, this, &Bomb::end);
 
-    m_speed_x = speed_x;
-    m_speed_y = speed_y;
-    m_acc_x = 0;
-    m_acc_y = 0;
-
-    m_friction = 0.7;
-    m_gravity = 13;
-
-    m_collision_rect = new CollisionRect(sceneBoundingRect(), m_speed_x, m_speed_y, this);
+    m_dynamics = new EntityDynamics(this, speed_x, speed_y, 0.7);
 }
 
 void Bomb::start()
@@ -32,37 +24,25 @@ void Bomb::start()
     m_explosion_timer->start(M_EXPLOSION_TIEMOUT_MS);
 }
 
-void Bomb::updateShapes()
+void Bomb::updateKinematics()
 {
-    // with this model: S_n = S_{n-1} * f + Acc => Sn = Acc *(1 - f^n)/(1-f) => #with f < 1 and n >> 0: Sn = Acc/(1-f)
-    m_speed_x *= m_friction; // Friction
-    m_speed_x += m_acc_x;
-
-    m_speed_y *= m_friction; // Friction
-    m_speed_y += m_acc_y + m_gravity;
-
     m_bounding_rect = this->shape().boundingRect();
 
-    m_collision_rect->update(sceneBoundingRect(), m_speed_x, m_speed_y);
+    m_dynamics->updateKinematics();
 }
 
 void Bomb::updateWeapon()
 {
     if (!isActive())
     {
-        m_collision_rect->handleCollision();
-
-        m_speed_x = m_collision_rect->getSpeedX();
-        m_speed_y = m_collision_rect->getSpeedY();
-        QRectF res = m_collision_rect->getEntityRect().translated(m_speed_x, m_speed_y);
-
-        this->setPos(res.topLeft() - boundingRect().topLeft());
+        m_dynamics->updateDynamics();
+        this->setPos(m_dynamics->getEntityPos());
     }
 }
 
 const CollisionRect *Bomb::getCollisionRect() const
 {
-    return m_collision_rect;
+    return m_dynamics->getCollisionRect();
 }
 
 void Bomb::explosion()

@@ -3,7 +3,7 @@
 
 #include "weapon.h"
 #include <QTimer>
-#include "collision.h"
+#include "dynamic.h"
 
 class Bomb : public Weapon
 {
@@ -12,7 +12,7 @@ public:
 
     void start() override;
 
-    void updateShapes() override; // To rename
+    void updateKinematics() override;
     void updateWeapon() override;
 
     const CollisionRect *getCollisionRect() const;
@@ -27,15 +27,7 @@ private:
     QTimer *m_explosion_timer;
     QTimer *m_drop_timer;
 
-    qreal m_speed_x;
-    qreal m_speed_y;
-    qreal m_acc_x;
-    qreal m_acc_y;
-
-    qreal m_friction;
-    qreal m_gravity;
-
-    CollisionRect *m_collision_rect;
+    EntityDynamics *m_dynamics;
 };
 
 #endif // BOMB_H

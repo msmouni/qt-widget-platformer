@@ -5,8 +5,8 @@
 #include <QPainter>
 #include "platform.h"
 #include "animation.h"
-#include "collision.h"
 #include "weapon.h"
+#include "dynamic.h"
 
 enum class CharacterType
 {
@@ -26,12 +26,6 @@ enum class CharacterState : uint8_t
     DeadHit = 7,
 };
 
-enum class CharacterDirection
-{
-    Left,
-    Right,
-};
-
 class Character : public QObject, public QGraphicsPixmapItem
 {
     Q_OBJECT
@@ -48,7 +42,7 @@ shape() returns the shape of the item as a QPainterPath. The shape represents th
      */
     //    QPainterPath shape() const override;
 
-    void updateShapes(); // To rename
+    void updateKinematics();
     virtual void gameUpdate() = 0;
 
     const CollisionRect *getCollisionRect() const;
@@ -57,24 +51,16 @@ protected slots:
     void dropWeapon(Weapon *);
 
 protected:
+    const qreal M_ACCEL_MAC = 15;
+
     QRectF m_bounding_rect;
     CharacterType m_type;
     SpriteAnimation *m_animation;
     const Platform &m_platform;
 
-    qreal m_speed_x;
-    qreal m_speed_y;
-    qreal m_acc_x;
-    qreal m_acc_y;
-
-    qreal m_acc_max;
-    qreal m_friction;
-    qreal m_gravity;
+    EntityDynamics *m_dynamics;
 
     CharacterState m_state;
-    CharacterDirection m_direction;
-
-    CollisionRect *m_collision_rect;
 
     int m_weapons_count;
     QHash<int, Weapon *> m_weapons;

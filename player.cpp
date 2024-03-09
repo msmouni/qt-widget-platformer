@@ -25,7 +25,7 @@ void Player::gameUpdate()
 
 void Player::jumpTimeout()
 {
-    m_acc_y = 0;
+    m_dynamics->setAccelY(0);
 }
 
 void Player::keyPressEvent(QKeyEvent *event)
@@ -34,32 +34,32 @@ void Player::keyPressEvent(QKeyEvent *event)
 
     if (key == Qt::Key_Right)
     {
-        m_acc_x = m_acc_max;
+        m_dynamics->setAccelX(M_ACCEL_MAC);
     }
     else if (key == Qt::Key_Left)
     {
-        m_acc_x = -m_acc_max;
+        m_dynamics->setAccelX(-M_ACCEL_MAC);
     }
     else if (key == Qt::Key_Up)
     {
-        m_acc_y = -m_acc_max;
+        m_dynamics->setAccelY(-M_ACCEL_MAC);
     }
     else if (key == Qt::Key_Down)
     {
-        m_acc_y = m_acc_max;
+        m_dynamics->setAccelY(M_ACCEL_MAC);
     }
     else if (key == Qt::Key_Space)
     {
         if (isOnGround())
         {
             m_jump_timer.start(M_JUMP_TIMEOUT_MS);
-            m_acc_y = M_JUMP_ACCEL;
+            m_dynamics->setAccelY(M_JUMP_ACCEL);
         }
     }
     else if (key == Qt::Key_B)
     {
         qreal dir_x = 1;
-        if (m_direction == CharacterDirection::Left)
+        if (m_dynamics->getDirection() == EntityDirection::MovingLeft)
         {
             dir_x = -1;
         }
@@ -82,22 +82,22 @@ void Player::keyReleaseEvent(QKeyEvent *event)
 
     if (key == Qt::Key_Right)
     {
-        m_acc_x = fmin(m_acc_x, 0);
+        m_dynamics->setAccelX(fmin(m_dynamics->getAccelX(), 0));
     }
     else if (key == Qt::Key_Left)
     {
-        m_acc_x = fmax(m_acc_x, 0);
+        m_dynamics->setAccelX(fmax(m_dynamics->getAccelX(), 0));
     }
     else if (key == Qt::Key_Up)
     {
-        m_acc_y = fmax(m_acc_y, 0);
+        m_dynamics->setAccelY(fmax(m_dynamics->getAccelY(), 0));
     }
     else if (key == Qt::Key_Down)
     {
-        m_acc_y = fmin(m_acc_y, 0);
+        m_dynamics->setAccelY(fmin(m_dynamics->getAccelY(), 0));
     }
     else if (key == Qt::Key_Space)
     {
-        m_acc_y = 0;
+        m_dynamics->setAccelY(0);
     }
 }

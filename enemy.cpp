@@ -40,8 +40,8 @@ void Enemy::followPath()
         QPointF currentPos(this->scenePos().x(), this->sceneBoundingRect().bottom());
         QPointF next_tile_pos(m_platform.getTileBottomCenter(m_path_tiles.first()));
 
-        m_speed_x = (next_tile_pos.x() - currentPos.x()) / m_path_iter;
-        m_speed_y = (next_tile_pos.y() - currentPos.y()) / m_path_iter;
+        qreal speed_x = (next_tile_pos.x() - currentPos.x()) / m_path_iter;
+        qreal speed_y = (next_tile_pos.y() - currentPos.y()) / m_path_iter;
 
         m_path_iter -= 1;
 
@@ -51,10 +51,10 @@ void Enemy::followPath()
             m_path_tiles.pop_front();
         }
 
-        m_speed_y -= (m_acc_y + m_gravity);
-        m_speed_y /= m_friction; // Friction
+        speed_y -= (m_dynamics->getAccelY() + m_dynamics->getGravity());
+        speed_y /= m_dynamics->getFriction(); // Friction
 
-        m_speed_x -= m_acc_x;
-        m_speed_x /= m_friction; // Friction
+        speed_x -= m_dynamics->getAccelX();
+        speed_x /= m_dynamics->getFriction(); // Friction
     }
 }

@@ -18,7 +18,6 @@ Character::Character(const QPointF &pos, const QString &res_path, const Platform
     this->setPos(pos);
 
     m_state = CharacterState::Idle;
-    m_direction = CharacterDirection::Right;
 
     m_animation->setId(static_cast<uint8_t>(m_state));
 
@@ -26,16 +25,7 @@ Character::Character(const QPointF &pos, const QString &res_path, const Platform
 
     connect(m_animation, SIGNAL(updatePixmap()), this, SLOT(updateView()));
 
-    m_speed_x = 0;
-    m_speed_y = 0;
-    m_acc_x = 0;
-    m_acc_y = 0;
-
-    m_acc_max = 15;
-    m_friction = 0.5;
-    m_gravity = 13;
-
-    m_collision_rect = new CollisionRect(sceneBoundingRect(), m_speed_x, m_speed_y, this);
+    m_dynamics = new EntityDynamics(this, 0, 0, 0.5, true);
 }
 
 QRectF Character::boundingRect() const
@@ -48,28 +38,21 @@ void Character::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
     painter->drawPixmap(m_bounding_rect, pixmap(), this->shape().boundingRect());
 }
 
-void Character::updateShapes()
+void Character::updateKinematics()
 {
-    m_speed_x *= m_friction; // Friction
-    m_speed_x += m_acc_x;
-
-    m_speed_y *= m_friction; // Friction
-    m_speed_y += m_acc_y + m_gravity;
-
-    // Note: m_bounding_rect should match the shape bounding rect: shape is at pos=(x,y) reg this->pos()
     m_bounding_rect = this->shape().boundingRect();
 
-    m_collision_rect->update(sceneBoundingRect(), m_speed_x, m_speed_y);
+    m_dynamics->updateKinematics();
 
     for (QHash<int, Weapon *>::const_iterator weapons_it = m_weapons.constBegin(); weapons_it != m_weapons.constEnd(); ++weapons_it)
     {
-        weapons_it.value()->updateShapes();
+        weapons_it.value()->updateKinematics();
     }
 }
 
 const CollisionRect *Character::getCollisionRect() const
 {
-    return m_collision_rect;
+    return m_dynamics->getCollisionRect();
 }
 
 void Character::updateView()
@@ -91,50 +74,31 @@ void Character::updateCharacter()
         weapons_it.value()->updateWeapon();
     }
 
-    if (m_speed_x > 1)
-    {
-        this->setTransform(QTransform().scale(1, 1));
-        m_direction = CharacterDirection::Right;
-    }
-    else if (m_speed_x < -1 || m_direction == CharacterDirection::Left)
-    {
-        this->setTransform(QTransform().scale(-1, 1).translate(-m_bounding_rect.width(), 0)); ////////// Width change ...
-        m_direction = CharacterDirection::Left;
-    }
-
-    m_collision_rect->handleCollision();
-
-    m_speed_x = m_collision_rect->getSpeedX();
-    m_speed_y = m_collision_rect->getSpeedY();
-    QRectF res = m_collision_rect->getEntityRect().translated(m_speed_x, m_speed_y);
+    m_dynamics->updateDynamics();
+    this->setPos(m_dynamics->getEntityPos());
 
     updateState();
-
-    QPointF scene_adjustmnt = m_bounding_rect.topLeft();
-    if (m_direction == CharacterDirection::Left)
-    {
-        scene_adjustmnt.setX(-scene_adjustmnt.x());
-    }
-
-    this->setPos(res.topLeft() - scene_adjustmnt);
     updateAnimation();
 }
 
 void Character::updateState()
 {
-    if (m_collision_rect->isBottomCollision() && m_state == CharacterState::Fall)
+    qreal speed_x = m_dynamics->getSpeedX();
+    qreal speed_y = m_dynamics->getSpeedY();
+
+    if (m_dynamics->isBottomCollision() && m_state == CharacterState::Fall)
     {
         m_state = CharacterState::Ground;
     }
-    else if (m_speed_y > 0.01)
+    else if (speed_y > 0.01)
     {
         m_state = CharacterState::Fall;
     }
-    else if (m_speed_y < -0.01)
+    else if (speed_y < -0.01)
     {
         m_state = CharacterState::Jump;
     }
-    else if (abs(m_speed_x) > 1)
+    else if (abs(speed_x) > 1)
     {
         m_state = CharacterState::Run;
     }
@@ -166,9 +130,9 @@ void Character::updateState()
                     dir_y = 1;
                 }
 
-                m_speed_x += weapon->getPowerX() * dir_x;
+                m_dynamics->setSpeedX(speed_x + weapon->getPowerX() * dir_x);
 
-                m_speed_y += weapon->getPowerY() * dir_y;
+                m_dynamics->setSpeedY(speed_y + weapon->getPowerY() * dir_y);
             }
         }
     }
