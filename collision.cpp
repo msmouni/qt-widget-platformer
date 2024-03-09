@@ -4,16 +4,13 @@
 #include "tile.h"
 #include "bomb.h"
 
-CollisionRect::CollisionRect(QGraphicsItem *parent, qreal init_speed_x, qreal init_speed_y)
+CollisionRect::CollisionRect(QGraphicsItem *parent, qreal &speed_x, qreal &speed_y) : m_speed_x(speed_x), m_speed_y(speed_y)
 {
     this->setParentItem(parent);
 
     m_bounding_rect = parent->sceneBoundingRect();
     m_old_rect = m_bounding_rect;
     m_new_rect = m_bounding_rect;
-
-    m_speed_x = init_speed_x;
-    m_speed_y = init_speed_y;
 
     m_is_top_collision = false;
     m_is_bottom_collision = false;
@@ -53,27 +50,7 @@ QPointF CollisionRect::getEntityPos()
     return m_new_rect.topLeft() + QPointF(m_speed_x, m_speed_y);
 }
 
-qreal CollisionRect::getSpeedX() const
-{
-    return m_speed_x;
-}
-
-qreal CollisionRect::getSpeedY() const
-{
-    return m_speed_y;
-}
-
-void CollisionRect::setSpeedX(qreal speed_x)
-{
-    m_speed_x = speed_x;
-}
-
-void CollisionRect::setSpeedY(qreal speed_y)
-{
-    m_speed_y = speed_y;
-}
-
-void CollisionRect::update(qreal speed_x, qreal speed_y)
+void CollisionRect::update()
 {
     m_is_top_collision = false;
     m_is_bottom_collision = false;
@@ -83,8 +60,6 @@ void CollisionRect::update(qreal speed_x, qreal speed_y)
     QRectF entity_bounding_rect = this->parentItem()->boundingRect();
 
     setEntityRect(this->mapRectToScene(entity_bounding_rect));
-    setSpeedX(speed_x);
-    setSpeedY(speed_y);
 
     m_bounding_rect = entity_bounding_rect.marginsAdded(QMarginsF(entity_bounding_rect.width() / 2, m_speed_y < 0 ? -m_speed_y + entity_bounding_rect.height() : entity_bounding_rect.height() / 2, abs(m_speed_x) + entity_bounding_rect.width(), m_speed_y > 0 ? m_speed_y + entity_bounding_rect.height() : entity_bounding_rect.height() / 2)); // QRectF(-250,-250,500,500));
 }

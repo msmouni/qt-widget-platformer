@@ -48,15 +48,12 @@ void EntityDynamics::updateKinematics()
         }
     }
 
-    m_collision_rect->update(m_speed_x, m_speed_y);
+    m_collision_rect->update();
 }
 
 void EntityDynamics::updateDynamics()
 {
     m_collision_rect->handleCollision();
-
-    m_speed_x = m_collision_rect->getSpeedX();
-    m_speed_y = m_collision_rect->getSpeedY();
 
     QPointF scene_adjustmnt = m_parent->boundingRect().topLeft();
     if (m_direction == EntityDirection::MovingLeft)

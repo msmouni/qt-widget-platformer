@@ -9,7 +9,7 @@
 class CollisionRect : public QGraphicsRectItem
 {
 public:
-    CollisionRect(QGraphicsItem *parent = nullptr, qreal init_speed_x = 0, qreal init_speed_y = 0);
+    CollisionRect(QGraphicsItem *parent, qreal &speed_x, qreal &speed_y);
 
     QRectF boundingRect() const override;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
@@ -28,12 +28,7 @@ public:
 
     QPointF getEntityPos();
 
-    qreal getSpeedX() const;
-    qreal getSpeedY() const;
-    void setSpeedX(qreal speed_x);
-    void setSpeedY(qreal speed_y);
-
-    void update(qreal speed_x, qreal speed_y);
+    void update();
 
     bool isBottomCollision();
 
@@ -44,8 +39,8 @@ private:
 
     QRectF m_old_rect;
     QRectF m_new_rect;
-    qreal m_speed_x;
-    qreal m_speed_y;
+    qreal &m_speed_x;
+    qreal &m_speed_y;
 
     bool m_is_top_collision;
     bool m_is_bottom_collision;
