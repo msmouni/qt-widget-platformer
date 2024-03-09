@@ -1,5 +1,8 @@
 #include "collision.h"
 #include <algorithm>
+#include "character.h"
+#include "tile.h"
+#include "bomb.h"
 
 CollisionRect::CollisionRect(QRectF entity_rect, qreal speed_x, qreal speed_y, QGraphicsItem *parent)
 {
@@ -203,36 +206,76 @@ void CollisionRect::handleCollision(const QRectF &new_rect, const QRectF &old_re
     }
 }
 
-void CollisionRect::handleCollision(QRectF rect)
+void CollisionRect::handleStaticCollision(QRectF rect)
 {
     handleCollision(rect, rect, 0, 0);
 }
 
-void CollisionRect::handleCollision(const CollisionRect &other)
+void CollisionRect::handleDynamicCollision(const CollisionRect &other)
 {
     handleCollision(other.m_new_rect, other.m_old_rect, other.m_speed_x, other.m_speed_y);
 }
 
-void CollisionRect::handleCollision(QVector<QRectF> rects)
+void CollisionRect::handleStaticCollision(QVector<QRectF> rects)
 {
     std::sort(rects.begin(), rects.end(), [&](QRectF rect1, QRectF rect2)
               { return compareDistance(rect1, rect2, m_old_rect); });
 
     for (QRectF colliding_rect : rects)
     {
-        handleCollision(colliding_rect);
+        handleStaticCollision(colliding_rect);
     }
 }
 
-void CollisionRect::handleCollision(QVector<const CollisionRect *> colliding_rects)
+void CollisionRect::handleDynamicCollision(QVector<const CollisionRect *> colliding_rects)
 {
     std::sort(colliding_rects.begin(), colliding_rects.end(), [&](const CollisionRect *item1, const CollisionRect *item2)
               { return compareDistance(item1->m_new_rect, item2->m_new_rect, m_old_rect); });
 
     for (const CollisionRect *colliding_rect : colliding_rects)
     {
-        handleCollision(*colliding_rect);
+        handleDynamicCollision(*colliding_rect);
     }
+}
+
+void CollisionRect::handleCollision()
+{
+    QVector<const CollisionRect *> dyn_collision_rects;
+    QVector<QRectF> static_collision_rects;
+
+    for (QGraphicsItem *item : collidingItems())
+    {
+        if (item != this->parentItem())
+        {
+            if (item->data(0) == "Enemy" || item->data(0) == "Player")
+            {
+                Character *chara = static_cast<Character *>(item);
+                dyn_collision_rects.append(chara->getCollisionRect());
+            }
+            else if (item->data(1) == "Bomb")
+            {
+                Bomb *bomb = static_cast<Bomb *>(item);
+                if (!bomb->isActive())
+                {
+                    dyn_collision_rects.append(bomb->getCollisionRect());
+                }
+            }
+            else if (item->data(0) == "Tile")
+            {
+                Tile *tile = static_cast<Tile *>(item);
+
+                QRectF tile_bnd_rect = tile->sceneBoundingRect();
+
+                if (tile->isSolid() | (!tile->isEmpty() & ((tile->checkUp() && m_speed_y < 0 && sceneBoundingRect().bottom() >= tile_bnd_rect.bottom()) | (tile->checkDown() && m_speed_y > 0 && sceneBoundingRect().top() <= tile_bnd_rect.top()))))
+                {
+                    static_collision_rects.append(tile_bnd_rect);
+                }
+            }
+        }
+    }
+
+    handleDynamicCollision(dyn_collision_rects);
+    handleStaticCollision(static_collision_rects);
 }
 
 qreal CollisionRect::distance(const QRectF &rect1, const QRectF &rect2) const

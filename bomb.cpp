@@ -1,5 +1,4 @@
 #include "bomb.h"
-#include "character.h"
 
 Bomb::Bomb(int id, const QPointF &pos, qreal speed_x, qreal speed_y, qreal power_x, qreal power_y, const QString &res_path) : Weapon(id, pos, power_x, power_y, res_path)
 {
@@ -51,39 +50,7 @@ void Bomb::updateWeapon()
 {
     if (!isActive())
     {
-        QVector<const CollisionRect *> dyn_collision_rects;
-        QVector<QRectF> static_collision_rects;
-
-        for (QGraphicsItem *item : m_collision_rect->collidingItems())
-        {
-            if (item->data(0) == "Enemy" || item->data(0) == "Player")
-            {
-                Character *chara = static_cast<Character *>(item);
-                dyn_collision_rects.append(chara->getCollisionRect());
-            }
-            else if (item->data(0) == "Bomb")
-            {
-                Bomb *bomb = static_cast<Bomb *>(item);
-                if (!bomb->isActive())
-                {
-                    dyn_collision_rects.append(bomb->getCollisionRect());
-                }
-            }
-            else if (item->data(0) == "Tile")
-            {
-                Tile *tile = static_cast<Tile *>(item);
-
-                QRectF tile_bnd_rect = tile->sceneBoundingRect();
-
-                if (tile->isSolid() | (!tile->isEmpty() & ((tile->checkUp() && m_speed_y < 0 && sceneBoundingRect().bottom() >= tile_bnd_rect.bottom()) | (tile->checkDown() && m_speed_y > 0 && sceneBoundingRect().top() <= tile_bnd_rect.top()))))
-                {
-                    static_collision_rects.append(tile_bnd_rect);
-                }
-            }
-        }
-
-        m_collision_rect->handleCollision(dyn_collision_rects);
-        m_collision_rect->handleCollision(static_collision_rects);
+        m_collision_rect->handleCollision();
 
         m_speed_x = m_collision_rect->getSpeedX();
         m_speed_y = m_collision_rect->getSpeedY();

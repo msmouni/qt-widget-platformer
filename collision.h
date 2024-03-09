@@ -17,10 +17,11 @@ public:
     QPainterPath shape() const override;
 
     void handleCollision(const QRectF &new_rect, const QRectF &old_rect, qreal speed_x, qreal speed_y);
-    void handleCollision(QRectF rect);
-    void handleCollision(const CollisionRect &other);
-    void handleCollision(QVector<QRectF> rects);
-    void handleCollision(QVector<const CollisionRect *>);
+    void handleDynamicCollision(const CollisionRect &other);
+    void handleDynamicCollision(QVector<const CollisionRect *>);
+    void handleStaticCollision(QRectF rect);
+    void handleStaticCollision(QVector<QRectF> rects);
+    void handleCollision();
 
     void setEntityRect(QRectF new_rect);
     QRectF getEntityRect();

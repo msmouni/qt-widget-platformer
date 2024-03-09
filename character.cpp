@@ -1,5 +1,4 @@
 #include "character.h"
-#include "bomb.h"
 #include <QGraphicsScene>
 
 Character::Character(const QPointF &pos, const QString &res_path, const Platform &platform) : m_platform(platform)
@@ -103,39 +102,7 @@ void Character::updateCharacter()
         m_direction = CharacterDirection::Left;
     }
 
-    QVector<const CollisionRect *> dyn_collision_rects;
-    QVector<QRectF> static_collision_rects;
-
-    for (QGraphicsItem *item : m_collision_rect->collidingItems())
-    {
-        if (item->data(0) == "Enemy" && m_type != CharacterType::Enemy || item->data(0) == "Player" && m_type != CharacterType::Player)
-        {
-            Character *chara = static_cast<Character *>(item);
-            dyn_collision_rects.append(chara->m_collision_rect);
-        }
-        else if (item->data(1) == "Bomb")
-        {
-            Bomb *bomb = static_cast<Bomb *>(item);
-            if (!bomb->isActive())
-            {
-                dyn_collision_rects.append(bomb->getCollisionRect());
-            }
-        }
-        else if (item->data(0) == "Tile")
-        {
-            Tile *tile = static_cast<Tile *>(item);
-
-            QRectF tile_bnd_rect = tile->sceneBoundingRect();
-
-            if (tile->isSolid() | (!tile->isEmpty() & ((tile->checkUp() && m_speed_y < 0 && sceneBoundingRect().bottom() >= tile_bnd_rect.bottom()) | (tile->checkDown() && m_speed_y > 0 && sceneBoundingRect().top() <= tile_bnd_rect.top()))))
-            {
-                static_collision_rects.append(tile_bnd_rect);
-            }
-        }
-    }
-
-    m_collision_rect->handleCollision(dyn_collision_rects);
-    m_collision_rect->handleCollision(static_collision_rects);
+    m_collision_rect->handleCollision();
 
     m_speed_x = m_collision_rect->getSpeedX();
     m_speed_y = m_collision_rect->getSpeedY();
