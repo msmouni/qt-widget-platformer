@@ -59,6 +59,7 @@ void Character::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
     painter->drawPath(this->shape());
 
     QPen pen2(Qt::yellow);
+    pen.setWidth(2);
     painter->setPen(pen2);
     painter->drawRect(coverage_rect.boundingRect());
     ///////////////////////////////////////////::
@@ -164,9 +165,14 @@ void Character::updateCharacter()
 
 
 
-    QRectF cov_rect=QRectF(left, top, right-left, bottom-top);
+    QRectF cov_rect=boundingRect().translated(m_speed_x, m_speed_y);//QRectF(left, top, right-left, bottom-top);
 //    QGraphicsRectItem coverage_rect=QGraphicsRectItem(cov_rect, this);
     coverage_rect.setRect(cov_rect);
+
+
+    /*if (m_type == CharacterType::Player){
+        colliding_rects.append(QRectF(109,580.999,39,59));
+    }*/
 
 //    qDebug()<<coverage_rect.sceneBoundingRect()<<cov_rect;
 //    this->scene()->addItem(&coverage_rect);
@@ -176,11 +182,12 @@ void Character::updateCharacter()
         {
 //            qDebug()<<"Enemy";
             Character *chara = static_cast<Character *>(item);
+//            qDebug()<<chara->sceneBoundingRect();
             colliding_rects.append(chara->sceneBoundingRect());
         }
     }
 
-    for (QGraphicsItem *item : this->collidingItems())
+    /*for (QGraphicsItem *item : this->collidingItems())
     {
         if (item->data(0) == "Weapon")
         {
@@ -215,6 +222,10 @@ void Character::updateCharacter()
 //            colliding_rects.append(chara->sceneBoundingRect());
         }
 
+    }*/
+
+    if (m_type == CharacterType::Player){
+        qDebug()<<colliding_rects;
     }
 
     QRectF res=m_collision_handler.handle(prev_rect, sceneBoundingRect().translated(m_speed_x, m_speed_y),colliding_rects);

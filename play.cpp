@@ -44,7 +44,7 @@ PlayView::PlayView(QWidget *parent) : QGraphicsView(parent)
     m_player_rect = m_player->sceneBoundingRect();
 
     // Enemies
-    Enemy *enemy = new Enemy(QPointF(100, 200), ":/Pirate_bomb/Enemy-Bald Pirate", *m_platform, m_player_rect);
+    Enemy *enemy = new Enemy(QPointF(150, 200), ":/Pirate_bomb/Enemy-Bald Pirate", *m_platform, m_player_rect);
     m_scene->addItem(enemy);
     m_enemies.append(enemy);
 

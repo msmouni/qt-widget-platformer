@@ -1,5 +1,6 @@
 #include "collision.h"
 #include <algorithm>
+#include <QDebug>
 
 Collision::Collision()
 {
@@ -113,6 +114,7 @@ QRectF Collision::handle(QRectF prev_rect, QRectF new_rect, QVector<QRectF> coll
             qreal d_xy_lb = dx_l / dy_b;
             qreal d_xy_rt = dx_r / dy_t;
             qreal d_xy_lt = dx_l / dy_t;
+            // NOte: if collision => moving_dir= false; ( Maybe recompute moving ...)
 
             if (moving_right && prev_rect.right() < left)
             {
@@ -149,11 +151,29 @@ QRectF Collision::handle(QRectF prev_rect, QRectF new_rect, QVector<QRectF> coll
 
                 qreal x_bottom_left = d_xy_lb * (top - prev_rect.bottom()) + prev_rect.left();
 
-                if ((x_bottom_right >= left && x_bottom_right <= right) || (x_bottom_left >= left && x_bottom_left <= right))
+                // (A && B) || (C && D) => A && D
+                // a*b+c*d
+                // a*d = a*b +c*d +a*d -a*b -c*d
+                // A && D = A && (D || B || !B) = (A && B) || (A && D) || (A && !B) || (C && D) || (!C && D)
+                // => A && D = (A && B) || (C && D) || (A && !B) || (!C && D)
+                // (A && !B) = x_bottom_right >= left && x_bottom_right > right
+                // (!C && D) = x_bottom_left < left && x_bottom_left <= right
+                ////////////////////////////////////////
+                // (A && D) || (C || !D) || (!A || B) = (A && B) || (C && D)
+                ///////////////////////////////////////////////////////////////////////////////////////////////////
+                // // A && D = A && (D && (B || !B)) = A & D & B || A & D & !B = D & ( (A & B) || (A &!B))
+                // ( (A & B) || (A &!B)) & (C || !C) & D = ( (A & B) || (A &!B)) & ((C & D) || (!C & D))
+                // => (A & B) &
+//                if ((x_bottom_right >= left && x_bottom_right <= right) || (x_bottom_left >= left && x_bottom_left <= right))
+//                {
+                // prev_rect.width() > colliding_rect.width() || prev_rect.width() < colliding_rect.width()
+                if (x_bottom_right >= left && x_bottom_left <= right)
                 {
                     qreal new_dy_b = fmin(dy_b, top - prev_rect.bottom() - M_COLLISION_MARGIN);
                     dy_t -= dy_b - new_dy_b;
                     dy_b = new_dy_b;
+                }else {
+                    qDebug() << x_bottom_right << left << x_bottom_left << right;
                 }
             }
             if (moving_up && prev_rect.top() >= bottom )
@@ -162,7 +182,8 @@ QRectF Collision::handle(QRectF prev_rect, QRectF new_rect, QVector<QRectF> coll
 
                 qreal x_top_left = d_xy_lt * (bottom - prev_rect.top()) + prev_rect.left();
 
-                if ((x_top_right >= left && x_top_right <= right) || (x_top_left >= left && x_top_left <= right))
+//                if ((x_top_right >= left && x_top_right <= right) || (x_top_left >= left && x_top_left <= right))
+                if (x_top_right >= left && x_top_left <= right)
                 {
                     qreal new_dy_t = fmax(dy_t, bottom - prev_rect.top() + M_COLLISION_MARGIN);
                     dy_b += dy_t - new_dy_t;

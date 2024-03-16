@@ -30,11 +30,11 @@ void Player::keyPressEvent(QKeyEvent *event)
 
     if (key == Qt::Key_Right)
     {
-        m_acc_x = m_acc_max/7;
+        m_acc_x = m_acc_max;///7;
     }
     else if (key == Qt::Key_Left)
     {
-        m_acc_x = -m_acc_max/7;
+        m_acc_x = -m_acc_max;///7;
     }
     else if (key == Qt::Key_Up)
     {
@@ -42,7 +42,7 @@ void Player::keyPressEvent(QKeyEvent *event)
     }
     else if (key == Qt::Key_Down)
     {
-        m_acc_y = m_acc_max;
+        m_acc_y = m_acc_max*5;
     }
     else if (key == Qt::Key_Space)
     {
