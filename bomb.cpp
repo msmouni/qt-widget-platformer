@@ -44,26 +44,27 @@ void Bomb::updateWeapon()
         QRectF prev_rect=sceneBoundingRect();
         m_bounding_rect=this->shape().boundingRect();
 
-        qDebug()<<prev_rect<<sceneBoundingRect();
+//        qDebug()<<prev_rect<<sceneBoundingRect();
 
         QRectF res=m_platform.handleCollision(prev_rect, sceneBoundingRect().translated(m_speed_x, m_speed_y));
 
 //        qDebug()<<"res"<<res<<"scene"<<sceneBoundingRect()<<pos()<<sceneBoundingRect().topLeft()-boundingRect().topLeft();
 
 //        this->setPos(res.center());
+//        m_bounding_rect=this->mapRectFromScene(res);
         this->setPos(res.topLeft() -boundingRect().topLeft());
     }
 }
 
 void Bomb::explosion()
 {
-    m_state=WeaponState::Active;
+    /*m_state=WeaponState::Active;
 
     m_animation->setId(static_cast<uint8_t>(m_state));
 
     m_state = WeaponState::Active;
 
-    m_drop_timer->start(M_DROP_TIEMOUT_MS);
+    m_drop_timer->start(M_DROP_TIEMOUT_MS);*/
 }
 
 void Bomb::end()

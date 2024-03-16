@@ -223,7 +223,7 @@ QRectF Platform::handleCollision(QRectF prev_rect, QRectF new_rect) const
     {
         going_right = true;
     }else {
-//        dx_r=0;
+        dx_r=(dx_l < -M_COLLISION_MARGIN)? dx_l:0;//fmin(0,dx_l);
     }
 
     if (dx_l < -M_COLLISION_MARGIN)
@@ -232,7 +232,7 @@ QRectF Platform::handleCollision(QRectF prev_rect, QRectF new_rect) const
     }
     else
     {
-//        dx_l = 0;
+        dx_l =(dx_r > M_COLLISION_MARGIN)? dx_r:0 ;//fmax(0, dx_r);
     }
 
     if (dy_b > M_COLLISION_MARGIN)
@@ -240,7 +240,8 @@ QRectF Platform::handleCollision(QRectF prev_rect, QRectF new_rect) const
         going_down = true;
     }
     else {
-//        dy_b=0;
+//        qDebug()<<"b:"<<dy_b<<dy_t;
+        dy_b= (dy_t < -M_COLLISION_MARGIN)? dy_t:0;//fmin(0, dy_t);
     }
 
     if (dy_t < -M_COLLISION_MARGIN)
@@ -248,7 +249,8 @@ QRectF Platform::handleCollision(QRectF prev_rect, QRectF new_rect) const
         going_up = true;
     }
     else {
-//        dy_t=0;
+//        qDebug()<<"t:"<<dy_b<<dy_t;
+        dy_t= (dy_b > M_COLLISION_MARGIN)? dy_t:0 ;//fmax(0, dy_b);
     }
 
     bool moving_hor=going_left | going_right;
@@ -300,6 +302,7 @@ QRectF Platform::handleCollision(QRectF prev_rect, QRectF new_rect) const
 
                 if (moving_ver && !moving_hor)
                 {
+//                    qDebug()<<"Check1";
 //                    qDebug()<<"Ver"<<going_down<<prev_rect.bottom() + dy_b<<top;
                     // dx=0
                     if (going_up && prev_rect.top() + dy_t < bottom)
@@ -319,6 +322,7 @@ QRectF Platform::handleCollision(QRectF prev_rect, QRectF new_rect) const
                 }
                 else if (moving_hor && !moving_ver)
                 {
+//                    qDebug()<<"Check2";
                     // dy=0
                     if (going_left && prev_rect.left() + dx_l < right)
                     {
@@ -335,6 +339,7 @@ QRectF Platform::handleCollision(QRectF prev_rect, QRectF new_rect) const
                 }
                 else if (moving_hor && moving_ver)
                 {
+//                    qDebug()<<"Check3";
                     // y = (dy/dx)*(x-x0) + y0
                     // x = (dx/dy)*(y-y0) + x0
 
@@ -343,6 +348,7 @@ QRectF Platform::handleCollision(QRectF prev_rect, QRectF new_rect) const
 
                     if (going_right)
                     {
+//                        qDebug()<<"Check3-1";
                         qreal y_top_right = dy_t / dx_r * (left - prev_rect.right()) + prev_rect.top();
 
                         qreal y_bottom_right = dy_b / dx_r * (left - prev_rect.right()) + prev_rect.bottom();
@@ -357,6 +363,7 @@ QRectF Platform::handleCollision(QRectF prev_rect, QRectF new_rect) const
 
                     if (going_left)
                     {
+//                        qDebug()<<"Check3-2";
                         // Left
                         qreal y_top_left = dy_t / dx_l * (right - prev_rect.left()) + prev_rect.top();
 
@@ -373,6 +380,7 @@ QRectF Platform::handleCollision(QRectF prev_rect, QRectF new_rect) const
                     ///////////////////////////////
                     if (going_down)
                     {
+//                        qDebug()<<"Check3-3";
                         qreal x_bottom_right = dx_r/ dy_b * (top - prev_rect.bottom()) + prev_rect.right();
 
                         qreal x_bottom_left = dx_l/dy_b * (top - prev_rect.bottom()) + prev_rect.left();
@@ -386,6 +394,7 @@ QRectF Platform::handleCollision(QRectF prev_rect, QRectF new_rect) const
                     }
                     else
                     {
+//                        qDebug()<<"Check3-4";
                         // Up
                         qreal x_top_right = dx_r/ dy_t * (bottom - prev_rect.top()) + prev_rect.right();
 
@@ -401,6 +410,7 @@ QRectF Platform::handleCollision(QRectF prev_rect, QRectF new_rect) const
                 }
                 else
                 {
+//                    qDebug()<<"Check4";
                     // (!moving_ver && !moving_hor)
                     dy_b = 0;
                     dy_t = 0;
