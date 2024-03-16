@@ -123,8 +123,9 @@ void Weapon::updateView()
 {
     setPixmap(m_animation->getPixmap());
 
-    m_bounding_rect=this->shape().boundingRect();
+//    m_bounding_rect=this->shape().boundingRect();
+
 //    m_bounding_rect = QRectF(0, 0, m_bounding_rect.width(), m_bounding_rect.height());
 
-    qDebug()<<this->boundingRect()<<this->shape().boundingRect();
+//    qDebug()<<this->boundingRect()<<this->shape().boundingRect();
 }
