@@ -35,7 +35,7 @@ class Character : public QObject, public QGraphicsPixmapItem
     Q_OBJECT
 public:
     // TODO: Add character shape rectangle + collision with other characters + collision with objects(weapons)
-    Character(const QRectF &rect, const QString &res_path, const Platform &platform);
+    Character(const QPointF & pos, const QString &res_path, const Platform &platform);
 
     QRectF boundingRect() const override;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option,

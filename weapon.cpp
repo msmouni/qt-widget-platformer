@@ -2,7 +2,7 @@
 
 
 
-Weapon::Weapon(int id, const QPointF pos, qreal power_x, qreal power_y, const Platform &platform, const QString &res_path):
+Weapon::Weapon(int id, const QPointF & pos, qreal power_x, qreal power_y, const Platform &platform, const QString &res_path):
     m_id(id), m_power_x(power_x), m_power_y(power_y), m_platform(platform)
 {
 
@@ -19,12 +19,12 @@ Weapon::Weapon(int id, const QPointF pos, qreal power_x, qreal power_y, const Pl
 
     m_animation->setId(static_cast<uint8_t>(m_state));
 
-    m_bounding_rect=m_animation->getRect();
+//    m_bounding_rect=m_animation->getRect();
 
 //    m_shape_rect=this->shape().boundingRect();
 
     // pos = center
-    m_bounding_rect = QRectF(-m_bounding_rect.width() / 2, -m_bounding_rect.height() / 2, m_bounding_rect.width(), m_bounding_rect.height());
+//    m_bounding_rect = QRectF(0, 0, m_bounding_rect.width(), m_bounding_rect.height());
 //    m_shape_rect = QRectF(-m_shape_rect.width() / 2, -m_shape_rect.height() / 2, m_shape_rect.width(), m_shape_rect.height());
     this->setPos(pos);
 
@@ -51,7 +51,7 @@ QRectF Weapon::boundingRect() const
 
 void Weapon::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
-    painter->drawPixmap(m_shape_rect, pixmap(), this->shape().boundingRect());
+    painter->drawPixmap(m_bounding_rect, pixmap(), this->shape().boundingRect());
 
     // Set the pen and brush for the rectangle
     QPen pen(Qt::red);
@@ -63,7 +63,9 @@ void Weapon::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QW
 //    pen.setColor(Qt::yellow);
 //    pen.setWidth(2);
 //    painter->setPen(pen);
-    painter->drawRect(m_shape_rect);
+//    painter->drawRect(m_shape_rect);
+
+    painter->drawRect(this->boundingRect());
 
     painter->drawPath(this->shape());
 }
@@ -121,8 +123,8 @@ void Weapon::updateView()
 {
     setPixmap(m_animation->getPixmap());
 
-    m_shape_rect=this->shape().boundingRect();
-    m_shape_rect = QRectF(-m_shape_rect.width() / 2, -m_shape_rect.height() / 2, m_shape_rect.width(), m_shape_rect.height());
+    m_bounding_rect=this->shape().boundingRect();
+//    m_bounding_rect = QRectF(0, 0, m_bounding_rect.width(), m_bounding_rect.height());
 
-    qDebug()<<this->boundingRect()<<m_shape_rect;//this->shape().boundingRect();
+    qDebug()<<this->boundingRect()<<this->shape().boundingRect();
 }

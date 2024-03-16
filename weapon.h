@@ -15,7 +15,7 @@ class Weapon : public QObject, public QGraphicsPixmapItem
 {
     Q_OBJECT
 public:
-    Weapon(int id, const QPointF pos, qreal power_x, qreal power_y, const Platform &platform, const QString &res_path);
+    Weapon(int id, const QPointF & pos, qreal power_x, qreal power_y, const Platform &platform, const QString &res_path);
 
     QRectF boundingRect() const override;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option,

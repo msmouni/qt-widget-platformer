@@ -1,11 +1,12 @@
 #include "character.h"
 #include "weapon.h"
 
-Character::Character(const QRectF &rect, const QString &res_path, const Platform &platform) : m_platform(platform)
+Character::Character(const QPointF & pos, const QString &res_path, const Platform &platform) : m_platform(platform)
 {
     // pos = center
-    m_bounding_rect = QRectF(-rect.width() / 2, -rect.height() / 2, rect.width(), rect.height());
-    this->setPos(rect.center());
+//    m_bounding_rect = QRectF(0, 0, rect.width(), rect.height());//QRectF(-rect.width() / 2, -rect.height() / 2, rect.width(), rect.height());//
+//    this->setPos(rect.center());
+//    this->setPos(rect.topLeft());
 
     QHash<uint8_t, QString> animations_ids;
     animations_ids.insert((uint8_t)CharacterState::Idle, res_path + "/Idle");
@@ -17,6 +18,10 @@ Character::Character(const QRectF &rect, const QString &res_path, const Platform
     animations_ids.insert((uint8_t)CharacterState::DeadHit, res_path + "/Dead Hit");
 
     m_animation = new SpriteAnimation(animations_ids, 50);
+
+    m_bounding_rect=m_animation->getRect();
+//    m_bounding_rect = QRectF(0, 0, m_bounding_rect.width(), m_bounding_rect.height());
+    this->setPos(pos);
 
     m_state = CharacterState::Init;
     m_direction = CharacterDirection::Right;
@@ -44,17 +49,24 @@ QRectF Character::boundingRect() const
 
 void Character::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
-    switch (m_direction)
+    painter->drawPixmap(m_bounding_rect, pixmap(), m_animation->getRect());
+//    painter->drawPixmap(m_bounding_rect, pixmap(), this->shape().boundingRect());
+    /*switch (m_direction)
     {
     case CharacterDirection::Left:
-        painter->drawPixmap(m_bounding_rect, pixmap().transformed(QTransform().scale(-1, 1)), m_animation->getRect());
+//        painter->drawPixmap(m_bounding_rect, pixmap().transformed(QTransform().scale(-1, 1)), m_animation->getRect());
+//        this->setTransform(QTransform().scale(-1, 1));
+//        painter->drawPixmap(m_bounding_rect, pixmap(), m_animation->getRect());
+        painter->drawPixmap(m_bounding_rect, pixmap(), this->shape().boundingRect());
         break;
     case CharacterDirection::Right:
-        painter->drawPixmap(m_bounding_rect, pixmap(), m_animation->getRect());
+//        this->setTransform(QTransform().scale(1, 1));
+//        painter->drawPixmap(m_bounding_rect, pixmap(), m_animation->getRect());
+        painter->drawPixmap(m_bounding_rect, pixmap(), this->shape().boundingRect());
         break;
     default:
         break;
-    }
+    }*/
 
     // Set the pen and brush for the rectangle
     QPen pen(Qt::green);
@@ -86,21 +98,25 @@ void Character::updateView()
 
 void Character::updateCharacter()
 {
+//    m_bounding_rect=this->shape().boundingRect();
+
     // with this model: S_n = S_{n-1} * f + Acc => Sn = Acc *(1 - f^n)/(1-f) => #with f < 1 and n >> 0: Sn = Acc/(1-f)
     m_speed_x *= m_friction; // Friction
     m_speed_x += m_acc_x;
 
     m_speed_y *= m_friction; // Friction
-    m_speed_y += m_acc_y + m_gravity;
+    m_speed_y += m_acc_y+ m_gravity;
 
     // TODO: Better handle for State and direction
 
     if (m_speed_x > 0.001)
     {
+        this->setTransform(QTransform().scale(1, 1));
         m_direction = CharacterDirection::Right;
     }
     else if (m_speed_x < -0.001)
     {
+        this->setTransform(QTransform().scale(-1, 1).translate(-sceneBoundingRect().width(),0));
         m_direction = CharacterDirection::Left;
     }
 
@@ -111,7 +127,10 @@ void Character::updateCharacter()
 
     qreal no_collision_speed_y = m_speed_y;
 
+//    qDebug()<<this->boundingRect()<<this->pos()<<"->scene"<<this->sceneBoundingRect();
+
     QRectF res = m_platform.handleCollision(sceneBoundingRect(), m_speed_x, m_speed_y);
+//    QRectF res = m_platform.handleCollision(this->sceneTransform().mapRect(this->shape().boundingRect()), m_speed_x, m_speed_y);
 
     if (no_collision_speed_y > m_speed_y && m_state == CharacterState::Fall)
     {
@@ -159,7 +178,8 @@ void Character::updateCharacter()
 
     updateAnimation();
 
-    this->setPos(res.center());
+//    this->setPos(res.center());
+    this->setPos(res.topLeft());// -boundingRect().topLeft());
 }
 
 void Character::updateAnimation()

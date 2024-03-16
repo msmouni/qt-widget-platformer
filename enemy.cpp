@@ -1,6 +1,6 @@
 #include "enemy.h"
 
-Enemy::Enemy(const QRectF &rect, const QString &res_path, const Platform &platform, const QRectF &player_rect) : Character(rect, res_path, platform), m_path_finder(platform), m_player_rect(player_rect)
+Enemy::Enemy(const QPointF & pos, const QString &res_path, const Platform &platform, const QRectF &player_rect) : Character(pos, res_path, platform), m_path_finder(platform), m_player_rect(player_rect)
 {
     setData(0, "Enemy");
     m_type = CharacterType::Enemy;

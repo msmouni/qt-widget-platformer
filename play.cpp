@@ -38,13 +38,13 @@ PlayView::PlayView(QWidget *parent) : QGraphicsView(parent)
     m_scene->addItem(m_platform);
 
     // Player
-    m_player = new Player(QRectF(200, 200, 58, 58), ":/Pirate_bomb/Player-Bomb Guy", *m_platform);
+    m_player = new Player(QPointF(200, 200), ":/Pirate_bomb/Player-Bomb Guy", *m_platform);
     m_scene->addItem(m_player);
     m_camera_pos = m_player->pos();
     m_player_rect = m_player->sceneBoundingRect();
 
     // Enemies
-    Enemy *enemy = new Enemy(QRectF(200, 200, 58, 58), ":/Pirate_bomb/Enemy-Bald Pirate", *m_platform, m_player_rect);
+    Enemy *enemy = new Enemy(QPointF(200, 200), ":/Pirate_bomb/Enemy-Bald Pirate", *m_platform, m_player_rect);
     m_scene->addItem(enemy);
     m_enemies.append(enemy);
 
@@ -84,7 +84,7 @@ void PlayView::keyPressEvent(QKeyEvent *event)
         }
 
 
-        Bomb* wpn=new Bomb(m_weapons_count, m_player->scenePos(), dir_x*250,-100,250,250, *m_platform, ":/Pirate_bomb/Objects/BOMB");
+        Bomb* wpn=new Bomb(m_weapons_count, m_player->scenePos(), dir_x*100,-100,250,250, *m_platform, ":/Pirate_bomb/Objects/BOMB");
 
         wpn->start();
         m_scene->addItem(wpn);
