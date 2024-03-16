@@ -43,10 +43,10 @@ PlayView::PlayView(QWidget *parent) : QGraphicsView(parent)
     m_camera_pos = m_player->pos();
     m_player_rect = m_player->sceneBoundingRect();
 
-//    // Enemies
-//    Enemy *enemy = new Enemy(QPointF(150, 200), ":/Pirate_bomb/Enemy-Bald Pirate", *m_platform, m_player_rect);
-//    m_scene->addItem(enemy);
-//    m_enemies.append(enemy);
+    // Enemies
+    Enemy *enemy = new Enemy(QPointF(150, 200), ":/Pirate_bomb/Enemy-Bald Pirate", *m_platform, m_player_rect);
+    m_scene->addItem(enemy);
+    m_enemies.append(enemy);
 
     m_weapons_count = 0;
 

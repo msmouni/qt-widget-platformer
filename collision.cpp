@@ -4,6 +4,7 @@
 
 Collision::Collision()
 {
+
 }
 
 // TODO: Later use shapes to handle collision
@@ -266,26 +267,35 @@ bool Collision::compareDistance(const QRectF &rect1, const QRectF &rect2, const 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 CollisionRect::CollisionRect()
 {
-
+    // TMP
+    m_old_rect=QRectF(0,0,0,0);
+    m_new_rect=QRectF(0,0,0,0);;
+    m_speed_x=0;
+    m_speed_y=0;
+    m_is_static=true;
 }
 
 void CollisionRect::handleCollision(const CollisionRect &other)
 {
-    if (m_new_rect.bottom() +m_speed_y< other.m_new_rect.top() || m_new_rect.top()+m_speed_y > other.m_new_rect.bottom() || m_new_rect.left() +m_speed_x> other.m_new_rect.right() || m_new_rect.right()+m_speed_x < other.m_new_rect.left()) return;
+//    if (m_new_rect.bottom() +m_speed_y< other.m_new_rect.top() || m_new_rect.top()+m_speed_y > other.m_new_rect.bottom() || m_new_rect.left() +m_speed_x> other.m_new_rect.right() || m_new_rect.right()+m_speed_x < other.m_new_rect.left()) return;
 
     bool bottom_collision = m_new_rect.bottom() +m_speed_y >= other.m_new_rect.top() && m_old_rect.bottom() < other.m_old_rect.top();
     bool top_collision = m_new_rect.top() +m_speed_y<= other.m_new_rect.bottom() && m_old_rect.top() > other.m_old_rect.bottom();
     bool right_collision = m_new_rect.right() +m_speed_x >= other.m_new_rect.left() && m_old_rect.right() < other.m_old_rect.left();
     bool left_collision= m_new_rect.left()+m_speed_x <= other.m_new_rect.right() && m_old_rect.left() > other.m_old_rect.right();
 
-    bool vertical_collision = bottom_collision | top_collision;
-    bool horizontal_collision = right_collision | left_collision;
+//    if !(bottom_collision || )
+
+    bool vertical_collision = (bottom_collision | top_collision) ;//& (m_old_rect.right() >= other.m_new_rect.left() & m_old_rect.left() <= other.m_new_rect.right());
+    bool horizontal_collision = (right_collision | left_collision) ;//& (m_old_rect.top() <= other.m_new_rect.bottom() & m_old_rect.bottom() >= other.m_new_rect.top());
 
 
 
-    qDebug()<<m_new_rect<<m_old_rect<<m_speed_x<<m_speed_y<<other.m_new_rect<<other.m_old_rect;
+//    qDebug()<<m_new_rect<<m_old_rect<<m_speed_x<<m_speed_y<<other.m_new_rect<<other.m_old_rect;
 
-    if (vertical_collision & !horizontal_collision){
+    if(!vertical_collision & !horizontal_collision){
+        return;
+    }else if (vertical_collision & !horizontal_collision & (m_old_rect.right() >= other.m_new_rect.left() & m_old_rect.left() <= other.m_new_rect.right())){
         if (bottom_collision){
             m_new_rect.moveBottom(other.m_new_rect.top() - M_COLLISION_MARGIN);
         }else {
@@ -294,7 +304,7 @@ void CollisionRect::handleCollision(const CollisionRect &other)
         }
 
         m_speed_y = other.m_speed_y *m_speed_y <0 ? other.m_speed_y:0; // 0
-    } else if (horizontal_collision & !vertical_collision){
+    } else if (horizontal_collision & !vertical_collision & (m_old_rect.top() <= other.m_new_rect.bottom() & m_old_rect.bottom() >= other.m_new_rect.top())){
         if (left_collision){
             m_new_rect.moveLeft(other.m_new_rect.right() + M_COLLISION_MARGIN);
         }else {
@@ -304,12 +314,12 @@ void CollisionRect::handleCollision(const CollisionRect &other)
 
         m_speed_x = other.m_speed_x *m_speed_x <0 ? other.m_speed_x:0; // 0
     }else if (vertical_collision & horizontal_collision){
-//        qDebug()<<m_new_rect<<m_old_rect<<m_speed_x<<m_speed_y<<other.m_new_rect<<other.m_old_rect;
+        qDebug()<<"Before"<<m_new_rect<<m_old_rect<<m_speed_x<<m_speed_y<<other.m_new_rect<<other.m_old_rect;
 
         // y = (dy/dx)*(x-x0) + y0
         // x = (dx/dy)*(y-y0) + x0
 
-        qreal dyx = m_speed_y / m_speed_x;
+        qreal dyx = m_speed_y / m_speed_x; // 4,123633333
         qreal dxy = m_speed_x / m_speed_y;
 
         if (right_collision)
@@ -362,7 +372,21 @@ void CollisionRect::handleCollision(const CollisionRect &other)
                 m_speed_y = other.m_speed_y *m_speed_y <0 ? other.m_speed_y:0; // 0
             }
         }
+
+        qDebug()<<"After"<<m_new_rect<<m_old_rect<<m_speed_x<<m_speed_y<<other.m_new_rect<<other.m_old_rect;
+
+        /*if (vertical_collision){
+            m_speed_y = other.m_speed_y *m_speed_y <0 ? other.m_speed_y:0; // 0
+        }
+        if (horizontal_collision){
+            m_speed_x = other.m_speed_x *m_speed_x <0 ? other.m_speed_x:0; // 0
+        }
+
+        qDebug()<<"End"<<m_new_rect<<m_old_rect<<m_speed_x<<m_speed_y<<other.m_new_rect<<other.m_old_rect;*/
     }
+    /*else {
+        qDebug()<<"Check";
+    }*/
         /*else if (horizontal_collision & vertical_collision){
 
     }*/
@@ -374,5 +398,32 @@ void CollisionRect::handleCollision(const CollisionRect &other)
     if (horizontal_collision){
         m_speed_x = other.m_speed_x *m_speed_x <0 ? other.m_speed_x:0; // 0
     }*/
+}
 
+void CollisionRect::handleCollision(QVector<const CollisionRect *> colliding_rects)
+{
+    std::sort(colliding_rects.begin(), colliding_rects.end(), [&](const CollisionRect *item1, const CollisionRect *item2)
+              { return compareDistance(item1->m_new_rect, item2->m_new_rect, m_old_rect); });
+
+    for (const CollisionRect *colliding_rect : colliding_rects)
+    {
+        handleCollision(*colliding_rect);
+    }
+}
+
+
+qreal CollisionRect::distance(const QRectF &rect1, const QRectF &rect2) const
+{
+    QPointF center1 = rect1.center();
+    QPointF center2 = rect2.center();
+    qreal dx = center1.x() - center2.x();
+    qreal dy = center1.y() - center2.y();
+    return std::sqrt(dx * dx + dy * dy);
+}
+
+bool CollisionRect::compareDistance(const QRectF &rect1, const QRectF &rect2, const QRectF &targetRect) const
+{
+    qreal distance1 = distance(rect1, targetRect);
+    qreal distance2 = distance(rect2, targetRect);
+    return distance1 < distance2;
 }

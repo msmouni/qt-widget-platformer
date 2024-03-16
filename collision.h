@@ -10,6 +10,7 @@ public:
     CollisionRect();
 
     void handleCollision(const CollisionRect &other);
+    void handleCollision(QVector<const CollisionRect *>);
 // TMP
 //private:
     const qreal M_COLLISION_MARGIN = 1e-3;
@@ -19,6 +20,12 @@ public:
     qreal m_speed_x;
     qreal m_speed_y;
     bool m_is_static;
+
+private:
+
+    qreal distance(const QRectF &rect1, const QRectF &rect2) const;
+    bool compareDistance(const QRectF &rect1, const QRectF &rect2, const QRectF &targetRect) const;
+
 };
 
 class Collision
