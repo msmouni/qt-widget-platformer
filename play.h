@@ -7,6 +7,7 @@
 #include "player.h"
 #include "platform.h"
 #include "enemy.h"
+#include "weapon.h"
 
 class PlayView : public QGraphicsView
 {
@@ -18,6 +19,8 @@ protected:
     void wheelEvent(QWheelEvent *event) override;
     void mousePressEvent(QMouseEvent *event) override;
     void mouseDoubleClickEvent(QMouseEvent *event) override;
+    void keyPressEvent(QKeyEvent *event) override;
+    void keyReleaseEvent(QKeyEvent *event) override;
 
 private:
     QGraphicsScene *m_scene;
@@ -31,6 +34,9 @@ private:
 
     QRectF m_player_rect;
     QVector<Enemy *> m_enemies;
+
+
+    QVector<Weapon *> m_weapons;
 
     void updateCam();
 

@@ -17,7 +17,7 @@ PlayView::PlayView(QWidget *parent) : QGraphicsView(parent)
     //    m_map_img=m_scene->addPixmap(QPixmap(":Pirate_bomb/map_64_64_w30_h20.png"));
     //    QPixmap pix(":Pirate_bomb/map_64_64_w30_h20.png");
 
-    // Tiles
+    // Tilesthis->collidingItems()
     QHash<int, TileType> tiles_hash;
     tiles_hash.insert(-1, TileType::Empty);
     for (int i = 0; i <= 21; i++)
@@ -35,19 +35,16 @@ PlayView::PlayView(QWidget *parent) : QGraphicsView(parent)
 
     // Platform
     m_platform = new Platform(QSizeF(64, 64), ":Pirate_bomb/map_64_64_w30_h20.csv", ":/Pirate_bomb/Tile-Sets/Tile-Sets (64-64).png", tiles_hash);
-    m_platform->setData(0, "Platform");
     m_scene->addItem(m_platform);
 
     // Player
     m_player = new Player(QRectF(200, 200, 58, 58), ":/Pirate_bomb/Player-Bomb Guy", *m_platform);
-    m_player->setData(0, "Player");
     m_scene->addItem(m_player);
     m_camera_pos = m_player->pos();
     m_player_rect = m_player->sceneBoundingRect();
 
     // Enemies
     Enemy *enemy = new Enemy(QRectF(200, 200, 58, 58), ":/Pirate_bomb/Enemy-Bald Pirate", *m_platform, m_player_rect);
-    enemy->setData(0, "Enemy");
     m_scene->addItem(enemy);
     m_enemies.append(enemy);
 
@@ -72,6 +69,30 @@ void PlayView::mousePressEvent(QMouseEvent *event)
 void PlayView::mouseDoubleClickEvent(QMouseEvent *event)
 {
     event->ignore();
+}
+
+void PlayView::keyPressEvent(QKeyEvent *event)
+{
+    int key = event->key();
+
+    if (key == Qt::Key_B){
+        qDebug()<<"B";
+        // TMP
+
+        Weapon* wpn=new Weapon(m_player->sceneBoundingRect(), QRectF(m_player->pos().x(), m_player->pos().y(), 200, 200), 25,25, *m_platform, ":/Pirate_bomb/Objects/BOMB");
+
+        m_scene->addItem(wpn);
+        m_weapons.append(wpn);
+
+
+    }
+
+    QGraphicsView::keyPressEvent(event);
+}
+
+void PlayView::keyReleaseEvent(QKeyEvent *event)
+{
+    QGraphicsView::keyPressEvent(event);
 }
 
 void PlayView::updateCam()

@@ -4,6 +4,7 @@
 #include "character.h"
 #include <QKeyEvent>
 #include <QTimer>
+//#include "weapon.h"
 
 class Player : public Character
 {
@@ -18,6 +19,9 @@ private:
     const int M_JUMP_ACCEL = -50;
     const int M_JUMP_TIMEOUT_MS = 250;
     QTimer m_jump_timer;
+//    QVector<Weapon> m_weapons;
+//    Weapon *m_weapon;
+
 
     void keyPressEvent(QKeyEvent *event) override;
     void keyReleaseEvent(QKeyEvent *event) override;

@@ -17,12 +17,14 @@ Character::Character(const QRectF &rect, const QString &res_path, const Platform
 
     m_animation = new SpriteAnimation(animations_ids, 50);
 
+    m_state = CharacterState::Init;
+    m_direction = CharacterDirection::Right;
+
+    m_animation->setId(static_cast<uint8_t>(m_state));
+
     setPixmap(m_animation->getPixmap());
 
     connect(m_animation, SIGNAL(updatePixmap()), this, SLOT(updateView()));
-
-    m_state = CharacterState::Init;
-    m_direction = CharacterDirection::Right;
 
     m_speed_x = 0;
     m_speed_y = 0;
@@ -109,6 +111,13 @@ void Character::updateCharacter()
     else if (abs(m_speed_y) <= 0.01)
     {
         m_state = CharacterState::Idle;
+    }
+
+    // TMP
+    for (QGraphicsItem* item: this->collidingItems()){
+        if (item->data(0) == "Player" && this->data(0) =="Enemy" || item->data(0) == "Enemy" && this->data(0) =="Player"){
+            m_state=CharacterState::Hit;
+        }
     }
 
     updateAnimation();

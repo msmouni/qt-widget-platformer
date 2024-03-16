@@ -3,6 +3,8 @@
 
 Platform::Platform(QSizeF tile_size, QString map_csv_path, QString tileset_png_path, QHash<int, TileType> tiles_hash)
 {
+    setData(0, "Platform");
+
     m_tile_size = tile_size;
 
     m_tileset_pixmap = QPixmap(tileset_png_path);
