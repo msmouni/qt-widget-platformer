@@ -77,7 +77,7 @@ void Character::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
 
 void Character::updateShapes()
 {
-    qDebug()<<this->sceneBoundingRect()<<m_collision_rect->sceneBoundingRect();
+//    qDebug()<<this->sceneBoundingRect()<<m_collision_rect->sceneBoundingRect();
 
     m_speed_x *= m_friction; // Friction
     m_speed_x += m_acc_x;
@@ -120,14 +120,7 @@ void Character::updateCharacter()
     }
 
 
-    if (abs(m_speed_x) > 1)
-    {
-        m_state = CharacterState::Run;
-    }
-    else if (abs(m_speed_y) <= 0.01)
-    {
-        m_state = CharacterState::Idle;
-    }
+
 
 
     QVector<const CollisionRect *> dyn_collision_rects;
@@ -135,7 +128,6 @@ void Character::updateCharacter()
 
     for (QGraphicsItem *item : m_collision_rect->collidingItems())
     {
-        qDebug()<<"Check";
         if (item->data(0) == "Enemy" && m_type != CharacterType::Enemy || item->data(0) == "Player" && m_type != CharacterType::Player)
         {
             Character *chara = static_cast<Character *>(item);
@@ -151,9 +143,11 @@ void Character::updateCharacter()
         {
             Tile *tile = static_cast<Tile *>(item);
 
-            if (tile->isSolid() | (!tile->isEmpty() & ((tile->checkUp() && m_speed_y < 0) | (tile->checkDown() && m_speed_y > 0))))
+            QRectF tile_bnd_rect=tile->sceneBoundingRect();
+
+            if (tile->isSolid() | (!tile->isEmpty() & ((tile->checkUp() && m_speed_y < 0 && sceneBoundingRect().bottom()>=tile_bnd_rect.bottom()) | (tile->checkDown() && m_speed_y > 0 && sceneBoundingRect().top()<=tile_bnd_rect.top()))))
             {
-                static_collision_rects.append(tile->sceneBoundingRect());
+                static_collision_rects.append(tile_bnd_rect);
             }
         }
     }
@@ -165,6 +159,30 @@ void Character::updateCharacter()
     m_speed_x = m_collision_rect->getSpeedX();
     m_speed_y = m_collision_rect->getSpeedY();
     QRectF res = m_collision_rect->getEntityRect().translated(m_speed_x, m_speed_y);
+
+    /////////////////////////: State
+
+    if (m_collision_rect->isBottomCollision() && m_state == CharacterState::Fall)
+    {
+        m_state = CharacterState::Ground;
+    }
+    else if (m_speed_y > 0.01)
+    {
+        m_state = CharacterState::Fall;
+    }
+    else if (m_speed_y < -0.01)
+    {
+        qDebug()<<m_speed_y;
+        m_state = CharacterState::Jump;
+    }
+    else if (abs(m_speed_x) > 1)
+    {
+        m_state = CharacterState::Run;
+    }
+    else if (abs(m_speed_y) <= 0.01)
+    {
+        m_state = CharacterState::Idle;
+    }
 
 
     /*m_speed_x = res.center().x() - sceneBoundingRect().center().x();

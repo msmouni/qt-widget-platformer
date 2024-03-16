@@ -56,7 +56,7 @@ void Bomb::updateWeapon()
 
         for (QGraphicsItem *item : m_collision_rect->collidingItems())
         {
-            qDebug()<<"Check";
+//            qDebug()<<"Check";
             if (item->data(0) == "Enemy" || item->data(0) == "Player")
             {
                 Character *chara = static_cast<Character *>(item);
@@ -72,9 +72,11 @@ void Bomb::updateWeapon()
             {
                 Tile *tile = static_cast<Tile *>(item);
 
-                if (tile->isSolid() | (!tile->isEmpty() & ((tile->checkUp() && m_speed_y < 0) | (tile->checkDown() && m_speed_y > 0))))
+                QRectF tile_bnd_rect=tile->sceneBoundingRect();
+
+                if (tile->isSolid() | (!tile->isEmpty() & ((tile->checkUp() && m_speed_y < 0 && sceneBoundingRect().bottom()>=tile_bnd_rect.bottom()) | (tile->checkDown() && m_speed_y > 0 && sceneBoundingRect().top()<=tile_bnd_rect.top()))))
                 {
-                    static_collision_rects.append(tile->sceneBoundingRect());
+                    static_collision_rects.append(tile_bnd_rect);
                 }
             }
         }

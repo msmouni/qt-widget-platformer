@@ -2,7 +2,6 @@
 #include <algorithm>
 #include <QDebug>
 
-
 CollisionRect::CollisionRect(QRectF entity_rect, qreal speed_x, qreal speed_y, QGraphicsItem *parent)
 {
     this->setParentItem(parent);
@@ -14,6 +13,11 @@ CollisionRect::CollisionRect(QRectF entity_rect, qreal speed_x, qreal speed_y, Q
     m_speed_x = speed_x;
     m_speed_y = speed_y;
     m_is_static = true;
+
+    m_is_top_collision = false;
+    m_is_bottom_collision = false;
+    m_is_left_collision = false;
+    m_is_right_collision = false;
 }
 
 QRectF CollisionRect::boundingRect() const
@@ -26,7 +30,7 @@ void CollisionRect::paint(QPainter *painter, const QStyleOptionGraphicsItem *opt
     QPen pen(Qt::yellow);
     pen.setWidth(2);
     painter->setPen(pen);
-//    painter->drawRect(boundingRect());
+    //    painter->drawRect(boundingRect());
     painter->drawPath(this->shape());
 }
 
@@ -70,16 +74,25 @@ void CollisionRect::setSpeedY(qreal speed_y)
 
 void CollisionRect::update(QRectF new_rect, qreal speed_x, qreal speed_y)
 {
-//    qDebug()<<this->boundingRect()<<this->sceneBoundingRect()<<this->collidingItems()<<this->scenePos();
+    //    qDebug()<<this->boundingRect()<<this->sceneBoundingRect()<<this->collidingItems()<<this->scenePos();
+    m_is_top_collision = false;
+    m_is_bottom_collision = false;
+    m_is_left_collision = false;
+    m_is_right_collision = false;
+
     setEntityRect(new_rect);
     setSpeedX(speed_x);
     setSpeedY(speed_y);
 
     QRectF entity_bounding_rect = this->mapRectFromScene(new_rect);
 
-    m_bounding_rect=entity_bounding_rect.marginsAdded(QMarginsF(entity_bounding_rect.width() / 2, m_speed_y < 0 ? -m_speed_y + entity_bounding_rect.height() : entity_bounding_rect.height() / 2, abs(m_speed_x) + entity_bounding_rect.width(), m_speed_y > 0 ? m_speed_y + entity_bounding_rect.height() : entity_bounding_rect.height() / 2)); // QRectF(-250,-250,500,500));
+    m_bounding_rect = entity_bounding_rect.marginsAdded(QMarginsF(entity_bounding_rect.width() / 2, m_speed_y < 0 ? -m_speed_y + entity_bounding_rect.height() : entity_bounding_rect.height() / 2, abs(m_speed_x) + entity_bounding_rect.width(), m_speed_y > 0 ? m_speed_y + entity_bounding_rect.height() : entity_bounding_rect.height() / 2)); // QRectF(-250,-250,500,500));
 }
 
+bool CollisionRect::isBottomCollision()
+{
+    return m_is_bottom_collision;
+}
 
 void CollisionRect::handleCollision(const QRectF &new_rect, const QRectF &old_rect, qreal speed_x, qreal speed_y)
 {
@@ -88,10 +101,8 @@ void CollisionRect::handleCollision(const QRectF &new_rect, const QRectF &old_re
     bool right_collision = m_new_rect.right() + m_speed_x >= new_rect.left() && m_old_rect.right() < old_rect.left();
     bool left_collision = m_new_rect.left() + m_speed_x <= new_rect.right() && m_old_rect.left() > old_rect.right();
 
-
     bool vertical_collision = (bottom_collision | top_collision);
     bool horizontal_collision = (right_collision | left_collision);
-
 
     if (!vertical_collision & !horizontal_collision)
     {
@@ -102,11 +113,13 @@ void CollisionRect::handleCollision(const QRectF &new_rect, const QRectF &old_re
         if (bottom_collision)
         {
             m_new_rect.moveBottom(new_rect.top() - M_COLLISION_MARGIN);
+            m_is_bottom_collision= true;
         }
         else
         {
             // top_collision
             m_new_rect.moveTop(new_rect.bottom() + M_COLLISION_MARGIN);
+            m_is_top_collision = true;
         }
 
         m_speed_y = speed_y * m_speed_y < 0 ? speed_y : 0; // 0
@@ -116,11 +129,13 @@ void CollisionRect::handleCollision(const QRectF &new_rect, const QRectF &old_re
         if (left_collision)
         {
             m_new_rect.moveLeft(new_rect.right() + M_COLLISION_MARGIN);
+            m_is_left_collision = true;
         }
         else
         {
             // right_collision
             m_new_rect.moveRight(new_rect.left() - M_COLLISION_MARGIN);
+            m_is_right_collision = true;
         }
 
         m_speed_x = speed_x * m_speed_x < 0 ? speed_x : 0; // 0
@@ -145,6 +160,8 @@ void CollisionRect::handleCollision(const QRectF &new_rect, const QRectF &old_re
             {
                 m_new_rect.moveRight(new_rect.left() - M_COLLISION_MARGIN);
                 m_speed_x = speed_x * m_speed_x < 0 ? speed_x : 0; // 0
+
+                m_is_right_collision = true;
             }
         }
         else
@@ -158,6 +175,8 @@ void CollisionRect::handleCollision(const QRectF &new_rect, const QRectF &old_re
             {
                 m_new_rect.moveLeft(new_rect.right() + M_COLLISION_MARGIN);
                 m_speed_x = speed_x * m_speed_x < 0 ? speed_x : 0; // 0
+
+                m_is_left_collision = true;
             }
         }
 
@@ -172,6 +191,8 @@ void CollisionRect::handleCollision(const QRectF &new_rect, const QRectF &old_re
             {
                 m_new_rect.moveBottom(new_rect.top() - M_COLLISION_MARGIN);
                 m_speed_y = speed_y * m_speed_y < 0 ? speed_y : 0; // 0
+
+                m_is_bottom_collision = true;
             }
         }
         else
@@ -185,6 +206,8 @@ void CollisionRect::handleCollision(const QRectF &new_rect, const QRectF &old_re
             {
                 m_new_rect.moveTop(new_rect.bottom() + M_COLLISION_MARGIN);
                 m_speed_y = speed_y * m_speed_y < 0 ? speed_y : 0; // 0
+
+                m_is_top_collision = true;
             }
         }
     }
@@ -211,7 +234,6 @@ void CollisionRect::handleCollision(QVector<QRectF> rects)
     }
 }
 
-
 void CollisionRect::handleCollision(QVector<const CollisionRect *> colliding_rects)
 {
     std::sort(colliding_rects.begin(), colliding_rects.end(), [&](const CollisionRect *item1, const CollisionRect *item2)
@@ -222,8 +244,6 @@ void CollisionRect::handleCollision(QVector<const CollisionRect *> colliding_rec
         handleCollision(*colliding_rect);
     }
 }
-
-
 
 qreal CollisionRect::distance(const QRectF &rect1, const QRectF &rect2) const
 {

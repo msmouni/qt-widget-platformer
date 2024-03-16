@@ -23,7 +23,6 @@ public:
     void handleCollision(QVector<QRectF> rects);
     void handleCollision(QVector<const CollisionRect *>);
 
-
     void setEntityRect(QRectF new_rect);
     QRectF getEntityRect();
 
@@ -33,6 +32,8 @@ public:
     void setSpeedY(qreal speed_y);
 
     void update(QRectF new_rect, qreal speed_x, qreal speed_y);
+
+    bool isBottomCollision();
 
 private:
     const qreal M_COLLISION_MARGIN = 1e-3;
@@ -46,9 +47,13 @@ private:
 
     bool m_is_static;
 
+    bool m_is_top_collision;
+    bool m_is_bottom_collision;
+    bool m_is_left_collision;
+    bool m_is_right_collision;
+
     qreal distance(const QRectF &rect1, const QRectF &rect2) const;
     bool compareDistance(const QRectF &rect1, const QRectF &rect2, const QRectF &targetRect) const;
 };
-
 
 #endif // COLLISION_H
