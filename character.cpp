@@ -1,4 +1,5 @@
 #include "character.h"
+#include "weapon.h"
 
 Character::Character(const QRectF &rect, const QString &res_path, const Platform &platform) : m_platform(platform)
 {
@@ -56,10 +57,26 @@ void Character::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
     }
 
     // Set the pen and brush for the rectangle
-    QPen pen(Qt::red);
+    QPen pen(Qt::green);
     pen.setWidth(2);
     painter->setPen(pen);
-    painter->setFont(QFont("Arial", 15));
+//    painter->setFont(QFont("Arial", 15));
+    painter->drawRect(this->boundingRect());
+
+    painter->drawPath(this->shape());
+}
+
+QPainterPath Character::shape() const
+{
+    QPainterPath path;
+    path.addRect(boundingRect());
+//    path.addEllipse(boundingRect().x(), boundingRect().y(), boundingRect().width(), boundingRect().height());
+    return path;
+}
+
+const CharacterDirection &Character::getDirection() const
+{
+    return m_direction;
 }
 
 void Character::updateView()
@@ -115,8 +132,28 @@ void Character::updateCharacter()
 
     // TMP
     for (QGraphicsItem* item: this->collidingItems()){
-        if (item->data(0) == "Player" && this->data(0) =="Enemy" || item->data(0) == "Enemy" && this->data(0) =="Player"){
-            m_state=CharacterState::Hit;
+        if (item->data(0) == "Weapon"){
+            Weapon* weapon= static_cast<Weapon*>(item);
+            if (weapon->isActive()){
+                m_state=CharacterState::Hit;
+
+                QPointF diff_pos=this->scenePos() -weapon->scenePos();
+                qreal dir_x=1;
+                qreal dir_y=-1;
+
+                if (diff_pos.x()<0){
+                    dir_x=-1;
+                }
+
+                if (diff_pos.y()>0){
+                    dir_y=1;
+                }
+
+
+                m_speed_x+= weapon->getPowerX() *dir_x;
+
+                m_speed_y+= weapon->getPowerY() *dir_y;
+            }
         }
     }
 

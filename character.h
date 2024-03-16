@@ -34,13 +34,22 @@ class Character : public QObject, public QGraphicsPixmapItem
 {
     Q_OBJECT
 public:
+    // TODO: Add character shape rectangle + collision with other characters + collision with objects(weapons)
     Character(const QRectF &rect, const QString &res_path, const Platform &platform);
 
     QRectF boundingRect() const override;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
                QWidget *widget) override;
+    /*
+boundingRect() returns the bounding rectangle of the item. The bounding rectangle is used for optimization purposes and provides a hint about the item's extent. It should include the entire area that the item occupies, even if it's transparent or not painted.
+
+shape() returns the shape of the item as a QPainterPath. The shape represents the actual outline of the item. It is used for hit testing, collision detection, and other geometric operations.
+     */
+    QPainterPath shape() const override;
 
     virtual void gameUpdate() = 0;
+
+    const CharacterDirection& getDirection() const;
 protected slots:
     void updateView();
 

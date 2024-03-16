@@ -2,8 +2,8 @@
 
 
 
-Weapon::Weapon(const QRectF &scene_rect, const QRectF &active_rect, qreal power_x, qreal power_y, const Platform &platform, const QString &res_path):
-    m_scene_rect(scene_rect), m_active_rect(active_rect), m_power_x(power_x), m_power_y(power_y), m_platform(platform)
+Weapon::Weapon(int id, const QRectF &scene_rect, const QRectF &active_rect, qreal power_x, qreal power_y, const Platform &platform, const QString &res_path):
+    m_id(id), m_scene_rect(scene_rect), m_active_rect(active_rect), m_power_x(power_x), m_power_y(power_y), m_platform(platform)
 {
 
     setData(0, "Weapon");
@@ -53,7 +53,21 @@ void Weapon::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QW
 {
     if (m_visible){
         painter->drawPixmap(m_scene_rect, pixmap(), m_animation->getRect());
+
+        // Set the pen and brush for the rectangle
+        QPen pen(Qt::red);
+        pen.setWidth(2);
+        painter->setPen(pen);
+        painter->drawRect(this->boundingRect());
     }
+}
+
+QPainterPath Weapon::shape() const
+{
+    QPainterPath path;
+    path.addRect(boundingRect());
+    //    path.addEllipse(boundingRect().x(), boundingRect().y(), boundingRect().width(), boundingRect().height());
+    return path;
 }
 
 void Weapon::start()
@@ -75,6 +89,26 @@ void Weapon::desactivate()
     m_state=WeaponState::Idle;
 
     m_animation->setId(static_cast<uint8_t>(m_state));
+}
+
+bool Weapon::isActive() const
+{
+    return m_state ==WeaponState::Active;
+}
+
+qreal Weapon::getPowerX() const
+{
+    return m_power_x;
+}
+
+qreal Weapon::getPowerY() const
+{
+    return m_power_y;
+}
+
+int Weapon::getId()
+{
+    return m_id;
 }
 
 void Weapon::updateView()

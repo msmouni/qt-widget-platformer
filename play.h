@@ -8,6 +8,7 @@
 #include "platform.h"
 #include "enemy.h"
 #include "weapon.h"
+#include "bomb.h"
 
 class PlayView : public QGraphicsView
 {
@@ -35,13 +36,14 @@ private:
     QRectF m_player_rect;
     QVector<Enemy *> m_enemies;
 
-
-    QVector<Weapon *> m_weapons;
+    int m_weapons_count;
+    QHash<int,Weapon *> m_weapons;
 
     void updateCam();
 
 private slots:
     void updateItems();
+    void dropWeapon(Weapon *); // hands behind your head, on the ground now
 };
 
 #endif // PLAYVIEW_H

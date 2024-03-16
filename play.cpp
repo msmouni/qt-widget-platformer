@@ -78,13 +78,20 @@ void PlayView::keyPressEvent(QKeyEvent *event)
     if (key == Qt::Key_B){
         qDebug()<<"B";
         // TMP
+        qreal dir_x=1;
+        if (m_player->getDirection() ==CharacterDirection::Left){
+            dir_x=-1;
+        }
 
-        Weapon* wpn=new Weapon(m_player->sceneBoundingRect(), QRectF(m_player->pos().x(), m_player->pos().y(), 200, 200), 25,25, *m_platform, ":/Pirate_bomb/Objects/BOMB");
 
+        Bomb* wpn=new Bomb(m_weapons_count, m_player->sceneBoundingRect(), QRectF(m_player->pos().x(), m_player->pos().y(), 70, 70), dir_x*250,-100,250,250, *m_platform, ":/Pirate_bomb/Objects/BOMB");
+
+        wpn->start();
         m_scene->addItem(wpn);
-        m_weapons.append(wpn);
+        connect(wpn, SIGNAL(terminate(Weapon *)), this, SLOT(dropWeapon(Weapon*)));
+        m_weapons.insert(m_weapons_count,wpn);
 
-
+        m_weapons_count+=1;
     }
 
     QGraphicsView::keyPressEvent(event);
@@ -109,10 +116,32 @@ void PlayView::updateItems()
     m_player->gameUpdate();
 
     m_player_rect = m_player->sceneBoundingRect();
+
+//    qDebug()<<"pl"<<m_player->sceneBoundingRect()<<"en"<<m_enemies.first()->sceneBoundingRect()<<" => int:"<<m_player->sceneBoundingRect().intersects(m_enemies.first()->sceneBoundingRect());
     for (Enemy *enemy : m_enemies)
     {
         enemy->gameUpdate();
     }
 
+//    for (Weapon* weapon: m_weapons.values()){
+//        weapon->updateWeapon();
+//    }
+
+    for (QHash<int, Weapon*>::const_iterator weapons_it = m_weapons.constBegin(); weapons_it != m_weapons.constEnd(); ++weapons_it)
+    {
+        weapons_it.value()->updateWeapon();
+    }
+
     updateCam();
 }
+
+void PlayView::dropWeapon(Weapon *weapon)
+{
+    m_scene->removeItem(weapon);
+
+    m_weapons.remove(weapon->getId());
+
+    weapon->deleteLater();
+}
+
+
