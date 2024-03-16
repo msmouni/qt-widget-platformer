@@ -13,6 +13,7 @@ public:
     QRectF boundingRect() const override;
 
     QRectF handleCollision(QRectF rect, qreal &dx, qreal &dy) const;
+    QRectF handleCollision(QRectF prev_rect, QRectF new_rect) const; // TODO: use refs
 
     int getNbColumns() const;
     int getNbRows() const;

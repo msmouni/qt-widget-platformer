@@ -66,13 +66,13 @@ void Character::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
     painter->drawPath(this->shape());
 }
 
-QPainterPath Character::shape() const
-{
-    QPainterPath path;
-    path.addRect(boundingRect());
-//    path.addEllipse(boundingRect().x(), boundingRect().y(), boundingRect().width(), boundingRect().height());
-    return path;
-}
+//QPainterPath Character::shape() const
+//{
+//    QPainterPath path;
+//    path.addRect(boundingRect());
+////    path.addEllipse(boundingRect().x(), boundingRect().y(), boundingRect().width(), boundingRect().height());
+//    return path;
+//}
 
 const CharacterDirection &Character::getDirection() const
 {

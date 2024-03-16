@@ -45,7 +45,7 @@ boundingRect() returns the bounding rectangle of the item. The bounding rectangl
 
 shape() returns the shape of the item as a QPainterPath. The shape represents the actual outline of the item. It is used for hit testing, collision detection, and other geometric operations.
      */
-    QPainterPath shape() const override;
+//    QPainterPath shape() const override;
 
     virtual void gameUpdate() = 0;
 

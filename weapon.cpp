@@ -64,6 +64,8 @@ void Weapon::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QW
 //    pen.setWidth(2);
 //    painter->setPen(pen);
     painter->drawRect(m_shape_rect);
+
+    painter->drawPath(this->shape());
 }
 
 //QPainterPath Weapon::shape() const
