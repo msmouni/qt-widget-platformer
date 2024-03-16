@@ -36,7 +36,7 @@ Character::Character(const QPointF &pos, const QString &res_path, const Platform
     m_friction = 0.5;
     m_gravity = 13;
 
-    m_animation->stop();
+//    m_animation->stop();
 
 //    coverage_rect=QGraphicsRectItem(m_bounding_rect,this);
 }
@@ -171,7 +171,7 @@ void Character::updateCharacter()
 
 
     /*if (m_type == CharacterType::Player){
-        colliding_rects.append(QRectF(109,580.999,39,59));
+        colliding_rects.append(QRectF(159,580.999,39,59));
     }*/
 
 //    qDebug()<<coverage_rect.sceneBoundingRect()<<cov_rect;
@@ -224,9 +224,9 @@ void Character::updateCharacter()
 
     }*/
 
-    if (m_type == CharacterType::Player){
+    /*if (m_type == CharacterType::Player){
         qDebug()<<colliding_rects;
-    }
+    }*/
 
     QRectF res=m_collision_handler.handle(prev_rect, sceneBoundingRect().translated(m_speed_x, m_speed_y),colliding_rects);
 
