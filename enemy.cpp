@@ -7,6 +7,8 @@ Enemy::Enemy(const QPointF &pos, const QString &res_path, const Platform &platfo
 
     m_path_iter = M_NB_PATH_ITER;
 
+//    m_animation->stop();
+
     connect(&m_path_finder, SIGNAL(pathFindingRes(QVector<QPoint>)), this, SLOT(setPathFindingResult(QVector<QPoint>)));
 }
 

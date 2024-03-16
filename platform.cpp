@@ -36,7 +36,11 @@ QRectF Platform::boundingRect() const
 
 QRectF Platform::handleCollision(QRectF prev_rect, QRectF new_rect) const
 {
+    return m_collision_handler.handle(prev_rect, new_rect,getCollidingRects(prev_rect, new_rect));
+}
 
+QVector<QRectF> Platform::getCollidingRects(QRectF prev_rect, QRectF new_rect) const
+{
     // To rename: moving_x
     bool going_up = new_rect.top() - prev_rect.top() < -M_COLLISION_MARGIN;
     bool going_down = new_rect.bottom() - prev_rect.bottom() > M_COLLISION_MARGIN;
@@ -69,7 +73,7 @@ QRectF Platform::handleCollision(QRectF prev_rect, QRectF new_rect) const
         }
     }
 
-    return m_collision_handler.handle(prev_rect, new_rect,colliding_rects);
+    return colliding_rects;
 }
 
 int Platform::getNbColumns() const

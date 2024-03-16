@@ -71,6 +71,9 @@ protected:
     CharacterState m_state;
     CharacterDirection m_direction;
 
+    Collision m_collision_handler;
+    QGraphicsRectItem coverage_rect=QGraphicsRectItem(this);
+
     void updateCharacter();
     virtual void updateAnimation();
     bool isOnGround();
