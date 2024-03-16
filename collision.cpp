@@ -6,6 +6,7 @@ Collision::Collision()
 {
 }
 
+// TODO: Later use shapes to handle collision
 QRectF Collision::handle(QRectF prev_rect, QRectF new_rect, QVector<QRectF> colliding_rects) const
 {
     std::sort(colliding_rects.begin(), colliding_rects.end(), [&](QRectF &rect1, QRectF &rect2)
@@ -73,6 +74,24 @@ QRectF Collision::handle(QRectF prev_rect, QRectF new_rect, QVector<QRectF> coll
         qreal bottom = colliding_rect.bottom();
         qreal left = colliding_rect.left();
         qreal right = colliding_rect.right();
+        //////////////////////////////////////////////////////////////////////////////////
+        // TMP : condider collision with the remainding rect
+        // TODO: Move prev_rect instead
+        // Note: Moving Platform or items: eg player on platform which is moving up
+        if (prev_rect.top()<top && (prev_rect.right() >= left && prev_rect.left() <= right)){
+            top=fmax(top, prev_rect.bottom()+M_COLLISION_MARGIN);
+        }
+        if (prev_rect.bottom()>bottom && (prev_rect.right() >= left && prev_rect.left() <= right)){
+            bottom=fmin(bottom, prev_rect.top() -M_COLLISION_MARGIN);
+        }
+        if (prev_rect.left()<left && (prev_rect.top() <= bottom && prev_rect.bottom() >= top)){
+            left=fmax(left, prev_rect.right() +M_COLLISION_MARGIN);
+        }
+        if (prev_rect.right()>right && (prev_rect.top() <= bottom && prev_rect.bottom() >= top)){
+            right=fmin(right, prev_rect.left() -M_COLLISION_MARGIN);
+        }
+
+        //////////////////////////////////////////////////////////////////////////////////
 
         if (moving_ver && !moving_hor && (prev_rect.right() >= left && prev_rect.left() <= right))
         {
@@ -160,7 +179,7 @@ QRectF Collision::handle(QRectF prev_rect, QRectF new_rect, QVector<QRectF> coll
             }
 
             ///////////////////////////////
-            if (moving_down && prev_rect.bottom() < top) //+2*M_COLLISION_MARGIN)
+            if (moving_down && prev_rect.bottom() < top)//&& prev_rect.bottom() +dy_b > top)// //+2*M_COLLISION_MARGIN)
             {
                 qreal x_bottom_right = d_xy_rb * (top - prev_rect.bottom()) + prev_rect.right();
 
@@ -194,7 +213,7 @@ QRectF Collision::handle(QRectF prev_rect, QRectF new_rect, QVector<QRectF> coll
                     qDebug() << x_bottom_right << dx_r << dy_b << dx_l << left << x_bottom_left << right;
                 }
             }
-            if (moving_up && prev_rect.top() >= bottom)
+            if (moving_up &&prev_rect.top() >= bottom)//&& prev_rect.top() +dy_t <= bottom)//
             {
                 qreal x_top_right = d_xy_rt * (bottom - prev_rect.top()) + prev_rect.right();
 
