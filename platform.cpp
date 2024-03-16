@@ -39,6 +39,11 @@ QRectF Platform::handleCollision(QRectF prev_rect, QRectF new_rect) const
     return m_collision_handler.handle(prev_rect, new_rect,getCollidingRects(prev_rect, new_rect));
 }
 
+/*QVector<QRectF> Platform::getCollidingRects(QRectF covering_rect) const
+{
+
+}*/
+
 QVector<QRectF> Platform::getCollidingRects(QRectF prev_rect, QRectF new_rect) const
 {
     // To rename: moving_x

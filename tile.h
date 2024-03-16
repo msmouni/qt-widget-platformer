@@ -3,6 +3,7 @@
 
 #include <QGraphicsItem>
 #include <QPainter>
+#include "collision.h"
 
 enum class TileType : uint8_t
 {
@@ -27,6 +28,8 @@ public:
                QWidget *widget) override;
 
     const TileType &getType();
+    // TMP: pub
+    CollisionRect m_collision_rect;
 
 private:
     int m_id;

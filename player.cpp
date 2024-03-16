@@ -42,7 +42,7 @@ void Player::keyPressEvent(QKeyEvent *event)
     }
     else if (key == Qt::Key_Down)
     {
-        m_acc_y = m_acc_max*5;
+        m_acc_y = m_acc_max;//*5;
     }
     else if (key == Qt::Key_Space)
     {

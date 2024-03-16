@@ -47,6 +47,7 @@ shape() returns the shape of the item as a QPainterPath. The shape represents th
      */
     //    QPainterPath shape() const override;
 
+    void updateShapes(); // To rename
     virtual void gameUpdate() = 0;
 
     const CharacterDirection &getDirection() const;
@@ -73,10 +74,15 @@ protected:
 
     Collision m_collision_handler;
     QGraphicsRectItem coverage_rect=QGraphicsRectItem(this);
+    CollisionRect m_collision_rect;
 
     void updateCharacter();
     virtual void updateAnimation();
     bool isOnGround();
+
+
+//    // TMP move elsewhere:
+//    QRectF getBoundingRect();
 };
 
 #endif // CHARACTER_H

@@ -2,6 +2,7 @@
 
 Tile::Tile(int id, QRectF rect, TileType type, QPixmap &tileset_pixmap) : m_tileset_pixmap(tileset_pixmap)
 {
+    setData(0, "Tile");
     m_id = id;
     m_rect = rect;
     m_type = type;
@@ -10,6 +11,9 @@ Tile::Tile(int id, QRectF rect, TileType type, QPixmap &tileset_pixmap) : m_tile
     int y_idx = m_id / nb_col;
     int x_idx = m_id - y_idx * nb_col;
     m_tileset_pos = QPointF(x_idx * m_rect.width(), y_idx * m_rect.height());
+
+    m_collision_rect.m_new_rect=rect;
+    m_collision_rect.m_old_rect=rect;
 }
 
 bool Tile::isEmpty()

@@ -4,6 +4,23 @@
 #include <QRectF>
 #include <QVector>
 
+// To Rename : Dynamics (character + weapon ...)
+class CollisionRect{
+public:
+    CollisionRect();
+
+    void handleCollision(const CollisionRect &other);
+// TMP
+//private:
+    const qreal M_COLLISION_MARGIN = 1e-3;
+
+    QRectF m_old_rect;
+    QRectF m_new_rect;
+    qreal m_speed_x;
+    qreal m_speed_y;
+    bool m_is_static;
+};
+
 class Collision
 {
 public:
