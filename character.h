@@ -5,6 +5,7 @@
 #include <QPainter>
 #include "platform.h"
 #include "animation.h"
+#include "collision.h"
 
 enum class CharacterType
 {
@@ -51,6 +52,8 @@ shape() returns the shape of the item as a QPainterPath. The shape represents th
     virtual void gameUpdate() = 0;
 
     const CharacterDirection &getDirection() const;
+
+    const CollisionRect* getCollisionRect() const;
 protected slots:
     void updateView();
 
@@ -72,9 +75,9 @@ protected:
     CharacterState m_state;
     CharacterDirection m_direction;
 
-    Collision m_collision_handler;
-    QGraphicsRectItem coverage_rect=QGraphicsRectItem(this);
-    CollisionRect m_collision_rect;
+//    Collision m_collision_handler;
+//    QGraphicsRectItem* coverage_rect;//=QGraphicsRectItem(this);
+    CollisionRect *m_collision_rect;
 
     void updateCharacter();
     virtual void updateAnimation();

@@ -28,8 +28,8 @@ public:
                QWidget *widget) override;
 
     const TileType &getType();
-    // TMP: pub
-    CollisionRect m_collision_rect;
+    // TMP
+    CollisionRect *m_collision_rect;
 
 private:
     int m_id;

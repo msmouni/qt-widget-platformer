@@ -4,7 +4,6 @@
 #include <QGraphicsItem>
 #include <QPainter>
 #include "tile.h"
-#include "collision.h"
 
 
 class Platform : public QGraphicsItemGroup
@@ -32,9 +31,6 @@ private:
     int m_nb_columns;
     QVector<QVector<Tile *>> m_tiles;
     QPixmap m_tileset_pixmap;
-
-    // TMP
-    Collision m_collision_handler;
 
     QRect getIndexRect(QRectF rect, qreal &dx, qreal &dy) const;
 };

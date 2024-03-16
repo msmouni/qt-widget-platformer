@@ -32,6 +32,7 @@ public:
     qreal getPowerY() const;
     int getId();
 
+    virtual void updateShapes() = 0; // To rename
     virtual void updateWeapon() = 0;
 
 signals:

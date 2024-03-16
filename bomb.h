@@ -3,6 +3,7 @@
 
 #include "weapon.h"
 #include <QTimer>
+#include "collision.h"
 
 class Bomb : public Weapon
 {
@@ -11,7 +12,10 @@ public:
 
     void start() override;
 
+    void updateShapes() override; // To rename
     void updateWeapon() override;
+
+    const CollisionRect* getCollisionRect() const;
 
 protected slots:
     void explosion();
@@ -30,6 +34,8 @@ private:
 
     qreal m_friction;
     qreal m_gravity;
+
+    CollisionRect *m_collision_rect;
 };
 
 #endif // BOMB_H

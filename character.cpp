@@ -1,10 +1,10 @@
 #include "character.h"
-#include "weapon.h"
+#include "bomb.h"
 #include <QGraphicsScene>
 
 Character::Character(const QPointF &pos, const QString &res_path, const Platform &platform) : m_platform(platform)
 {
-//    this->setData(0,"Character");
+    //    this->setData(0,"Character");
 
     QHash<uint8_t, QString> animations_ids;
     animations_ids.insert((uint8_t)CharacterState::Idle, res_path + "/Idle");
@@ -38,9 +38,11 @@ Character::Character(const QPointF &pos, const QString &res_path, const Platform
     m_friction = 0.5;
     m_gravity = 13;
 
-//    m_animation->stop();
+    m_collision_rect= new CollisionRect(sceneBoundingRect(), m_speed_x, m_speed_y, this);
 
-//    coverage_rect=QGraphicsRectItem(m_bounding_rect,this);
+    //    m_animation->stop();
+
+    //    coverage_rect=QGraphicsRectItem(m_bounding_rect,this);
 }
 
 QRectF Character::boundingRect() const
@@ -60,10 +62,10 @@ void Character::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
 
     painter->drawPath(this->shape());
 
-    QPen pen2(Qt::yellow);
+    /*QPen pen2(Qt::yellow);
     pen.setWidth(2);
     painter->setPen(pen2);
-    painter->drawRect(coverage_rect.boundingRect());
+    painter->drawRect(coverage_rect.boundingRect());*/
     ///////////////////////////////////////////::
     painter->drawRect(this->sceneBoundingRect());
 
@@ -75,38 +77,37 @@ void Character::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
 
 void Character::updateShapes()
 {
+    qDebug()<<this->sceneBoundingRect()<<m_collision_rect->sceneBoundingRect();
+
     m_speed_x *= m_friction; // Friction
     m_speed_x += m_acc_x;
 
     m_speed_y *= m_friction; // Friction
     m_speed_y += m_acc_y + m_gravity;
 
-
-    m_collision_rect.m_old_rect=sceneBoundingRect();
-
     // Note: m_bounding_rect should match the shape bounding rect: shape is at pos=(x,y) reg this->pos()
-    m_bounding_rect = this->shape().boundingRect();//.translated(-this->shape().boundingRect().topLeft());
+    m_bounding_rect = this->shape().boundingRect();
 
-//    QPointF scene_adjustmnt = m_bounding_rect.topLeft();
-    //    if (m_direction == CharacterDirection::Left)
-    //    {
-    //        scene_adjustmnt.setX(-scene_adjustmnt.x());
-    //    }
+    m_collision_rect->update(sceneBoundingRect(), m_speed_x, m_speed_y);
+}
 
-//    this->setPos(sceneBoundingRect().topLeft() - scene_adjustmnt);
-//    m_bounding_rect.translate(-scene_adjustmnt);
-//    this->moveBy(scene_adjustmnt.x(),-scene_adjustmnt.y());
+const CharacterDirection &Character::getDirection() const
+{
+    return m_direction;
+}
 
+const CollisionRect *Character::getCollisionRect() const
+{
+    return m_collision_rect;
+}
 
-//    qDebug()<<sceneBoundingRect().topLeft() - scene_adjustmnt;
+void Character::updateView()
+{
+    setPixmap(m_animation->getPixmap());
+}
 
-//    qDebug()<<m_bounding_rect;
-
-//    qDebug()<<sceneBoundingRect()<<m_bounding_rect.translated(pos());//.topLeft()<<pos()<<scene_adjustmnt;
-    m_collision_rect.m_new_rect=sceneBoundingRect();
-    m_collision_rect.m_speed_x=m_speed_x;
-    m_collision_rect.m_speed_y=m_speed_y;
-
+void Character::updateCharacter()
+{
     if (m_speed_x > 1)
     {
         this->setTransform(QTransform().scale(1, 1));
@@ -118,77 +119,7 @@ void Character::updateShapes()
         m_direction = CharacterDirection::Left;
     }
 
-//    this->moveBy(m_speed_x, m_speed_y);
 
-//    this->setPos(sceneBoundingRect().translated(m_speed_x, m_speed_y).topLeft());
-
-//    sceneBoundingRect().translated(m_speed_x, m_speed_y)
-//    updateAnimation();
-
-
-}
-
-const CharacterDirection &Character::getDirection() const
-{
-    return m_direction;
-}
-
-void Character::updateView()
-{
-    setPixmap(m_animation->getPixmap());
-}
-
-void Character::updateCharacter()
-{
-    // with this model: S_n = S_{n-1} * f + Acc => Sn = Acc *(1 - f^n)/(1-f) => #with f < 1 and n >> 0: Sn = Acc/(1-f)
-    /*m_speed_x *= m_friction; // Friction
-    m_speed_x += m_acc_x;
-
-    m_speed_y *= m_friction; // Friction
-    m_speed_y += m_acc_y + m_gravity;
-
-    // TODO: Better handle for State and direction
-
-    QRectF prev_rect = sceneBoundingRect();
-    m_bounding_rect = this->shape().boundingRect();*/
-
-    /*QRectF res = m_platform.handleCollision(prev_rect, sceneBoundingRect().translated(m_speed_x, m_speed_y));
-
-    m_speed_x = res.center().x() - sceneBoundingRect().center().x();
-    m_speed_y = res.center().y() - sceneBoundingRect().center().y();
-
-    if ((0 < m_speed_x && m_speed_x <= 1e-2) || (0 > m_speed_x && m_speed_x >= -1e-2))
-    {
-        m_speed_x = 0;
-    }
-
-    if ((0 < m_speed_y && m_speed_y <= 1e-2) || (0 > m_speed_y && m_speed_y >= -1e-2))
-    {
-        m_speed_y = 0;
-    }
-
-    if (m_speed_x > 1)
-    {
-        this->setTransform(QTransform().scale(1, 1));
-        m_direction = CharacterDirection::Right;
-    }
-    else if (m_speed_x < -1 || m_direction == CharacterDirection::Left)
-    {
-        this->setTransform(QTransform().scale(-1, 1).translate(-sceneBoundingRect().width(), 0)); ////////// Width change ...
-        m_direction = CharacterDirection::Left;
-    }*/
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    /*if (no_collision_speed_y > m_speed_y && m_state == CharacterState::Fall)
-    {
-        m_state = CharacterState::Ground;
-    }
-    else if (m_speed_y > 0.01)
-    {
-        m_state = CharacterState::Fall;
-    }
-    else */
     if (abs(m_speed_x) > 1)
     {
         m_state = CharacterState::Run;
@@ -198,112 +129,51 @@ void Character::updateCharacter()
         m_state = CharacterState::Idle;
     }
 
-    // TMP
-   /*QVector<QRectF> colliding_rects=m_platform.getCollidingRects(prev_rect, sceneBoundingRect().translated(m_speed_x, m_speed_y));
 
-    /*QPointF local_prev_rect_tl=this->mapFromScene(prev_rect.topLeft());
-    QPointF local_prev_rect_br=this->mapFromScene(prev_rect.bottomRight());
-    QPointF local_new_rect_tf=this->mapFromScene(sceneBoundingRect().translated(m_speed_x*5, m_speed_y*5).topLeft());
-    QPointF local_new_rect_br=this->mapFromScene(sceneBoundingRect().translated(m_speed_x*5, m_speed_y*5).bottomRight());
-//    QPointF local_new_rect_tf=this->mapFromScene(sceneBoundingRect().translated(m_speed_x, m_speed_y).topLeft());
-//    QPointF local_new_rect_br=this->mapFromScene(sceneBoundingRect().translated(m_speed_x, m_speed_y).bottomRight());
+    QVector<const CollisionRect *> dyn_collision_rects;
+    QVector<QRectF> static_collision_rects;
 
-    qreal left = fmin(local_prev_rect_tl.x(), local_new_rect_tf.x());//+10;
-    qreal right= fmax(local_prev_rect_br.x(), local_new_rect_br.x());//-10;
-    qreal top = fmin(local_prev_rect_tl.y(), local_new_rect_tf.y());//+3;
-    qreal bottom = fmax(local_prev_rect_br.y(), local_new_rect_br.y());//-3;
-
-//    qDebug()<<left<<right<<top<<bottom;
-//    if (left>right){
-//        qreal tmp=right;
-//        right=left;
-//        left=tmp;
-//    }
-
-
-
-    QRectF cov_rect=QRectF(left, top, right-left, bottom-top);//boundingRect().translated(m_speed_x, m_speed_y);
-//    QGraphicsRectItem coverage_rect=QGraphicsRectItem(cov_rect, this);
-    coverage_rect.setRect(cov_rect);*/
-
-
-    /*if (m_type == CharacterType::Player){
-        colliding_rects.append(QRectF(159,580.999,39,59));
-    }*/
-
-    // TMP
-//    QVector<QRectF> colliding_rects=m_platform.getCollidingRects(m_collision_rect.m_old_rect, sceneBoundingRect().translated(m_speed_x, m_speed_y));
-//    qDebug()<<m_speed_x<<m_speed_y<<m_collision_rect.m_old_rect<< getBoundingRect().translated(m_speed_x, m_speed_y)<<sceneBoundingRect();
-//    QRectF res=m_collision_handler.handle(m_collision_rect.m_old_rect, sceneBoundingRect().translated(m_speed_x, m_speed_y),colliding_rects);
-
-//    qDebug()<<coverage_rect.sceneBoundingRect()<<cov_rect;
-//    this->scene()->addItem(&coverage_rect);
-    /*for (QGraphicsItem *item : coverage_rect.collidingItems())
+    for (QGraphicsItem *item : m_collision_rect->collidingItems())
     {
-        if (item->data(0) == "Enemy" && m_type!=CharacterType::Enemy || item->data(0) == "Player" && m_type!=CharacterType::Player)
+        qDebug()<<"Check";
+        if (item->data(0) == "Enemy" && m_type != CharacterType::Enemy || item->data(0) == "Player" && m_type != CharacterType::Player)
         {
-//            qDebug()<<"Enemy";
             Character *chara = static_cast<Character *>(item);
-//            qDebug()<<chara->sceneBoundingRect();
-//            chara->shape().intersected(coverage_rect).
-            colliding_rects.append(chara->sceneBoundingRect());
-
-//            this->m_collision_rect.handleCollision(chara->m_collision_rect);
-
-
+            dyn_collision_rects.append(chara->m_collision_rect);
+        }else if (item->data(0) =="Bomb"){
+            Bomb *bomb=static_cast<Bomb *>(item);
+            if (!bomb->isActive())
+            {
+                dyn_collision_rects.append(bomb->getCollisionRect());
+            }
         }
-    }*/
-
-//    qDebug()<<colliding_rects;
-
-//    QRectF res=m_collision_handler.handle(m_collision_rect.m_old_rect, sceneBoundingRect().translated(m_speed_x, m_speed_y),colliding_rects);//getBoundingRect().translated(m_speed_x, m_speed_y);//
-
-//    m_collision_rect.m_new_rect=res; // Speed after static collision
-//    QRectF cov_rect= QRectF(left, top, right-left, bottom-top);//boundingRect().translated(m_speed_x, m_speed_y);
-    QVector<const CollisionRect *> collision_rects;
-    // TMP Move elsewhere
-    // +width / height: To avoid detecting shapes collision after item1 is already inside item2's BoundingBox
-    coverage_rect.setRect(m_bounding_rect.marginsAdded(QMarginsF(m_bounding_rect.width()/2 , m_speed_y<0 ? -m_speed_y+m_bounding_rect.height():m_bounding_rect.height()/2, abs(m_speed_x)+m_bounding_rect.width(), m_speed_y>0 ? m_speed_y+m_bounding_rect.height():m_bounding_rect.height()/2)));//QRectF(-250,-250,500,500));
-//    qDebug()<<"Start";
-    for (QGraphicsItem *item : coverage_rect.collidingItems())
-    {
-        if (item->data(0) == "Enemy" && m_type!=CharacterType::Enemy || item->data(0) == "Player" && m_type!=CharacterType::Player)
+        else if (item->data(0) == "Tile")
         {
-            //if (item->data(0) !=this->data(0)) : platform
-            //            qDebug()<<"Enemy";
-            Character *chara = static_cast<Character *>(item);
-//            this->m_collision_rect.handleCollision(chara->m_collision_rect);
-            collision_rects.append(&chara->m_collision_rect);
-
-
-        }else if (item->data(0) =="Tile"){
             Tile *tile = static_cast<Tile *>(item);
 
-            if (tile->isSolid() |(!tile->isEmpty() & ((tile->checkUp() && m_speed_y<0) |(tile->checkDown() && m_speed_y>0))) ){
-//               qDebug()<<"Tile";
-//                this->m_collision_rect.handleCollision(tile->m_collision_rect);
-                collision_rects.append(&tile->m_collision_rect);
+            if (tile->isSolid() | (!tile->isEmpty() & ((tile->checkUp() && m_speed_y < 0) | (tile->checkDown() && m_speed_y > 0))))
+            {
+                static_collision_rects.append(tile->sceneBoundingRect());
             }
-
-
         }
     }
-    m_collision_rect.handleCollision(collision_rects);
-//    qDebug()<<"End";
 
-    QRectF res=m_collision_rect.m_new_rect.translated(m_collision_rect.m_speed_x,m_collision_rect.m_speed_y);
-    m_speed_x=m_collision_rect.m_speed_x;
-    m_speed_y=m_collision_rect.m_speed_y;
+    m_collision_rect->handleCollision(dyn_collision_rects);
+    m_collision_rect->handleCollision(static_collision_rects);
+    //    qDebug()<<"End";
+
+    m_speed_x = m_collision_rect->getSpeedX();
+    m_speed_y = m_collision_rect->getSpeedY();
+    QRectF res = m_collision_rect->getEntityRect().translated(m_speed_x, m_speed_y);
+
 
     /*m_speed_x = res.center().x() - sceneBoundingRect().center().x();
     m_speed_y = res.center().y() - sceneBoundingRect().center().y();*/
-//    qDebug()<<m_speed_x<<m_speed_y;
+    //    qDebug()<<m_speed_x<<m_speed_y;
 
-//    this->moveBy(m_speed_x, m_speed_y);
+    //    this->moveBy(m_speed_x, m_speed_y);
 
-
-
-//    this->shape().
+    //    this->shape().
 
     /*for (QGraphicsItem *item : this->collidingItems())
     {
@@ -342,41 +212,6 @@ void Character::updateCharacter()
 
     }*/
 
-    /*if (m_type == CharacterType::Player){
-        qDebug()<<colliding_rects;
-    }*/
-
-//    QRectF res=m_collision_handler.handle(prev_rect, sceneBoundingRect().translated(m_speed_x, m_speed_y),colliding_rects);
-
-
-
-//    res = m_platform.handleCollision(prev_rect,res);//sceneBoundingRect().translated(m_speed_x, m_speed_y));//
-
-    /*m_speed_x = res.center().x() - sceneBoundingRect().center().x();
-    m_speed_y = res.center().y() - sceneBoundingRect().center().y();
-
-    if ((0 < m_speed_x && m_speed_x <= 1e-2) || (0 > m_speed_x && m_speed_x >= -1e-2))
-    {
-        m_speed_x = 0;
-    }
-
-    if ((0 < m_speed_y && m_speed_y <= 1e-2) || (0 > m_speed_y && m_speed_y >= -1e-2))
-    {
-        m_speed_y = 0;
-    }
-
-    if (m_speed_x > 1)
-    {
-        this->setTransform(QTransform().scale(1, 1));
-        m_direction = CharacterDirection::Right;
-    }
-    else if (m_speed_x < -1 || m_direction == CharacterDirection::Left)
-    {
-//        this->setTransform(QTransform().scale(-1, 1).translate(-sceneBoundingRect().width(), 0)); ////////// Width change ...
-//        coverage_rect.setTransform(QTransform().scale(-1, 1));
-        m_direction = CharacterDirection::Left;
-    }*/
-
     ////////////////////////////////////////////////////////////////////////////
 
     QPointF scene_adjustmnt = m_bounding_rect.topLeft();
@@ -385,9 +220,9 @@ void Character::updateCharacter()
         scene_adjustmnt.setX(-scene_adjustmnt.x());
     }
 
-    this->setPos(res.topLeft()- scene_adjustmnt);//0,0);//res.topLeft());//
+    this->setPos(res.topLeft() - scene_adjustmnt); // 0,0);//res.topLeft());//
 
-//    this->moveBy(m_speed_x,m_speed_y);
+    //    this->moveBy(m_speed_x,m_speed_y);
     updateAnimation();
 }
 

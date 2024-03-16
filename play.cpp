@@ -40,13 +40,16 @@ PlayView::PlayView(QWidget *parent) : QGraphicsView(parent)
     // Player
     m_player = new Player(QPointF(200, 200), ":/Pirate_bomb/Player-Bomb Guy", *m_platform);
     m_scene->addItem(m_player);
+//    qDebug()<<m_player->childItems();
+//    m_scene->addItem(m_player->childItems().first());
     m_camera_pos = m_player->pos();
     m_player_rect = m_player->sceneBoundingRect();
 
     // Enemies
-    Enemy *enemy = new Enemy(QPointF(150, 200), ":/Pirate_bomb/Enemy-Bald Pirate", *m_platform, m_player_rect);
-    m_scene->addItem(enemy);
-    m_enemies.append(enemy);
+//    Enemy *enemy = new Enemy(QPointF(150, 200), ":/Pirate_bomb/Enemy-Bald Pirate", *m_platform, m_player_rect);
+//    m_scene->addItem(enemy);
+////     m_scene->addItem(enemy->childItems().first());
+//    m_enemies.append(enemy);
 
     m_weapons_count = 0;
 
@@ -123,6 +126,12 @@ void PlayView::updateItems()
     {
         enemy->updateShapes();
     }
+
+    for (QHash<int, Weapon *>::const_iterator weapons_it = m_weapons.constBegin(); weapons_it != m_weapons.constEnd(); ++weapons_it)
+    {
+        weapons_it.value()->updateShapes();
+    }
+    ////////////////////////////////////////////////////////
 
     m_player->gameUpdate();
 

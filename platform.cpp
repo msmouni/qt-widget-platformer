@@ -21,7 +21,9 @@ Platform::Platform(QSizeF tile_size, QString map_csv_path, QString tileset_png_p
         {
             tile_line.append(new Tile(map[idx_x][idx_y], QRectF(idx_x * m_tile_size.width(), idx_y * m_tile_size.height(), m_tile_size.width(), m_tile_size.height()), tiles_hash.value(map[idx_x][idx_y]), m_tileset_pixmap));
 
-            this->addToGroup(tile_line.last());
+            if (tiles_hash.value(map[idx_x][idx_y]) != TileType::Empty){
+                this->addToGroup(tile_line.last());
+            }
         }
         m_tiles.append(tile_line);
     }
@@ -32,12 +34,6 @@ QRectF Platform::boundingRect() const
     return childrenBoundingRect();
 }
 
-
-
-QRectF Platform::handleCollision(QRectF prev_rect, QRectF new_rect) const
-{
-    return m_collision_handler.handle(prev_rect, new_rect,getCollidingRects(prev_rect, new_rect));
-}
 
 /*QVector<QRectF> Platform::getCollidingRects(QRectF covering_rect) const
 {
