@@ -26,6 +26,9 @@ Character::Character(const QPointF &pos, const QString &res_path, const Platform
     connect(m_animation, SIGNAL(updatePixmap()), this, SLOT(updateView()));
 
     m_dynamics = new EntityDynamics(this, 0, 0, 0.5, true);
+
+    m_jump_timer.setSingleShot(true);
+    connect(&m_jump_timer, &QTimer::timeout, this, &Character::jumpTimeout);
 }
 
 QRectF Character::boundingRect() const
@@ -65,6 +68,11 @@ void Character::dropWeapon(Weapon *weapon)
     m_weapons.remove(weapon->getId());
 
     weapon->deleteLater();
+}
+
+void Character::jumpTimeout()
+{
+    m_dynamics->setAccelY(0);
 }
 
 void Character::updateCharacter()
@@ -146,4 +154,38 @@ void Character::updateAnimation()
 bool Character::isOnGround()
 {
     return m_state == CharacterState::Ground | m_state == CharacterState::Idle | m_state == CharacterState::Run;
+}
+
+void Character::moveRight()
+{
+    m_dynamics->setAccelX(M_ACCEL_MAC);
+}
+
+void Character::moveLeft()
+{
+    m_dynamics->setAccelX(-M_ACCEL_MAC);
+}
+
+void Character::jump()
+{
+    if (isOnGround())
+    {
+        m_jump_timer.start(M_JUMP_TIMEOUT_MS);
+        m_dynamics->setAccelY(M_JUMP_ACCEL);
+    }
+}
+
+void Character::stopRight()
+{
+    m_dynamics->setAccelX(fmin(m_dynamics->getAccelX(), 0));
+}
+
+void Character::stopLeft()
+{
+    m_dynamics->setAccelX(fmax(m_dynamics->getAccelX(), 0));
+}
+
+void Character::stopJump()
+{
+    m_dynamics->setAccelY(0);
 }

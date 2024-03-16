@@ -10,9 +10,6 @@ Player::Player(const QPointF &pos, const QString &res_path, const Platform &plat
 
     setData(0, "Player");
 
-    m_jump_timer.setSingleShot(true);
-    connect(&m_jump_timer, &QTimer::timeout, this, &Player::jumpTimeout);
-
     m_type = CharacterType::Player;
 
     m_weapons_count = 0;
@@ -23,22 +20,17 @@ void Player::gameUpdate()
     updateCharacter();
 }
 
-void Player::jumpTimeout()
-{
-    m_dynamics->setAccelY(0);
-}
-
 void Player::keyPressEvent(QKeyEvent *event)
 {
     int key = event->key();
 
     if (key == Qt::Key_Right)
     {
-        m_dynamics->setAccelX(M_ACCEL_MAC);
+        moveRight();
     }
     else if (key == Qt::Key_Left)
     {
-        m_dynamics->setAccelX(-M_ACCEL_MAC);
+        moveLeft();
     }
     else if (key == Qt::Key_Up)
     {
@@ -50,11 +42,7 @@ void Player::keyPressEvent(QKeyEvent *event)
     }
     else if (key == Qt::Key_Space)
     {
-        if (isOnGround())
-        {
-            m_jump_timer.start(M_JUMP_TIMEOUT_MS);
-            m_dynamics->setAccelY(M_JUMP_ACCEL);
-        }
+        jump();
     }
     else if (key == Qt::Key_B)
     {
@@ -82,11 +70,11 @@ void Player::keyReleaseEvent(QKeyEvent *event)
 
     if (key == Qt::Key_Right)
     {
-        m_dynamics->setAccelX(fmin(m_dynamics->getAccelX(), 0));
+        stopRight();
     }
     else if (key == Qt::Key_Left)
     {
-        m_dynamics->setAccelX(fmax(m_dynamics->getAccelX(), 0));
+        stopLeft();
     }
     else if (key == Qt::Key_Up)
     {
@@ -98,6 +86,6 @@ void Player::keyReleaseEvent(QKeyEvent *event)
     }
     else if (key == Qt::Key_Space)
     {
-        m_dynamics->setAccelY(0);
+        stopJump();
     }
 }

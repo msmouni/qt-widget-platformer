@@ -11,14 +11,8 @@ public:
     Player(const QPointF &pos, const QString &res_path, const Platform &platform);
 
     void gameUpdate() override;
-private slots:
-    void jumpTimeout();
 
 private:
-    const int M_JUMP_ACCEL = -50;
-    const int M_JUMP_TIMEOUT_MS = 250;
-    QTimer m_jump_timer;
-
     void keyPressEvent(QKeyEvent *event) override;
     void keyReleaseEvent(QKeyEvent *event) override;
 };

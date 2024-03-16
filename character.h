@@ -49,14 +49,17 @@ shape() returns the shape of the item as a QPainterPath. The shape represents th
 protected slots:
     void updateView();
     void dropWeapon(Weapon *);
+    void jumpTimeout();
 
 protected:
     const qreal M_ACCEL_MAC = 15;
+    const int M_JUMP_ACCEL = -50;
+    const int M_JUMP_TIMEOUT_MS = 250;
 
     QRectF m_bounding_rect;
     CharacterType m_type;
     SpriteAnimation *m_animation;
-    const Platform &m_platform;
+    QTimer m_jump_timer;
 
     EntityDynamics *m_dynamics;
 
@@ -68,7 +71,15 @@ protected:
     void updateCharacter();
     void updateState();
     virtual void updateAnimation();
+
     bool isOnGround();
+
+    void moveRight();
+    void moveLeft();
+    void jump();
+    void stopRight();
+    void stopLeft();
+    void stopJump();
 };
 
 #endif // CHARACTER_H
