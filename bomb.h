@@ -4,6 +4,7 @@
 #include "weapon.h"
 #include <QTimer>
 #include "dynamic.h"
+#include "progressbar.h"
 
 class Bomb : public Weapon
 {
@@ -26,6 +27,8 @@ private:
     const int M_DROP_TIEMOUT_MS = 500;
     QTimer *m_explosion_timer;
     QTimer *m_drop_timer;
+
+    ProgressBar *m_progress_bar;
 
     EntityDynamics *m_dynamics;
 };

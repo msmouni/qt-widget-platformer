@@ -39,6 +39,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         bomb.h bomb.cpp
         collision.h collision.cpp
         dynamic.h dynamic.cpp
+        progressbar.h progressbar.cpp
     )
 
 # https://stackoverflow.com/questions/18471827/qtcreator-cant-find-the-class-header-file-after-promoting-a-widget-to-that-clas
