@@ -9,7 +9,7 @@ Bomb::Bomb(int id, const QPointF & pos, qreal speed_x,qreal speed_y,qreal power_
     connect(m_drop_timer, &QTimer::timeout, this, &Bomb::end);
 
     m_speed_x = speed_x;
-    m_speed_y = 0;//speed_y;
+    m_speed_y = speed_y;
     m_acc_x = 0;
     m_acc_y = 0;
 

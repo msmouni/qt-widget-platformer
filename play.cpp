@@ -84,7 +84,8 @@ void PlayView::keyPressEvent(QKeyEvent *event)
         }
 
 
-        Bomb* wpn=new Bomb(m_weapons_count, m_player->scenePos(), dir_x*100,-100,250,250, *m_platform, ":/Pirate_bomb/Objects/BOMB");
+        // Note: pixmap pos (-50 ...)
+        Bomb* wpn=new Bomb(m_weapons_count, m_player->sceneBoundingRect().topLeft() - QPointF(50,50), dir_x*100,-100,250,250, *m_platform, ":/Pirate_bomb/Objects/BOMB");
 
         wpn->start();
         m_scene->addItem(wpn);
