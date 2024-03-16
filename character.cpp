@@ -125,7 +125,7 @@ void Character::updateCharacter()
     else if (m_speed_x < -0.001 ||m_direction == CharacterDirection::Left )
     {
 //        qDebug()<<"Before"<<sceneBoundingRect().topLeft()- m_bounding_rect.topLeft();
-        this->setTransform(QTransform().scale(-1, 1).translate(-sceneBoundingRect().width(),0)); ////////// Width change ...
+//        this->setTransform(QTransform().scale(-1, 1).translate(-sceneBoundingRect().width(),0)); ////////// Width change ...
 //        qDebug()<<"After"<<sceneBoundingRect().topLeft()- m_bounding_rect.topLeft();
 //        m_bounding_rect.
         m_direction = CharacterDirection::Left;
@@ -145,12 +145,12 @@ void Character::updateCharacter()
 
     QRectF prev_rect=sceneBoundingRect();
 //    qDebug()<<"Before"<<sceneBoundingRect().topLeft()- m_bounding_rect.topLeft();
-    m_bounding_rect=this->shape().boundingRect();
+//    m_bounding_rect=this->shape().boundingRect();
 //    qDebug()<<"After"<<sceneBoundingRect().topLeft()- m_bounding_rect.topLeft();
 
 //    qDebug()<<this->shape().boundingRect();
 
-    QRectF res=sceneBoundingRect();//m_platform.handleCollision(prev_rect, sceneBoundingRect().translated(m_speed_x, m_speed_y));//sceneBoundingRect();//.translated(m_speed_x, m_speed_y);//
+    QRectF res=m_platform.handleCollision(prev_rect, sceneBoundingRect().translated(m_speed_x, m_speed_y));//sceneBoundingRect();//.translated(m_speed_x, m_speed_y);//
     /*
     //TMP
     m_speed_x=0;//res.center().x()-prev_rect.center().x();

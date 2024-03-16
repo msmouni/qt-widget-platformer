@@ -268,7 +268,7 @@ QRectF Platform::handleCollision(QRectF prev_rect, QRectF new_rect) const
         {
 //            qDebug()<<"Check1";
             int i_x;
-            if (!going_right)
+            if (going_left)
             {
                 i_x = (right_idx + left_idx) - ind_x;
             }
@@ -278,7 +278,7 @@ QRectF Platform::handleCollision(QRectF prev_rect, QRectF new_rect) const
             }
 
             int i_y;
-            if (!going_down)
+            if (going_up)
             {
                 i_y = (bottom_idx + top_idx) - ind_y;
             }
@@ -392,7 +392,7 @@ QRectF Platform::handleCollision(QRectF prev_rect, QRectF new_rect) const
                             dy_b = new_dy_b;
                         }
                     }
-                    else
+                    if (going_up)
                     {
 //                        qDebug()<<"Check3-4";
                         // Up
