@@ -1,6 +1,6 @@
 #include "bomb.h"
 
-Bomb::Bomb(int id, const QRectF &scene_rect, const QRectF &active_rect, qreal speed_x,qreal speed_y,qreal power_x, qreal power_y, const Platform &platform, const QString &res_path): Weapon(id, scene_rect, active_rect, power_x, power_y, platform, res_path)
+Bomb::Bomb(int id, const QPointF pos, qreal speed_x,qreal speed_y,qreal power_x, qreal power_y, const Platform &platform, const QString &res_path): Weapon(id, pos, power_x, power_y, platform, res_path)
 {
     m_explosion_timer = new QTimer;
     connect(m_explosion_timer, &QTimer::timeout, this, &Bomb::explosion);
@@ -36,7 +36,8 @@ void Bomb::updateWeapon()
         m_speed_y *= m_friction; // Friction
         m_speed_y += m_acc_y + m_gravity;
 
-        QRectF res = m_platform.handleCollision(sceneBoundingRect(), m_speed_x, m_speed_y);
+//        QRectF res = m_platform.handleCollision(sceneBoundingRect(), m_speed_x, m_speed_y);
+        QRectF res = m_platform.handleCollision(this->sceneTransform().mapRect(m_shape_rect), m_speed_x, m_speed_y);
 
         this->setPos(res.center());
     }

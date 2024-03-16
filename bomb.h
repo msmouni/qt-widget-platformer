@@ -7,7 +7,7 @@
 class Bomb : public Weapon
 {
 public:
-    Bomb(int id, const QRectF &scene_rect, const QRectF &active_rect, qreal speed_x,qreal speed_y,qreal power_x, qreal power_y, const Platform &platform, const QString &res_path=nullptr);
+    Bomb(int id, const QPointF pos, qreal speed_x,qreal speed_y,qreal power_x, qreal power_y, const Platform &platform, const QString &res_path);
 
     void start() override;
 

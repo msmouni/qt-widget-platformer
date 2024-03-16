@@ -2,42 +2,42 @@
 
 
 
-Weapon::Weapon(int id, const QRectF &scene_rect, const QRectF &active_rect, qreal power_x, qreal power_y, const Platform &platform, const QString &res_path):
-    m_id(id), m_scene_rect(scene_rect), m_active_rect(active_rect), m_power_x(power_x), m_power_y(power_y), m_platform(platform)
+Weapon::Weapon(int id, const QPointF pos, qreal power_x, qreal power_y, const Platform &platform, const QString &res_path):
+    m_id(id), m_power_x(power_x), m_power_y(power_y), m_platform(platform)
 {
 
     setData(0, "Weapon");
 
-    // pos = center
-    m_scene_rect = QRectF(-scene_rect.width() / 2, -scene_rect.height() / 2, scene_rect.width(), scene_rect.height());
-    m_active_rect = QRectF(-active_rect.width() / 2, -active_rect.height() / 2, active_rect.width(), active_rect.height());
-    this->setPos(scene_rect.center());
-
     m_state=WeaponState::Idle;
 
-    if (res_path !=nullptr){
-        QHash<uint8_t, QString> animations_ids;
-        animations_ids.insert((uint8_t) WeaponState::Idle, res_path + "/Idle");
-        animations_ids.insert((uint8_t)WeaponState::Starting, res_path + "/Starting");
-        animations_ids.insert((uint8_t)WeaponState::Active, res_path + "/Active");
+    QHash<uint8_t, QString> animations_ids;
+    animations_ids.insert((uint8_t) WeaponState::Idle, res_path + "/Idle");
+    animations_ids.insert((uint8_t)WeaponState::Starting, res_path + "/Starting");
+    animations_ids.insert((uint8_t)WeaponState::Active, res_path + "/Active");
 
-        m_animation = new SpriteAnimation(animations_ids, 50);
+    m_animation = new SpriteAnimation(animations_ids, 50);
 
-        m_animation->setId(static_cast<uint8_t>(m_state));
+    m_animation->setId(static_cast<uint8_t>(m_state));
 
-        setPixmap(m_animation->getPixmap());
+    m_bounding_rect=m_animation->getRect();
 
-        connect(m_animation, SIGNAL(updatePixmap()), this, SLOT(updateView()));
+//    m_shape_rect=this->shape().boundingRect();
 
-        m_visible=true;
-    }else {
-        m_visible=false;
-    }
+    // pos = center
+    m_bounding_rect = QRectF(-m_bounding_rect.width() / 2, -m_bounding_rect.height() / 2, m_bounding_rect.width(), m_bounding_rect.height());
+//    m_shape_rect = QRectF(-m_shape_rect.width() / 2, -m_shape_rect.height() / 2, m_shape_rect.width(), m_shape_rect.height());
+    this->setPos(pos);
+
+    setPixmap(m_animation->getPixmap());
+
+    connect(m_animation, SIGNAL(updatePixmap()), this, SLOT(updateView()));
+
 }
 
 QRectF Weapon::boundingRect() const
 {
-    switch (m_state) {
+    return m_bounding_rect;
+    /*switch (m_state) {
     case WeaponState::Idle:
         return m_scene_rect;
     case WeaponState::Starting:
@@ -46,29 +46,33 @@ QRectF Weapon::boundingRect() const
         return m_active_rect;
     default:
         break;
-    }
+    }*/
 }
 
 void Weapon::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
-    if (m_visible){
-        painter->drawPixmap(m_scene_rect, pixmap(), m_animation->getRect());
+    painter->drawPixmap(m_shape_rect, pixmap(), this->shape().boundingRect());
 
-        // Set the pen and brush for the rectangle
-        QPen pen(Qt::red);
-        pen.setWidth(2);
-        painter->setPen(pen);
-        painter->drawRect(this->boundingRect());
-    }
+    // Set the pen and brush for the rectangle
+    QPen pen(Qt::red);
+    pen.setWidth(2);
+    painter->setPen(pen);
+//    painter->drawRect(this->boundingRect());
+
+////    QPen pen(Qt::yellow);
+//    pen.setColor(Qt::yellow);
+//    pen.setWidth(2);
+//    painter->setPen(pen);
+    painter->drawRect(m_shape_rect);
 }
 
-QPainterPath Weapon::shape() const
-{
-    QPainterPath path;
-    path.addRect(boundingRect());
-    //    path.addEllipse(boundingRect().x(), boundingRect().y(), boundingRect().width(), boundingRect().height());
-    return path;
-}
+//QPainterPath Weapon::shape() const
+//{
+//    QPainterPath path;
+//    path.addRect(boundingRect());
+//    //    path.addEllipse(boundingRect().x(), boundingRect().y(), boundingRect().width(), boundingRect().height());
+//    return path;
+//}
 
 void Weapon::start()
 {
@@ -114,4 +118,9 @@ int Weapon::getId()
 void Weapon::updateView()
 {
     setPixmap(m_animation->getPixmap());
+
+    m_shape_rect=this->shape().boundingRect();
+    m_shape_rect = QRectF(-m_shape_rect.width() / 2, -m_shape_rect.height() / 2, m_shape_rect.width(), m_shape_rect.height());
+
+    qDebug()<<this->boundingRect()<<m_shape_rect;//this->shape().boundingRect();
 }

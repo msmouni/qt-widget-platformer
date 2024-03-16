@@ -15,12 +15,12 @@ class Weapon : public QObject, public QGraphicsPixmapItem
 {
     Q_OBJECT
 public:
-    Weapon(int id, const QRectF &scene_rect, const QRectF &active_rect, qreal power_x, qreal power_y, const Platform &platform, const QString &res_path=nullptr);
+    Weapon(int id, const QPointF pos, qreal power_x, qreal power_y, const Platform &platform, const QString &res_path);
 
     QRectF boundingRect() const override;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
                QWidget *widget) override;
-    QPainterPath shape() const override;
+//    QPainterPath shape() const override;
 
     virtual void start();
     void activate();
@@ -43,8 +43,8 @@ protected:
     int m_id;
     WeaponState m_state;
 
-    QRectF m_scene_rect;
-    QRectF m_active_rect;
+    QRectF m_bounding_rect;
+    QRectF m_shape_rect;
 
     qreal m_power_x;
     qreal m_power_y;
@@ -53,7 +53,6 @@ protected:
 
     const Platform &m_platform;
 
-    bool m_visible;
     SpriteAnimation *m_animation;
 };
 
