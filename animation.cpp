@@ -15,7 +15,7 @@ SpriteAnimation::SpriteAnimation(QHash<uint8_t, QString> paths, int frame_dur_ms
 
         if (!m_frames_id[m_current_id].isEmpty())
         {
-            m_animation_timer = new QTimer;
+            m_animation_timer = new QTimer(this);
             connect(m_animation_timer, &QTimer::timeout, this, &SpriteAnimation::nextFrame);
             m_animation_timer->start(frame_dur_ms);
 
@@ -24,6 +24,12 @@ SpriteAnimation::SpriteAnimation(QHash<uint8_t, QString> paths, int frame_dur_ms
             m_rect = m_frames_id[m_current_id][0].rect().toRectF();
         }
     }
+}
+
+SpriteAnimation::~SpriteAnimation()
+{
+    m_animation_timer->stop();
+    m_animation_timer->deleteLater();
 }
 
 void SpriteAnimation::setId(uint8_t id)
@@ -46,6 +52,12 @@ const QPixmap &SpriteAnimation::getPixmap()
 const QRectF &SpriteAnimation::getRect()
 {
     return m_rect;
+}
+
+void SpriteAnimation::stop()
+{
+    m_animation_timer->stop();
+    m_animation_timer->deleteLater();
 }
 
 void SpriteAnimation::nextFrame()

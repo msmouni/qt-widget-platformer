@@ -51,7 +51,7 @@ void Player::keyPressEvent(QKeyEvent *event)
             m_jump_timer.start(M_JUMP_TIMEOUT_MS);
             m_acc_y = M_JUMP_ACCEL;
         }
-    }else if (key == Qt::Key_A){
+    }/*else if (key == Qt::Key_A){
         qDebug()<<"A";
         for (QGraphicsItem* item: this->collidingItems()){
             if (item->data(0) =="Weapon"){
@@ -70,7 +70,7 @@ void Player::keyPressEvent(QKeyEvent *event)
                 weapon->start();
             }
         }
-    }
+    }*/
 //    else if (key == Qt::Key_B){
 //        qDebug()<<"B";
 //        // TMP

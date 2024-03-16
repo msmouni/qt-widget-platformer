@@ -48,8 +48,10 @@ PlayView::PlayView(QWidget *parent) : QGraphicsView(parent)
     m_scene->addItem(enemy);
     m_enemies.append(enemy);*/
 
+    m_weapons_count = 0;
+
     // Update
-    m_update_timer = new QTimer;
+    m_update_timer = new QTimer(this);
     m_update_timeout_ms = 50;
     m_update_timer->setInterval(m_update_timeout_ms);
     m_update_timer->start();
@@ -75,24 +77,25 @@ void PlayView::keyPressEvent(QKeyEvent *event)
 {
     int key = event->key();
 
-    if (key == Qt::Key_B){
-        qDebug()<<"B";
+    if (key == Qt::Key_B)
+    {
+        qDebug() << "B";
         // TMP
-        qreal dir_x=1;
-        if (m_player->getDirection() ==CharacterDirection::Left){
-            dir_x=-1;
+        qreal dir_x = 1;
+        if (m_player->getDirection() == CharacterDirection::Left)
+        {
+            dir_x = -1;
         }
 
-
         // Note: pixmap pos (-50 ...)
-        Bomb* wpn=new Bomb(m_weapons_count, m_player->sceneBoundingRect().topLeft() - QPointF(50,50), dir_x*100,-100,250,250, *m_platform, ":/Pirate_bomb/Objects/BOMB");
+        Bomb *wpn = new Bomb(m_weapons_count, m_player->sceneBoundingRect().topLeft() - QPointF(50, 50), dir_x * 100, -100, 250, 250, *m_platform, ":/Pirate_bomb/Objects/BOMB");
 
         wpn->start();
         m_scene->addItem(wpn);
-        connect(wpn, SIGNAL(terminate(Weapon *)), this, SLOT(dropWeapon(Weapon*)));
-        m_weapons.insert(m_weapons_count,wpn);
+        connect(wpn, SIGNAL(terminate(Weapon *)), this, SLOT(dropWeapon(Weapon *)));
+        m_weapons.insert(m_weapons_count, wpn);
 
-        m_weapons_count+=1;
+        m_weapons_count += 1;
     }
 
     QGraphicsView::keyPressEvent(event);
@@ -118,17 +121,17 @@ void PlayView::updateItems()
 
     m_player_rect = m_player->sceneBoundingRect();
 
-//    qDebug()<<"pl"<<m_player->sceneBoundingRect()<<"en"<<m_enemies.first()->sceneBoundingRect()<<" => int:"<<m_player->sceneBoundingRect().intersects(m_enemies.first()->sceneBoundingRect());
+    //    qDebug()<<"pl"<<m_player->sceneBoundingRect()<<"en"<<m_enemies.first()->sceneBoundingRect()<<" => int:"<<m_player->sceneBoundingRect().intersects(m_enemies.first()->sceneBoundingRect());
     for (Enemy *enemy : m_enemies)
     {
         enemy->gameUpdate();
     }
 
-//    for (Weapon* weapon: m_weapons.values()){
-//        weapon->updateWeapon();
-//    }
+    //    for (Weapon* weapon: m_weapons.values()){
+    //        weapon->updateWeapon();
+    //    }
 
-    for (QHash<int, Weapon*>::const_iterator weapons_it = m_weapons.constBegin(); weapons_it != m_weapons.constEnd(); ++weapons_it)
+    for (QHash<int, Weapon *>::const_iterator weapons_it = m_weapons.constBegin(); weapons_it != m_weapons.constEnd(); ++weapons_it)
     {
         weapons_it.value()->updateWeapon();
     }
@@ -138,11 +141,7 @@ void PlayView::updateItems()
 
 void PlayView::dropWeapon(Weapon *weapon)
 {
-    m_scene->removeItem(weapon);
-
     m_weapons.remove(weapon->getId());
 
     weapon->deleteLater();
 }
-
-
