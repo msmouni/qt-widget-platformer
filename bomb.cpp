@@ -39,25 +39,11 @@ void Bomb::updateWeapon()
         m_speed_y *= m_friction; // Friction
         m_speed_y += m_acc_y + m_gravity;
 
-        /*m_bounding_rect=this->shape().boundingRect(); // Note deleted while trying to get shape -> error
-        QRectF res = m_platform.handleCollision(sceneBoundingRect(), m_speed_x, m_speed_y);*/
-
-        //        QRectF res = m_platform.handleCollision(this->sceneTransform().mapRect(m_shape_rect), m_speed_x, m_speed_y);
-        //        QRectF res = m_platform.handleCollision(this->sceneTransform().mapRect(QRectF(0, 0, m_bounding_rect.width(), m_bounding_rect.height())), m_speed_x, m_speed_y);
         QRectF prev_rect = sceneBoundingRect();
-        //        qDebug()<<"IN";
-        m_bounding_rect = this->shape().boundingRect(); //////////////////////////////////////////////
-                                                        //        QThread::msleep(20);
-                                                        //        qDebug()<<"OUT";
-
-        //        qDebug()<<prev_rect<<sceneBoundingRect();
+        m_bounding_rect = this->shape().boundingRect();
 
         QRectF res = m_platform.handleCollision(prev_rect, sceneBoundingRect().translated(m_speed_x, m_speed_y));
 
-        //        qDebug()<<"res"<<res<<"scene"<<sceneBoundingRect()<<pos()<<sceneBoundingRect().topLeft()-boundingRect().topLeft();
-
-        //        this->setPos(res.center());
-        //        m_bounding_rect=this->mapRectFromScene(res);
         this->setPos(res.topLeft() - boundingRect().topLeft());
     }
 }

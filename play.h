@@ -37,7 +37,7 @@ private:
     QVector<Enemy *> m_enemies;
 
     int m_weapons_count;
-    QHash<int,Weapon *> m_weapons;
+    QHash<int, Weapon *> m_weapons;
 
     void updateCam();
 

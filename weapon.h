@@ -5,7 +5,8 @@
 #include "platform.h"
 #include "animation.h"
 
-enum class WeaponState{
+enum class WeaponState
+{
     Idle,
     Starting,
     Active,
@@ -15,12 +16,12 @@ class Weapon : public QObject, public QGraphicsPixmapItem
 {
     Q_OBJECT
 public:
-    Weapon(int id, const QPointF & pos, qreal power_x, qreal power_y, const Platform &platform, const QString &res_path);
+    Weapon(int id, const QPointF &pos, qreal power_x, qreal power_y, const Platform &platform, const QString &res_path);
 
     QRectF boundingRect() const override;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
                QWidget *widget) override;
-//    QPainterPath shape() const override;
+    //    QPainterPath shape() const override;
 
     virtual void start();
     void activate();
@@ -31,7 +32,7 @@ public:
     qreal getPowerY() const;
     int getId();
 
-    virtual void updateWeapon()=0;
+    virtual void updateWeapon() = 0;
 
 signals:
     void terminate(Weapon *);

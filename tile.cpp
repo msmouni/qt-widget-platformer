@@ -52,7 +52,9 @@ void Tile::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWid
     if (!isEmpty())
     {
         painter->drawTiledPixmap(m_rect, m_tileset_pixmap, m_tileset_pos);
-    }else {
+    }
+    else
+    {
         painter->drawRect(m_rect);
     }
 

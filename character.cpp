@@ -1,13 +1,8 @@
 #include "character.h"
 #include "weapon.h"
 
-Character::Character(const QPointF & pos, const QString &res_path, const Platform &platform) : m_platform(platform)
+Character::Character(const QPointF &pos, const QString &res_path, const Platform &platform) : m_platform(platform)
 {
-    // pos = center
-//    m_bounding_rect = QRectF(0, 0, rect.width(), rect.height());//QRectF(-rect.width() / 2, -rect.height() / 2, rect.width(), rect.height());//
-//    this->setPos(rect.center());
-//    this->setPos(rect.topLeft());
-
     QHash<uint8_t, QString> animations_ids;
     animations_ids.insert((uint8_t)CharacterState::Idle, res_path + "/Idle");
     animations_ids.insert((uint8_t)CharacterState::Run, res_path + "/Run");
@@ -19,11 +14,10 @@ Character::Character(const QPointF & pos, const QString &res_path, const Platfor
 
     m_animation = new SpriteAnimation(animations_ids, 50);
 
-    m_bounding_rect=m_animation->getRect();
-//    m_bounding_rect = QRectF(0, 0, m_bounding_rect.width(), m_bounding_rect.height());
+    m_bounding_rect = m_animation->getRect();
     this->setPos(pos);
 
-    m_state = CharacterState::Idle;//:Init;
+    m_state = CharacterState::Idle;
     m_direction = CharacterDirection::Right;
 
     m_animation->setId(static_cast<uint8_t>(m_state));
@@ -55,7 +49,6 @@ void Character::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
     QPen pen(Qt::green);
     pen.setWidth(2);
     painter->setPen(pen);
-//    painter->setFont(QFont("Arial", 15));
     painter->drawRect(this->boundingRect());
 
     painter->drawPath(this->shape());
@@ -68,14 +61,6 @@ void Character::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
     painter->drawPoint(boundingRect().topLeft());
     painter->drawPoint(sceneBoundingRect().topLeft());
 }
-
-//QPainterPath Character::shape() const
-//{
-//    QPainterPath path;
-//    path.addRect(boundingRect());
-////    path.addEllipse(boundingRect().x(), boundingRect().y(), boundingRect().width(), boundingRect().height());
-//    return path;
-//}
 
 const CharacterDirection &Character::getDirection() const
 {
@@ -94,25 +79,26 @@ void Character::updateCharacter()
     m_speed_x += m_acc_x;
 
     m_speed_y *= m_friction; // Friction
-    m_speed_y += m_acc_y+ m_gravity;
-
+    m_speed_y += m_acc_y + m_gravity;
 
     // TODO: Better handle for State and direction
 
-    QRectF prev_rect=sceneBoundingRect();
-    m_bounding_rect=this->shape().boundingRect();
+    QRectF prev_rect = sceneBoundingRect();
+    m_bounding_rect = this->shape().boundingRect();
 
-    QRectF res=m_platform.handleCollision(prev_rect, sceneBoundingRect().translated(m_speed_x, m_speed_y));
+    QRectF res = m_platform.handleCollision(prev_rect, sceneBoundingRect().translated(m_speed_x, m_speed_y));
 
-    m_speed_x=res.center().x()-sceneBoundingRect().center().x();
-    m_speed_y=res.center().y()-sceneBoundingRect().center().y();
+    m_speed_x = res.center().x() - sceneBoundingRect().center().x();
+    m_speed_y = res.center().y() - sceneBoundingRect().center().y();
 
-    if ((0<m_speed_x && m_speed_x<=1e-2) || (0>m_speed_x && m_speed_x>=-1e-2)){
-        m_speed_x=0;
+    if ((0 < m_speed_x && m_speed_x <= 1e-2) || (0 > m_speed_x && m_speed_x >= -1e-2))
+    {
+        m_speed_x = 0;
     }
 
-    if ((0<m_speed_y && m_speed_y<=1e-2) || (0>m_speed_y && m_speed_y>=-1e-2)){
-        m_speed_y=0;
+    if ((0 < m_speed_y && m_speed_y <= 1e-2) || (0 > m_speed_y && m_speed_y >= -1e-2))
+    {
+        m_speed_y = 0;
     }
 
     if (m_speed_x > 1)
@@ -120,9 +106,9 @@ void Character::updateCharacter()
         this->setTransform(QTransform().scale(1, 1));
         m_direction = CharacterDirection::Right;
     }
-    else if (m_speed_x < -1 ||m_direction == CharacterDirection::Left )
+    else if (m_speed_x < -1 || m_direction == CharacterDirection::Left)
     {
-        this->setTransform(QTransform().scale(-1, 1).translate(-sceneBoundingRect().width(),0)); ////////// Width change ...
+        this->setTransform(QTransform().scale(-1, 1).translate(-sceneBoundingRect().width(), 0)); ////////// Width change ...
         m_direction = CharacterDirection::Left;
     }
 
@@ -136,7 +122,8 @@ void Character::updateCharacter()
     {
         m_state = CharacterState::Fall;
     }
-    else */if (abs(m_speed_x) > 1)
+    else */
+    if (abs(m_speed_x) > 1)
     {
         m_state = CharacterState::Run;
     }
@@ -146,41 +133,46 @@ void Character::updateCharacter()
     }
 
     // TMP
-    for (QGraphicsItem* item: this->collidingItems()){
-        if (item->data(0) == "Weapon"){
-            Weapon* weapon= static_cast<Weapon*>(item);
-            if (weapon->isActive()){
-                m_state=CharacterState::Hit;
+    for (QGraphicsItem *item : this->collidingItems())
+    {
+        if (item->data(0) == "Weapon")
+        {
+            Weapon *weapon = static_cast<Weapon *>(item);
+            if (weapon->isActive())
+            {
+                m_state = CharacterState::Hit;
 
                 // Note: Weapon rect + pos -> shape
-                QPointF diff_pos=this->sceneBoundingRect().center() -weapon->sceneBoundingRect().center();
-                qreal dir_x=1;
-                qreal dir_y=-1;
+                QPointF diff_pos = this->sceneBoundingRect().center() - weapon->sceneBoundingRect().center();
+                qreal dir_x = 1;
+                qreal dir_y = -1;
 
-                if (diff_pos.x()<0){
-                    dir_x=-1;
+                if (diff_pos.x() < 0)
+                {
+                    dir_x = -1;
                 }
 
-                if (diff_pos.y()>0){
-                    dir_y=1;
+                if (diff_pos.y() > 0)
+                {
+                    dir_y = 1;
                 }
 
+                m_speed_x += weapon->getPowerX() * dir_x;
 
-                m_speed_x+= weapon->getPowerX() *dir_x;
-
-                m_speed_y+= weapon->getPowerY() *dir_y;
+                m_speed_y += weapon->getPowerY() * dir_y;
             }
         }
     }
 
     ////////////////////////////////////////////////////////////////////////////
 
-    QPointF scene_adjustmnt=m_bounding_rect.topLeft();
-    if (m_direction == CharacterDirection::Left){
+    QPointF scene_adjustmnt = m_bounding_rect.topLeft();
+    if (m_direction == CharacterDirection::Left)
+    {
         scene_adjustmnt.setX(-scene_adjustmnt.x());
     }
 
-    this->setPos(res.topLeft()- scene_adjustmnt);
+    this->setPos(res.topLeft() - scene_adjustmnt);
     updateAnimation();
 }
 
