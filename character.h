@@ -42,7 +42,7 @@ shape() returns the shape of the item as a QPainterPath. The shape represents th
      */
     //    QPainterPath shape() const override;
 
-    void updateKinematics();
+    virtual void updateKinematics();
     virtual void gameUpdate() = 0;
 
     const CollisionRect *getCollisionRect() const;
@@ -52,13 +52,14 @@ protected slots:
     void jumpTimeout();
 
 protected:
-    const qreal M_ACCEL_MAC = 15;
-    const int M_JUMP_ACCEL = -50;
-    const int M_JUMP_TIMEOUT_MS = 250;
+    //    const qreal M_ACCEL_MAX = 15;
+    //    const int M_JUMP_ACCEL = -50;
+    const int M_JUMP_TIMEOUT_MS = 500; // 250;
 
     QRectF m_bounding_rect;
     CharacterType m_type;
     SpriteAnimation *m_animation;
+    const Platform &m_platform; // Only used by Enemy (path following)
     QTimer m_jump_timer;
 
     EntityDynamics *m_dynamics;

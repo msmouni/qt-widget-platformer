@@ -17,7 +17,7 @@ Character::Character(const QPointF &pos, const QString &res_path, const Platform
     m_bounding_rect = m_animation->getRect();
     this->setPos(pos);
 
-    m_state = CharacterState::Idle;
+    m_state = CharacterState::Init;
 
     m_animation->setId(static_cast<uint8_t>(m_state));
 
@@ -39,6 +39,27 @@ QRectF Character::boundingRect() const
 void Character::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
     painter->drawPixmap(m_bounding_rect, pixmap(), this->shape().boundingRect());
+
+    // Set the pen and brush for the rectangle
+    QPen pen(Qt::green);
+    pen.setWidth(2);
+    painter->setPen(pen);
+    //    painter->drawRect(this->boundingRect());
+
+    painter->drawPath(this->shape());
+
+    /*QPen pen2(Qt::yellow);
+    pen.setWidth(2);
+    painter->setPen(pen2);
+    painter->drawRect(coverage_rect.boundingRect());*/
+    ///////////////////////////////////////////::
+    //    painter->drawRect(this->sceneBoundingRect());
+
+    pen.setWidth(9);
+    painter->setPen(pen);
+    //    painter->drawPoint(this->mapFromScene(m_dynamics->getEntityBoxPos()));//pos()));//scenePos()));//m_dynamics->getEntityPos()));//+boundingRect().topLeft()));//boundingRect().topLeft());
+    //    painter->drawPoint(sceneBoundingRect().topLeft());
+    painter->drawPoint(this->mapFromScene(QPointF(fmin(sceneBoundingRect().left(), sceneBoundingRect().right()), sceneBoundingRect().top())));
 }
 
 void Character::updateKinematics()
@@ -153,17 +174,17 @@ void Character::updateAnimation()
 
 bool Character::isOnGround()
 {
-    return m_state == CharacterState::Ground | m_state == CharacterState::Idle | m_state == CharacterState::Run;
+    return m_state != CharacterState::Init && m_state != CharacterState::Jump && m_state != CharacterState::Fall;
 }
 
 void Character::moveRight()
 {
-    m_dynamics->setAccelX(M_ACCEL_MAC);
+    m_dynamics->setAccelX(m_dynamics->getMaxAccel());
 }
 
 void Character::moveLeft()
 {
-    m_dynamics->setAccelX(-M_ACCEL_MAC);
+    m_dynamics->setAccelX(m_dynamics->getMinAccel());
 }
 
 void Character::jump()
@@ -171,7 +192,10 @@ void Character::jump()
     if (isOnGround())
     {
         m_jump_timer.start(M_JUMP_TIMEOUT_MS);
-        m_dynamics->setAccelY(M_JUMP_ACCEL);
+        // Sp: cst & A: cst => TODO: Use A to decrease Sp (ex: Sp_{n} = 0.95 *Sp_{n-1})
+        // Sp= Sp * friction + A + G
+        m_dynamics->setAccelY(m_dynamics->getMinSpeed() * (1 - m_dynamics->getFriction()) - m_dynamics->getGravity());
+        m_dynamics->setSpeedY(m_dynamics->getMinSpeed());
     }
 }
 

@@ -10,7 +10,13 @@ PlayView::PlayView(QWidget *parent) : QGraphicsView(parent)
     this->setScene(m_scene);
     m_scene->setBackgroundBrush(Qt::blue); // TMP
 
-    // Tiles
+    //    // Reverse the y-axis by setting a vertical flip transformation
+    //    this->setTransform(QTransform(1, 0, 0, -1, 0, height()));
+
+    // Load an image and add it to the scene (Resource File (.qrc))
+    //    m_map_img=m_scene->addPixmap(QPixmap(":Pirate_bomb/map_64_64_w30_h20.png"));
+    //    QPixmap pix(":Pirate_bomb/map_64_64_w30_h20.png");
+
     QHash<int, TileType> tiles_hash;
     tiles_hash.insert(-1, TileType::Empty);
     for (int i = 0; i <= 21; i++)
@@ -43,10 +49,12 @@ PlayView::PlayView(QWidget *parent) : QGraphicsView(parent)
 
     // Update
     m_update_timer = new QTimer(this);
-    m_update_timeout_ms = 50;
+    m_update_timeout_ms = 50; // 50;
     m_update_timer->setInterval(m_update_timeout_ms);
     m_update_timer->start();
     connect(m_update_timer, SIGNAL(timeout()), this, SLOT(updateItems()));
+
+    m_pause = false;
 }
 
 void PlayView::wheelEvent(QWheelEvent *event)
@@ -64,6 +72,15 @@ void PlayView::mouseDoubleClickEvent(QMouseEvent *event)
     event->ignore();
 }
 
+void PlayView::keyPressEvent(QKeyEvent *event)
+{
+    if (event->key() == Qt::Key_P)
+    {
+        m_pause = !m_pause;
+    }
+    QGraphicsView::keyPressEvent(event);
+}
+
 void PlayView::updateCam()
 {
     QPointF player_pos = m_player->pos();
@@ -74,22 +91,25 @@ void PlayView::updateCam()
 
 void PlayView::updateItems()
 {
-    m_platform->update();
-
-    m_player->updateKinematics();
-    for (Enemy *enemy : m_enemies)
+    if (!m_pause)
     {
-        enemy->updateKinematics();
+        m_platform->update();
+
+        m_player->updateKinematics();
+        for (Enemy *enemy : m_enemies)
+        {
+            enemy->updateKinematics();
+        }
+        ////////////////////////////////////////////////////////
+        m_player->gameUpdate();
+
+        m_player_rect = m_player->sceneBoundingRect();
+
+        for (Enemy *enemy : m_enemies)
+        {
+            enemy->gameUpdate();
+        }
+
+        updateCam();
     }
-    ////////////////////////////////////////////////////////
-    m_player->gameUpdate();
-
-    m_player_rect = m_player->sceneBoundingRect();
-
-    for (Enemy *enemy : m_enemies)
-    {
-        enemy->gameUpdate();
-    }
-
-    updateCam();
 }

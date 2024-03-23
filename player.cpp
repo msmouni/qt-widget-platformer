@@ -34,11 +34,7 @@ void Player::keyPressEvent(QKeyEvent *event)
     }
     else if (key == Qt::Key_Up)
     {
-        m_dynamics->setAccelY(-M_ACCEL_MAC);
-    }
-    else if (key == Qt::Key_Down)
-    {
-        m_dynamics->setAccelY(M_ACCEL_MAC);
+        m_dynamics->setAccelY(m_dynamics->getMinAccel());
     }
     else if (key == Qt::Key_Space)
     {
@@ -53,7 +49,7 @@ void Player::keyPressEvent(QKeyEvent *event)
         }
 
         // Note: pixmap pos (-50 ...)
-        Bomb *wpn = new Bomb(m_weapons_count, sceneBoundingRect().topLeft() - QPointF(50, 50), dir_x * 100, -100, 250, 250, ":/Pirate_bomb/Objects/BOMB");
+        Bomb *wpn = new Bomb(m_weapons_count, sceneBoundingRect().topLeft() - QPointF(50, 70), dir_x * 100, -100, 250, 250, ":/Pirate_bomb/Objects/BOMB");
 
         wpn->start();
         this->scene()->addItem(wpn);

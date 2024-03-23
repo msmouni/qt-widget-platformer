@@ -11,7 +11,12 @@ class Enemy : public Character
 public:
     Enemy(const QPointF &pos, const QString &res_path, const Platform &platform, const QRectF &player_rect);
 
+    void updateKinematics() override;
     void gameUpdate() override;
+
+    // TMP
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
+               QWidget *widget) override;
 
 protected slots:
     void setPathFindingResult(QVector<QPoint>);
@@ -24,6 +29,7 @@ private:
     QMutex m_path_mutex;
     const int M_NB_PATH_ITER = 3;
     int m_path_iter;
+    int m_path_length = 0;
 
     void followPath();
 };

@@ -25,6 +25,10 @@ QRectF CollisionRect::boundingRect() const
 
 void CollisionRect::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
+    QPen pen(Qt::yellow);
+    pen.setWidth(2);
+    painter->setPen(pen);
+    painter->drawPath(this->shape());
 }
 
 QPainterPath CollisionRect::shape() const
