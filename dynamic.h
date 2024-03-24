@@ -25,21 +25,27 @@ public:
     void setSpeedX(qreal speed_x);
     void setSpeedY(qreal speed_y);
 
-    qreal getAccelX();
-    qreal getAccelY();
+    qreal getAccelX() const;
+    qreal getAccelY() const;
     void setAccelX(qreal accel_x);
     void setAccelY(qreal accel_y);
 
-    qreal getFriction();
-    qreal getGravity();
+    qreal getFriction() const;
+    qreal getGravity() const;
+    qreal getMaxSpeed() const;
+    qreal getMinSpeed() const;
+    qreal getMaxAccel() const;
+    qreal getMinAccel() const;
 
     const EntityDirection &getDirection() const;
 
-    QPointF getEntityPos();
+    QPointF getEntityPos() const;
 
     bool isBottomCollision();
 
 private:
+    const qreal M_SPEED_MAX = 30;
+    const qreal M_ACCEL_MAX = 15;
     const qreal M_GRAVITY = 13;
 
     QGraphicsItem *m_parent;

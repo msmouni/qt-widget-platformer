@@ -158,12 +158,12 @@ bool Character::isOnGround()
 
 void Character::moveRight()
 {
-    m_dynamics->setAccelX(M_ACCEL_MAC);
+    m_dynamics->setAccelX(m_dynamics->getMaxAccel());
 }
 
 void Character::moveLeft()
 {
-    m_dynamics->setAccelX(-M_ACCEL_MAC);
+    m_dynamics->setAccelX(m_dynamics->getMinAccel());
 }
 
 void Character::jump()
@@ -171,7 +171,7 @@ void Character::jump()
     if (isOnGround())
     {
         m_jump_timer.start(M_JUMP_TIMEOUT_MS);
-        m_dynamics->setAccelY(M_JUMP_ACCEL);
+        m_dynamics->setAccelY(m_dynamics->getMinAccel());
     }
 }
 

@@ -52,8 +52,6 @@ protected slots:
     void jumpTimeout();
 
 protected:
-    const qreal M_ACCEL_MAC = 15;
-    const int M_JUMP_ACCEL = -50;
     const int M_JUMP_TIMEOUT_MS = 250;
 
     QRectF m_bounding_rect;

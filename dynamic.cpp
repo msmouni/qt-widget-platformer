@@ -30,9 +30,11 @@ void EntityDynamics::updateKinematics()
     // with this model: S_n = S_{n-1} * f + Acc => Sn = Acc *(1 - f^n)/(1-f) => #with f < 1 and n >> 0: Sn = Acc/(1-f)
     m_speed_x *= m_friction; // Friction
     m_speed_x += m_acc_x;
+    setSpeedX(m_speed_x);
 
     m_speed_y *= m_friction; // Friction
     m_speed_y += m_acc_y + M_GRAVITY;
+    setSpeedY(m_speed_y);
 
     updateDirection();
 
@@ -65,20 +67,20 @@ qreal EntityDynamics::getSpeedY() const
 
 void EntityDynamics::setSpeedX(qreal speed_x)
 {
-    m_speed_x = speed_x;
+    m_speed_x = fmin(fmax(speed_x, getMinSpeed()), getMaxSpeed());
 }
 
 void EntityDynamics::setSpeedY(qreal speed_y)
 {
-    m_speed_y = speed_y;
+    m_speed_y = fmin(fmax(speed_y, getMinSpeed()), getMaxSpeed());
 }
 
-qreal EntityDynamics::getAccelX()
+qreal EntityDynamics::getAccelX() const
 {
     return m_acc_x;
 }
 
-qreal EntityDynamics::getAccelY()
+qreal EntityDynamics::getAccelY() const
 {
     return m_acc_y;
 }
@@ -93,14 +95,34 @@ void EntityDynamics::setAccelY(qreal accel_y)
     m_acc_y = accel_y;
 }
 
-qreal EntityDynamics::getFriction()
+qreal EntityDynamics::getFriction() const
 {
     return m_friction;
 }
 
-qreal EntityDynamics::getGravity()
+qreal EntityDynamics::getGravity() const
 {
     return M_GRAVITY;
+}
+
+qreal EntityDynamics::getMaxSpeed() const
+{
+    return M_SPEED_MAX;
+}
+
+qreal EntityDynamics::getMinSpeed() const
+{
+    return -M_SPEED_MAX;
+}
+
+qreal EntityDynamics::getMaxAccel() const
+{
+    return M_ACCEL_MAX;
+}
+
+qreal EntityDynamics::getMinAccel() const
+{
+    return -M_ACCEL_MAX;
 }
 
 const EntityDirection &EntityDynamics::getDirection() const
@@ -108,7 +130,7 @@ const EntityDirection &EntityDynamics::getDirection() const
     return m_direction;
 }
 
-QPointF EntityDynamics::getEntityPos()
+QPointF EntityDynamics::getEntityPos() const
 {
     return m_entity_pos;
 }
