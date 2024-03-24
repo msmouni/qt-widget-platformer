@@ -34,19 +34,7 @@ void EntityDynamics::updateKinematics()
     m_speed_y *= m_friction; // Friction
     m_speed_y += m_acc_y + M_GRAVITY;
 
-    if (m_direction != EntityDirection::NoDirection)
-    {
-        if (m_speed_x > 1)
-        {
-            m_parent->setTransform(QTransform().scale(1, 1));
-            m_direction = EntityDirection::MovingRight;
-        }
-        else if (m_speed_x < -1 || m_direction == EntityDirection::MovingLeft)
-        {
-            m_parent->setTransform(QTransform().scale(-1, 1).translate(-m_parent->boundingRect().width(), 0)); ////////// Width change ...
-            m_direction = EntityDirection::MovingLeft;
-        }
-    }
+    updateDirection();
 
     m_collision_rect->update();
 }
@@ -56,10 +44,6 @@ void EntityDynamics::updateDynamics()
     m_collision_rect->handleCollision();
 
     QPointF scene_adjustmnt = m_parent->boundingRect().topLeft();
-    if (m_direction == EntityDirection::MovingLeft)
-    {
-        scene_adjustmnt.setX(-scene_adjustmnt.x());
-    }
 
     m_entity_pos = m_collision_rect->getEntityPos() - scene_adjustmnt;
 }
@@ -132,4 +116,23 @@ QPointF EntityDynamics::getEntityPos()
 bool EntityDynamics::isBottomCollision()
 {
     return m_collision_rect->isBottomCollision();
+}
+
+void EntityDynamics::updateDirection()
+{
+    if (m_direction != EntityDirection::NoDirection)
+    {
+        if (m_speed_x > 1)
+        {
+            m_parent->setTransform(QTransform().scale(1, 1));
+            m_direction = EntityDirection::MovingRight;
+        }
+        else if (m_speed_x < -1 || m_direction == EntityDirection::MovingLeft)
+        {
+            // Width change
+            QRectF parent_bnd_rect = m_parent->boundingRect();
+            m_parent->setTransform(QTransform().scale(-1, 1).translate(-2 * parent_bnd_rect.topLeft().x() - parent_bnd_rect.width(), 0));
+            m_direction = EntityDirection::MovingLeft;
+        }
+    }
 }

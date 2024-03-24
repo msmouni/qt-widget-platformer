@@ -56,6 +56,8 @@ private:
     qreal m_friction;
 
     CollisionRect *m_collision_rect;
+
+    void updateDirection();
 };
 
 #endif // ENTITYDYNAMICS_H
