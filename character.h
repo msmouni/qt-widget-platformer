@@ -57,6 +57,7 @@ protected:
     QRectF m_bounding_rect;
     CharacterType m_type;
     SpriteAnimation *m_animation;
+    const Platform &m_platform; // Only used by Enemy (path following)
     QTimer m_jump_timer;
 
     EntityDynamics *m_dynamics;
