@@ -52,7 +52,7 @@ protected slots:
     void jumpTimeout();
 
 protected:
-    const int M_JUMP_TIMEOUT_MS = 250;
+    const int M_JUMP_TIMEOUT_MS = 500;
 
     QRectF m_bounding_rect;
     CharacterType m_type;

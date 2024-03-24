@@ -171,7 +171,10 @@ void Character::jump()
     if (isOnGround())
     {
         m_jump_timer.start(M_JUMP_TIMEOUT_MS);
-        m_dynamics->setAccelY(m_dynamics->getMinAccel());
+        // Sp: cst & A: cst => TODO: Use A to decrease Sp (ex: Sp_{n} = 0.95 *Sp_{n-1})
+        // Sp= Sp * friction + A + G
+        m_dynamics->setAccelY(m_dynamics->getMinSpeed() * (1 - m_dynamics->getFriction()) - m_dynamics->getGravity());
+        m_dynamics->setSpeedY(m_dynamics->getMinSpeed());
     }
 }
 
