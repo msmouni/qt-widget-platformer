@@ -32,14 +32,6 @@ void Player::keyPressEvent(QKeyEvent *event)
     {
         moveLeft();
     }
-    else if (key == Qt::Key_Up)
-    {
-        m_dynamics->setAccelY(m_dynamics->getMinAccel());
-    }
-    else if (key == Qt::Key_Down)
-    {
-        m_dynamics->setAccelY(m_dynamics->getMaxAccel());
-    }
     else if (key == Qt::Key_Space)
     {
         jump();
