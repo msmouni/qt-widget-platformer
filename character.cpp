@@ -153,7 +153,7 @@ void Character::updateAnimation()
 
 bool Character::isOnGround()
 {
-    return m_state == CharacterState::Ground | m_state == CharacterState::Idle | m_state == CharacterState::Run;
+    return m_state != CharacterState::Init && m_state != CharacterState::Jump && m_state != CharacterState::Fall;
 }
 
 void Character::moveRight()
