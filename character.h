@@ -42,7 +42,7 @@ shape() returns the shape of the item as a QPainterPath. The shape represents th
      */
     //    QPainterPath shape() const override;
 
-    void updateKinematics();
+    virtual void updateKinematics();
     virtual void gameUpdate() = 0;
 
     const CollisionRect *getCollisionRect() const;

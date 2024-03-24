@@ -114,7 +114,7 @@ private:
 
     QPoint getTilePos(const QPointF &pos_f)
     {
-        return QPoint(pos_f.x() / m_tile_size.width(), pos_f.y() / m_tile_size.height());
+        return QPoint(round(pos_f.x() / m_tile_size.width()), round(pos_f.y() / m_tile_size.height()));
     }
 
 public:

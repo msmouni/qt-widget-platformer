@@ -18,7 +18,11 @@ public:
     int getNbRows() const;
     QSizeF getTileSize() const;
     const TileType &getTileType(int &x, int &y) const;
-    QPointF getTileBottomCenter(const QPoint &pos) const;
+    const TileType &getTileType(QPoint &point) const;
+    QPoint getTileIdx(QPointF &point) const;
+    bool isInMap(const QPoint &indx) const;
+    QPointF getPosInTile(const QPoint &pos, const QRectF &rect) const;
+    QRectF getTileRect(const QPoint &pos) const;
 
 private:
     const qreal M_COLLISION_MARGIN = 1e-3;

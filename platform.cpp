@@ -90,9 +90,29 @@ const TileType &Platform::getTileType(int &x, int &y) const
     return m_tiles[x][y]->getType();
 }
 
-QPointF Platform::getTileBottomCenter(const QPoint &pos) const
+const TileType &Platform::getTileType(QPoint &point) const
 {
-    return QPointF((pos.x() + 0.5) * m_tile_size.width(), (pos.y() + 1.0) * m_tile_size.height() - M_COLLISION_MARGIN);
+    return getTileType(point.rx(), point.ry());
+}
+
+QPoint Platform::getTileIdx(QPointF &point) const
+{
+    return QPoint(round(point.x() / m_tile_size.width()), round(point.y() / m_tile_size.height()));
+}
+
+bool Platform::isInMap(const QPoint &indx) const
+{
+    return 0 <= indx.x() && indx.x() < m_nb_columns && 0 <= indx.y() && indx.y() < m_nb_rows;
+}
+
+QPointF Platform::getPosInTile(const QPoint &pos, const QRectF &rect) const
+{
+    return QPointF((pos.x() + 0.5) * m_tile_size.width() - rect.width() / 2, (pos.y() + 1.0) * m_tile_size.height() - rect.height());
+}
+
+QRectF Platform::getTileRect(const QPoint &pos) const
+{
+    return QRectF(QPointF(pos.x() * m_tile_size.width(), pos.y() * m_tile_size.height()), m_tile_size);
 }
 
 QRect Platform::getIndexRect(QRectF rect, qreal &dx, qreal &dy) const

@@ -5,20 +5,19 @@ Enemy::Enemy(const QPointF &pos, const QString &res_path, const Platform &platfo
     setData(0, "Enemy");
     m_type = CharacterType::Enemy;
 
-    m_path_iter = M_NB_PATH_ITER;
-
     connect(&m_path_finder, SIGNAL(pathFindingRes(QVector<QPoint>)), this, SLOT(setPathFindingResult(QVector<QPoint>)));
+}
+
+void Enemy::updateKinematics()
+{
+    followPath();
+
+    Character::updateKinematics();
 }
 
 void Enemy::gameUpdate()
 {
-    if (m_path_tiles.isEmpty() && isOnGround())
-    {
-        m_path_finder.findPath(scenePos(), m_player_rect.center());
-        m_path_iter = M_NB_PATH_ITER;
-    }
-
-//        followPath();
+    findPath();
 
     updateCharacter();
 }
@@ -29,32 +28,83 @@ void Enemy::setPathFindingResult(QVector<QPoint> path)
     m_path_tiles = path;
 }
 
+void Enemy::findPath()
+{
+    QPointF pos = sceneBoundingRect().topLeft();
+    QPoint tile_below = m_platform.getTileIdx(pos);
+    tile_below.setY(tile_below.y() + 1);
+
+    bool on_ground = m_platform.isInMap(tile_below) && (m_platform.getTileType(tile_below) == TileType::Solid || m_platform.getTileType(tile_below) == TileType::JumpThrough);
+
+    if (on_ground)
+    {
+        m_path_finder.findPath(pos, m_player_rect.topLeft());
+    }
+}
+
+void Enemy::checkPathNodeReached()
+{
+    if (m_path_tiles.length() == 1)
+    {
+        QPointF next_pos = m_platform.getPosInTile(m_path_tiles[0], this->boundingRect());
+        QPointF dist = next_pos - sceneBoundingRect().topLeft();
+
+        if (sqrt(QPointF::dotProduct(dist, dist)) < M_PATH_FOLLOW_PRECISION)
+        {
+            m_path_tiles.pop_front();
+        }
+    }
+    else if (m_path_tiles.length() > 1)
+    {
+        QPointF prev_pos = m_platform.getPosInTile(m_path_tiles[0], this->boundingRect());
+        QPointF next_pos = m_platform.getPosInTile(m_path_tiles[1], this->boundingRect());
+
+        QPointF dir = next_pos - prev_pos;
+        QPointF dist = next_pos - sceneBoundingRect().topLeft();
+
+        if (QPointF::dotProduct(dir, dist) < 0 || sqrt(QPointF::dotProduct(dist, dist)) < M_PATH_FOLLOW_PRECISION)
+        {
+            m_path_tiles.pop_front();
+        }
+    }
+}
+
 void Enemy::followPath()
 {
     QMutexLocker ml(&m_path_mutex);
 
-    // TODO: CHANGE METHOD LATER ({USE ACTIONS: LEFT - RIGHT - JUMP - FALL} + {dot_product(next_pos - path[i], path[i] - current_pos) >=0 => reached current target})
+    checkPathNodeReached();
 
     if (!m_path_tiles.isEmpty())
     {
-        QPointF currentPos(this->scenePos().x(), this->sceneBoundingRect().bottom());
-        QPointF next_tile_pos(m_platform.getTileBottomCenter(m_path_tiles.first()));
-
-        qreal speed_x = (next_tile_pos.x() - currentPos.x()) / m_path_iter;
-        qreal speed_y = (next_tile_pos.y() - currentPos.y()) / m_path_iter;
-
-        m_path_iter -= 1;
-
-        if (m_path_iter == 0)
+        QPointF next_pos;
+        if (m_path_tiles.length() == 1)
         {
-            m_path_iter = M_NB_PATH_ITER;
-            m_path_tiles.pop_front();
+            next_pos = m_platform.getPosInTile(m_path_tiles[0], this->boundingRect());
+        }
+        else
+        {
+            next_pos = m_platform.getPosInTile(m_path_tiles[1], this->boundingRect());
         }
 
-        speed_y -= (m_dynamics->getAccelY() + m_dynamics->getGravity());
-        speed_y /= m_dynamics->getFriction(); // Friction
+        QPointF speed = next_pos - sceneBoundingRect().topLeft();
 
-        speed_x -= m_dynamics->getAccelX();
-        speed_x /= m_dynamics->getFriction(); // Friction
+        qreal accel_x = speed.x() - m_dynamics->getSpeedX() * m_dynamics->getFriction();
+
+        m_dynamics->setAccelX(fmin(fmax(accel_x, m_dynamics->getMinAccel()), m_dynamics->getMaxAccel()));
+
+        if (speed.y() < 0)
+        {
+            jump();
+        }
+        else if (m_path_tiles.length() == 1 || m_path_tiles.length() > 1 && m_path_tiles[1].y() >= m_path_tiles[0].y())
+        {
+            stopJump();
+        }
+    }
+    else
+    {
+        m_dynamics->setAccelX(0);
+        m_dynamics->setAccelY(0);
     }
 }

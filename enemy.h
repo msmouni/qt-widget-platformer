@@ -11,20 +11,22 @@ class Enemy : public Character
 public:
     Enemy(const QPointF &pos, const QString &res_path, const Platform &platform, const QRectF &player_rect);
 
+    void updateKinematics() override;
     void gameUpdate() override;
 
 protected slots:
     void setPathFindingResult(QVector<QPoint>);
 
 private:
+    const int M_PATH_FOLLOW_PRECISION = 3; // pxl
     const QRectF &m_player_rect;
     PathFinder m_path_finder;
     QVector<QPoint> m_path_tiles;
     // The mutex is locked when QMutexLocker is created. If locked, the mutex will be unlocked when the QMutexLocker is destroyed.
     QMutex m_path_mutex;
-    const int M_NB_PATH_ITER = 3;
-    int m_path_iter;
 
+    void findPath();
+    void checkPathNodeReached();
     void followPath();
 };
 
