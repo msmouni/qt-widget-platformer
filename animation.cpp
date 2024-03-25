@@ -65,6 +65,16 @@ void SpriteAnimation::nextFrame()
     emit updatePixmap();
 }
 
+void SpriteAnimation::pause()
+{
+    m_animation_timer->stop();
+}
+
+void SpriteAnimation::resume()
+{
+    m_animation_timer->start(m_frame_dur_ms);
+}
+
 void SpriteAnimation::loadFramesFromFolder(uint8_t frame_id, const QString &folder_path)
 {
     QList<QPixmap> frames;

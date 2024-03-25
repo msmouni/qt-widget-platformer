@@ -12,6 +12,8 @@ Bomb::Bomb(int id, const QPointF &pos, qreal speed_x, qreal speed_y, qreal power
     m_drop_timer->setSingleShot(true);
     connect(m_drop_timer, &QTimer::timeout, this, &Bomb::end);
 
+    m_remaining_timer_time = 0;
+
     m_dynamics = new EntityDynamics(this, speed_x, speed_y, 0.7);
 }
 
@@ -42,7 +44,7 @@ void Bomb::updateWeapon()
 
     if (m_state == WeaponState::Starting)
     {
-        qreal progress = (qreal)m_explosion_timer->remainingTime() / (qreal)m_explosion_timer->interval();
+        qreal progress = (qreal)m_explosion_timer->remainingTime() / (qreal)M_EXPLOSION_TIEMOUT_MS;
         m_progress_bar->setProgress(progress);
 
         m_progress_bar->setBarColor(QColor(fmin((-2 * progress + 2) * 255, 255), fmin((2 * progress) * 255, 255), 0));
@@ -52,6 +54,36 @@ void Bomb::updateWeapon()
 const CollisionRect *Bomb::getCollisionRect() const
 {
     return m_dynamics->getCollisionRect();
+}
+
+void Bomb::pause()
+{
+    if (m_state == WeaponState::Starting)
+    {
+        m_remaining_timer_time = m_explosion_timer->isActive() ? m_explosion_timer->remainingTime() : 0;
+        m_explosion_timer->stop();
+    }
+    else if (m_state == WeaponState::Active)
+    {
+        m_remaining_timer_time = m_drop_timer->isActive() ? m_drop_timer->remainingTime() : 0;
+        m_drop_timer->stop();
+    }
+
+    Weapon::pause();
+}
+
+void Bomb::resume()
+{
+    if (m_state == WeaponState::Starting)
+    {
+        m_explosion_timer->start(m_remaining_timer_time);
+    }
+    else if (m_state == WeaponState::Active)
+    {
+        m_drop_timer->start(m_remaining_timer_time);
+    }
+
+    Weapon::resume();
 }
 
 void Bomb::explosion()

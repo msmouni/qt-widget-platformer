@@ -29,6 +29,7 @@ Character::Character(const QPointF &pos, const QString &res_path, const Platform
 
     m_jump_timer.setSingleShot(true);
     connect(&m_jump_timer, &QTimer::timeout, this, &Character::jumpTimeout);
+    m_remaining_jump_time = 0;
 }
 
 QRectF Character::boundingRect() const
@@ -73,6 +74,29 @@ void Character::dropWeapon(Weapon *weapon)
 void Character::jumpTimeout()
 {
     m_dynamics->setAccelY(0);
+}
+
+void Character::pause()
+{
+    m_animation->pause();
+    m_remaining_jump_time = m_jump_timer.isActive() ? m_jump_timer.remainingTime() : 0;
+    m_jump_timer.stop();
+
+    for (QHash<int, Weapon *>::const_iterator weapons_it = m_weapons.constBegin(); weapons_it != m_weapons.constEnd(); ++weapons_it)
+    {
+        weapons_it.value()->pause();
+    }
+}
+
+void Character::resume()
+{
+    m_animation->resume();
+    m_jump_timer.start(m_remaining_jump_time);
+
+    for (QHash<int, Weapon *>::const_iterator weapons_it = m_weapons.constBegin(); weapons_it != m_weapons.constEnd(); ++weapons_it)
+    {
+        weapons_it.value()->resume();
+    }
 }
 
 void Character::updateCharacter()

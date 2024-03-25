@@ -36,6 +36,10 @@ public:
 signals:
     void terminate(Weapon *);
 
+public slots:
+    virtual void pause();
+    virtual void resume();
+
 protected slots:
     void updateView();
 

@@ -46,6 +46,11 @@ shape() returns the shape of the item as a QPainterPath. The shape represents th
     virtual void gameUpdate() = 0;
 
     const CollisionRect *getCollisionRect() const;
+
+public slots:
+    virtual void pause();
+    virtual void resume();
+
 protected slots:
     void updateView();
     void dropWeapon(Weapon *);
@@ -59,6 +64,7 @@ protected:
     SpriteAnimation *m_animation;
     const Platform &m_platform; // Only used by Enemy (path following)
     QTimer m_jump_timer;
+    int m_remaining_jump_time;
 
     EntityDynamics *m_dynamics;
 

@@ -22,6 +22,9 @@ public:
 
     const QRectF &getRect();
 
+public slots:
+    void pause();
+    void resume();
     void stop();
 
 private slots:

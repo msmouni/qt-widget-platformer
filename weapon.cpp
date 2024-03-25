@@ -75,6 +75,16 @@ int Weapon::getId()
     return m_id;
 }
 
+void Weapon::pause()
+{
+    m_animation->pause();
+}
+
+void Weapon::resume()
+{
+    m_animation->resume();
+}
+
 void Weapon::updateView()
 {
     setPixmap(m_animation->getPixmap());

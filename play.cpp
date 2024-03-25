@@ -47,6 +47,7 @@ PlayView::PlayView(QWidget *parent) : QGraphicsView(parent)
     m_update_timer->setInterval(m_update_timeout_ms);
     m_update_timer->start();
     connect(m_update_timer, SIGNAL(timeout()), this, SLOT(updateItems()));
+    m_pause = false;
 }
 
 void PlayView::wheelEvent(QWheelEvent *event)
@@ -64,12 +65,55 @@ void PlayView::mouseDoubleClickEvent(QMouseEvent *event)
     event->ignore();
 }
 
+void PlayView::keyPressEvent(QKeyEvent *event)
+{
+    if (event->key() == Qt::Key_P)
+    {
+        if (m_pause)
+        {
+            resume();
+        }
+        else
+        {
+            pause();
+        }
+    }
+
+    QGraphicsView::keyPressEvent(event);
+}
+
 void PlayView::updateCam()
 {
     QPointF player_pos = m_player->pos();
     m_camera_pos.setX(m_camera_pos.x() + (player_pos.x() - m_camera_pos.x()) / 5);
     m_camera_pos.setY(m_camera_pos.y() + (player_pos.y() - m_camera_pos.y()) / 5);
     this->centerOn(m_camera_pos);
+}
+
+void PlayView::pause()
+{
+    m_pause = true;
+
+    m_update_timer->stop();
+
+    m_player->pause();
+    for (Enemy *enemy : m_enemies)
+    {
+        enemy->pause();
+    }
+}
+
+void PlayView::resume()
+{
+    m_pause = false;
+
+    m_update_timer->start();
+
+    m_player->resume();
+    for (Enemy *enemy : m_enemies)
+    {
+        enemy->resume();
+    }
 }
 
 void PlayView::updateItems()

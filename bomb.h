@@ -18,6 +18,10 @@ public:
 
     const CollisionRect *getCollisionRect() const;
 
+public slots:
+    void pause() override;
+    void resume() override;
+
 protected slots:
     void explosion();
     void end();
@@ -27,6 +31,7 @@ private:
     const int M_DROP_TIEMOUT_MS = 500;
     QTimer *m_explosion_timer;
     QTimer *m_drop_timer;
+    int m_remaining_timer_time;
 
     ProgressBar *m_progress_bar;
 
