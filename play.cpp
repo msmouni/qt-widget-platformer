@@ -10,7 +10,13 @@ PlayView::PlayView(QWidget *parent) : QGraphicsView(parent)
     this->setScene(m_scene);
     m_scene->setBackgroundBrush(Qt::blue); // TMP
 
-    // Tiles
+    //    // Reverse the y-axis by setting a vertical flip transformation
+    //    this->setTransform(QTransform(1, 0, 0, -1, 0, height()));
+
+    // Load an image and add it to the scene (Resource File (.qrc))
+    //    m_map_img=m_scene->addPixmap(QPixmap(":Pirate_bomb/map_64_64_w30_h20.png"));
+    //    QPixmap pix(":Pirate_bomb/map_64_64_w30_h20.png");
+
     QHash<int, TileType> tiles_hash;
     tiles_hash.insert(-1, TileType::Empty);
     for (int i = 0; i <= 21; i++)
@@ -37,13 +43,21 @@ PlayView::PlayView(QWidget *parent) : QGraphicsView(parent)
     m_player_rect = m_player->sceneBoundingRect();
 
     // Enemies
-    Enemy *enemy = new Enemy(QPointF(150, 200), ":/Pirate_bomb/Enemy-Bald Pirate", *m_platform, m_player_rect);
-    m_scene->addItem(enemy);
-    m_enemies.append(enemy);
+    Enemy *enemy_pirate = new Enemy(QPointF(150, 200), ":/Pirate_bomb/Enemy-Bald Pirate", *m_platform, m_player_rect);
+    m_scene->addItem(enemy_pirate);
+    m_enemies.append(enemy_pirate);
+
+//    // NOTE: ROTATE HOR
+//    Enemy *enemy_cucumber = new Enemy(QPointF(500, 200), ":/Pirate_bomb/Enemy-Cucumber", *m_platform, m_player_rect);
+//    m_scene->addItem(enemy_cucumber);
+//    m_enemies.append(enemy_cucumber);
+//    Enemy *enemy_big_guy= new Enemy(QPointF(500, 200), ":/Pirate_bomb/Enemy-Big Guy", *m_platform, m_player_rect);
+//    m_scene->addItem(enemy_big_guy);
+//    m_enemies.append(enemy_big_guy);
 
     // Update
     m_update_timer = new QTimer(this);
-    m_update_timeout_ms = 50;
+    m_update_timeout_ms = 50; // 50;
     m_update_timer->setInterval(m_update_timeout_ms);
     m_update_timer->start();
     connect(m_update_timer, SIGNAL(timeout()), this, SLOT(updateItems()));

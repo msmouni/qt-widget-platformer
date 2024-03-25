@@ -40,6 +40,8 @@ void SpriteAnimation::setId(uint8_t id)
             m_current_id = id;
             m_current_frame = 0;
         }
+    }else {
+//        qDebug()<<m_frames_id.keys()<<id;
     }
 }
 
@@ -51,6 +53,18 @@ const QPixmap &SpriteAnimation::getPixmap()
 const QRectF &SpriteAnimation::getRect()
 {
     return m_rect;
+}
+
+void SpriteAnimation::addAnimationState(uint8_t state_id, QString frames_path)
+{
+    qDebug()<<state_id;
+    loadFramesFromFolder(state_id, frames_path);
+    qDebug()<<m_frames_id.keys();
+}
+
+int SpriteAnimation::getIdDuration(int id)
+{
+    return m_frame_dur_ms*m_frames_id.value(id).length();
 }
 
 void SpriteAnimation::stop()

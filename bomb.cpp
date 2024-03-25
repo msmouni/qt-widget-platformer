@@ -14,7 +14,7 @@ Bomb::Bomb(int id, const QPointF &pos, qreal speed_x, qreal speed_y, qreal power
 
     m_remaining_timer_time = 0;
 
-    m_dynamics = new EntityDynamics(this, speed_x, speed_y, 0.7);
+    m_dynamics = new EntityDynamics(this, speed_x, speed_y, 10, 0.7);
 }
 
 void Bomb::start()
@@ -24,7 +24,7 @@ void Bomb::start()
     m_animation->setId(static_cast<uint8_t>(m_state));
 
     m_progress_bar = new ProgressBar(this, QRectF(20, 30, 50, 4), 1.0, Qt::green);
-    m_explosion_timer->start(M_EXPLOSION_TIEMOUT_MS);
+//    m_explosion_timer->start(M_EXPLOSION_TIEMOUT_MS);
 }
 
 void Bomb::updateKinematics()
@@ -38,7 +38,17 @@ void Bomb::updateWeapon()
 {
     if (!isActive())
     {
+        qreal speed_x_prev=m_dynamics->getSpeedX();
+        qreal speed_y_prev=m_dynamics->getSpeedY();
+
         m_dynamics->updateDynamics();
+        qreal speed_x=m_dynamics->getSpeedX();
+        qreal speed_y=m_dynamics->getSpeedY();
+
+        /*if (abs(speed_y-speed_y_prev)>1){
+            m_dynamics->setSpeedY((speed_y - speed_y_prev));
+        }*/
+
         this->setPos(m_dynamics->getEntityPos());
     }
 

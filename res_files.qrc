@@ -173,5 +173,163 @@
         <file>Pirate_bomb/Objects/BOMB/Starting/10.png</file>
         <file>Pirate_bomb/Objects/BOMB/Starting/1.png</file>
         <file>Pirate_bomb/Objects/BOMB/Idle/1.png</file>
+        <file>Pirate_bomb/Enemy-Cucumber/Hit/8.png</file>
+        <file>Pirate_bomb/Enemy-Cucumber/Hit/7.png</file>
+        <file>Pirate_bomb/Enemy-Cucumber/Hit/6.png</file>
+        <file>Pirate_bomb/Enemy-Cucumber/Hit/5.png</file>
+        <file>Pirate_bomb/Enemy-Cucumber/Hit/4.png</file>
+        <file>Pirate_bomb/Enemy-Cucumber/Hit/3.png</file>
+        <file>Pirate_bomb/Enemy-Cucumber/Hit/2.png</file>
+        <file>Pirate_bomb/Enemy-Cucumber/Hit/1.png</file>
+        <file>Pirate_bomb/Enemy-Cucumber/Attack/9.png</file>
+        <file>Pirate_bomb/Enemy-Cucumber/Attack/8.png</file>
+        <file>Pirate_bomb/Enemy-Cucumber/Attack/7.png</file>
+        <file>Pirate_bomb/Enemy-Cucumber/Attack/6.png</file>
+        <file>Pirate_bomb/Enemy-Cucumber/Attack/5.png</file>
+        <file>Pirate_bomb/Enemy-Cucumber/Attack/4.png</file>
+        <file>Pirate_bomb/Enemy-Cucumber/Attack/3.png</file>
+        <file>Pirate_bomb/Enemy-Cucumber/Attack/2.png</file>
+        <file>Pirate_bomb/Enemy-Cucumber/Attack/11.png</file>
+        <file>Pirate_bomb/Enemy-Cucumber/Attack/10.png</file>
+        <file>Pirate_bomb/Enemy-Cucumber/Attack/1.png</file>
+        <file>Pirate_bomb/Enemy-Cucumber/Ground/3.png</file>
+        <file>Pirate_bomb/Enemy-Cucumber/Ground/2.png</file>
+        <file>Pirate_bomb/Enemy-Cucumber/Ground/1.png</file>
+        <file>Pirate_bomb/Enemy-Cucumber/Fall/2.png</file>
+        <file>Pirate_bomb/Enemy-Cucumber/Fall/1.png</file>
+        <file>Pirate_bomb/Enemy-Cucumber/Jump/4.png</file>
+        <file>Pirate_bomb/Enemy-Cucumber/Jump/3.png</file>
+        <file>Pirate_bomb/Enemy-Cucumber/Jump/2.png</file>
+        <file>Pirate_bomb/Enemy-Cucumber/Jump/1.png</file>
+        <file>Pirate_bomb/Enemy-Cucumber/Run/9.png</file>
+        <file>Pirate_bomb/Enemy-Cucumber/Run/8.png</file>
+        <file>Pirate_bomb/Enemy-Cucumber/Run/7.png</file>
+        <file>Pirate_bomb/Enemy-Cucumber/Run/6.png</file>
+        <file>Pirate_bomb/Enemy-Cucumber/Run/5.png</file>
+        <file>Pirate_bomb/Enemy-Cucumber/Run/4.png</file>
+        <file>Pirate_bomb/Enemy-Cucumber/Run/3.png</file>
+        <file>Pirate_bomb/Enemy-Cucumber/Run/2.png</file>
+        <file>Pirate_bomb/Enemy-Cucumber/Run/12.png</file>
+        <file>Pirate_bomb/Enemy-Cucumber/Run/11.png</file>
+        <file>Pirate_bomb/Enemy-Cucumber/Run/10.png</file>
+        <file>Pirate_bomb/Enemy-Cucumber/Run/1.png</file>
+        <file>Pirate_bomb/Enemy-Cucumber/Idle/9.png</file>
+        <file>Pirate_bomb/Enemy-Cucumber/Idle/8.png</file>
+        <file>Pirate_bomb/Enemy-Cucumber/Idle/7.png</file>
+        <file>Pirate_bomb/Enemy-Cucumber/Idle/6.png</file>
+        <file>Pirate_bomb/Enemy-Cucumber/Idle/5.png</file>
+        <file>Pirate_bomb/Enemy-Cucumber/Idle/4.png</file>
+        <file>Pirate_bomb/Enemy-Cucumber/Idle/36.png</file>
+        <file>Pirate_bomb/Enemy-Cucumber/Idle/35.png</file>
+        <file>Pirate_bomb/Enemy-Cucumber/Idle/34.png</file>
+        <file>Pirate_bomb/Enemy-Cucumber/Idle/33.png</file>
+        <file>Pirate_bomb/Enemy-Cucumber/Idle/32.png</file>
+        <file>Pirate_bomb/Enemy-Cucumber/Idle/31.png</file>
+        <file>Pirate_bomb/Enemy-Cucumber/Idle/30.png</file>
+        <file>Pirate_bomb/Enemy-Cucumber/Idle/3.png</file>
+        <file>Pirate_bomb/Enemy-Cucumber/Idle/29.png</file>
+        <file>Pirate_bomb/Enemy-Cucumber/Idle/28.png</file>
+        <file>Pirate_bomb/Enemy-Cucumber/Idle/27.png</file>
+        <file>Pirate_bomb/Enemy-Cucumber/Idle/26.png</file>
+        <file>Pirate_bomb/Enemy-Cucumber/Idle/25.png</file>
+        <file>Pirate_bomb/Enemy-Cucumber/Idle/24.png</file>
+        <file>Pirate_bomb/Enemy-Cucumber/Idle/23.png</file>
+        <file>Pirate_bomb/Enemy-Cucumber/Idle/22.png</file>
+        <file>Pirate_bomb/Enemy-Cucumber/Idle/21.png</file>
+        <file>Pirate_bomb/Enemy-Cucumber/Idle/20.png</file>
+        <file>Pirate_bomb/Enemy-Cucumber/Idle/2.png</file>
+        <file>Pirate_bomb/Enemy-Cucumber/Idle/19.png</file>
+        <file>Pirate_bomb/Enemy-Cucumber/Idle/18.png</file>
+        <file>Pirate_bomb/Enemy-Cucumber/Idle/17.png</file>
+        <file>Pirate_bomb/Enemy-Cucumber/Idle/16.png</file>
+        <file>Pirate_bomb/Enemy-Cucumber/Idle/15.png</file>
+        <file>Pirate_bomb/Enemy-Cucumber/Idle/14.png</file>
+        <file>Pirate_bomb/Enemy-Cucumber/Idle/13.png</file>
+        <file>Pirate_bomb/Enemy-Cucumber/Idle/12.png</file>
+        <file>Pirate_bomb/Enemy-Cucumber/Idle/11.png</file>
+        <file>Pirate_bomb/Enemy-Cucumber/Idle/10.png</file>
+        <file>Pirate_bomb/Enemy-Cucumber/Idle/1.png</file>
+        <file>Pirate_bomb/Enemy-Big Guy/Attack/9.png</file>
+        <file>Pirate_bomb/Enemy-Big Guy/Attack/8.png</file>
+        <file>Pirate_bomb/Enemy-Big Guy/Attack/7.png</file>
+        <file>Pirate_bomb/Enemy-Big Guy/Attack/6.png</file>
+        <file>Pirate_bomb/Enemy-Big Guy/Attack/5.png</file>
+        <file>Pirate_bomb/Enemy-Big Guy/Attack/4.png</file>
+        <file>Pirate_bomb/Enemy-Big Guy/Attack/3.png</file>
+        <file>Pirate_bomb/Enemy-Big Guy/Attack/2.png</file>
+        <file>Pirate_bomb/Enemy-Big Guy/Attack/11.png</file>
+        <file>Pirate_bomb/Enemy-Big Guy/Attack/10.png</file>
+        <file>Pirate_bomb/Enemy-Big Guy/Attack/1.png</file>
+        <file>Pirate_bomb/Enemy-Big Guy/Ground/3.png</file>
+        <file>Pirate_bomb/Enemy-Big Guy/Ground/2.png</file>
+        <file>Pirate_bomb/Enemy-Big Guy/Ground/1.png</file>
+        <file>Pirate_bomb/Enemy-Big Guy/Fall/2.png</file>
+        <file>Pirate_bomb/Enemy-Big Guy/Fall/1.png</file>
+        <file>Pirate_bomb/Enemy-Big Guy/Run/9.png</file>
+        <file>Pirate_bomb/Enemy-Big Guy/Run/8.png</file>
+        <file>Pirate_bomb/Enemy-Big Guy/Run/7.png</file>
+        <file>Pirate_bomb/Enemy-Big Guy/Run/6.png</file>
+        <file>Pirate_bomb/Enemy-Big Guy/Run/5.png</file>
+        <file>Pirate_bomb/Enemy-Big Guy/Run/4.png</file>
+        <file>Pirate_bomb/Enemy-Big Guy/Run/3.png</file>
+        <file>Pirate_bomb/Enemy-Big Guy/Run/2.png</file>
+        <file>Pirate_bomb/Enemy-Big Guy/Run/16.png</file>
+        <file>Pirate_bomb/Enemy-Big Guy/Run/15.png</file>
+        <file>Pirate_bomb/Enemy-Big Guy/Run/14.png</file>
+        <file>Pirate_bomb/Enemy-Big Guy/Run/13.png</file>
+        <file>Pirate_bomb/Enemy-Big Guy/Run/12.png</file>
+        <file>Pirate_bomb/Enemy-Big Guy/Run/11.png</file>
+        <file>Pirate_bomb/Enemy-Big Guy/Run/10.png</file>
+        <file>Pirate_bomb/Enemy-Big Guy/Run/1.png</file>
+        <file>Pirate_bomb/Enemy-Big Guy/Jump/4.png</file>
+        <file>Pirate_bomb/Enemy-Big Guy/Jump/3.png</file>
+        <file>Pirate_bomb/Enemy-Big Guy/Jump/2.png</file>
+        <file>Pirate_bomb/Enemy-Big Guy/Jump/1.png</file>
+        <file>Pirate_bomb/Enemy-Big Guy/Hit/8.png</file>
+        <file>Pirate_bomb/Enemy-Big Guy/Hit/7.png</file>
+        <file>Pirate_bomb/Enemy-Big Guy/Hit/6.png</file>
+        <file>Pirate_bomb/Enemy-Big Guy/Hit/5.png</file>
+        <file>Pirate_bomb/Enemy-Big Guy/Hit/4.png</file>
+        <file>Pirate_bomb/Enemy-Big Guy/Hit/3.png</file>
+        <file>Pirate_bomb/Enemy-Big Guy/Hit/2.png</file>
+        <file>Pirate_bomb/Enemy-Big Guy/Hit/1.png</file>
+        <file>Pirate_bomb/Enemy-Big Guy/Idle/9.png</file>
+        <file>Pirate_bomb/Enemy-Big Guy/Idle/8.png</file>
+        <file>Pirate_bomb/Enemy-Big Guy/Idle/7.png</file>
+        <file>Pirate_bomb/Enemy-Big Guy/Idle/6.png</file>
+        <file>Pirate_bomb/Enemy-Big Guy/Idle/5.png</file>
+        <file>Pirate_bomb/Enemy-Big Guy/Idle/4.png</file>
+        <file>Pirate_bomb/Enemy-Big Guy/Idle/38.png</file>
+        <file>Pirate_bomb/Enemy-Big Guy/Idle/37.png</file>
+        <file>Pirate_bomb/Enemy-Big Guy/Idle/36.png</file>
+        <file>Pirate_bomb/Enemy-Big Guy/Idle/35.png</file>
+        <file>Pirate_bomb/Enemy-Big Guy/Idle/34.png</file>
+        <file>Pirate_bomb/Enemy-Big Guy/Idle/33.png</file>
+        <file>Pirate_bomb/Enemy-Big Guy/Idle/32.png</file>
+        <file>Pirate_bomb/Enemy-Big Guy/Idle/31.png</file>
+        <file>Pirate_bomb/Enemy-Big Guy/Idle/30.png</file>
+        <file>Pirate_bomb/Enemy-Big Guy/Idle/3.png</file>
+        <file>Pirate_bomb/Enemy-Big Guy/Idle/29.png</file>
+        <file>Pirate_bomb/Enemy-Big Guy/Idle/28.png</file>
+        <file>Pirate_bomb/Enemy-Big Guy/Idle/27.png</file>
+        <file>Pirate_bomb/Enemy-Big Guy/Idle/26.png</file>
+        <file>Pirate_bomb/Enemy-Big Guy/Idle/25.png</file>
+        <file>Pirate_bomb/Enemy-Big Guy/Idle/24.png</file>
+        <file>Pirate_bomb/Enemy-Big Guy/Idle/23.png</file>
+        <file>Pirate_bomb/Enemy-Big Guy/Idle/22.png</file>
+        <file>Pirate_bomb/Enemy-Big Guy/Idle/21.png</file>
+        <file>Pirate_bomb/Enemy-Big Guy/Idle/20.png</file>
+        <file>Pirate_bomb/Enemy-Big Guy/Idle/2.png</file>
+        <file>Pirate_bomb/Enemy-Big Guy/Idle/19.png</file>
+        <file>Pirate_bomb/Enemy-Big Guy/Idle/18.png</file>
+        <file>Pirate_bomb/Enemy-Big Guy/Idle/17.png</file>
+        <file>Pirate_bomb/Enemy-Big Guy/Idle/16.png</file>
+        <file>Pirate_bomb/Enemy-Big Guy/Idle/15.png</file>
+        <file>Pirate_bomb/Enemy-Big Guy/Idle/14.png</file>
+        <file>Pirate_bomb/Enemy-Big Guy/Idle/13.png</file>
+        <file>Pirate_bomb/Enemy-Big Guy/Idle/12.png</file>
+        <file>Pirate_bomb/Enemy-Big Guy/Idle/11.png</file>
+        <file>Pirate_bomb/Enemy-Big Guy/Idle/10.png</file>
+        <file>Pirate_bomb/Enemy-Big Guy/Idle/1.png</file>
     </qresource>
 </RCC>
