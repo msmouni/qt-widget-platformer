@@ -22,6 +22,29 @@ void Enemy::gameUpdate()
     updateCharacter();
 }
 
+void Enemy::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+{
+    if (!m_path_tiles.isEmpty())
+    {
+        QPainterPath path;
+
+        path.moveTo(mapFromScene(m_platform.getPosInTile(m_path_tiles[0], this->boundingRect())));
+
+        for (int i = 1; i < m_path_tiles.size(); ++i)
+        {
+            path.lineTo(mapFromScene(m_platform.getPosInTile(m_path_tiles[i], this->boundingRect())));
+        }
+
+        QPen pen(Qt::red);
+        pen.setWidth(2); // 20);
+        painter->setPen(pen);
+
+        painter->drawPath(path);
+    }
+
+    Character::paint(painter, option, widget);
+}
+
 void Enemy::setPathFindingResult(QVector<QPoint> path)
 {
     QMutexLocker ml(&m_path_mutex);

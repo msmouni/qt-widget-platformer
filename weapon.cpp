@@ -32,6 +32,15 @@ QRectF Weapon::boundingRect() const
 void Weapon::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
     painter->drawPixmap(m_bounding_rect, pixmap(), this->shape().boundingRect());
+
+    // Set the pen and brush
+    QPen pen(Qt::red);
+    pen.setWidth(2);
+    painter->setPen(pen);
+
+    painter->drawRect(this->boundingRect());
+
+    painter->drawPath(this->shape());
 }
 
 void Weapon::start()
