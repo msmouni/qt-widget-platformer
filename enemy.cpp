@@ -9,8 +9,8 @@ Enemy::Enemy(const QPointF &pos, const QString &res_path, const Platform &platfo
 
     //    m_animation->stop();
 
-    m_dynamics->setMaxAbsSpeedX(20);
-    m_dynamics->setMaxAbsSpeedY(20);
+//    m_dynamics->setMaxAbsSpeedX(20);
+//    m_dynamics->setMaxAbsSpeedY(20);
     m_jump_timeout_ms = ((qreal)(m_platform.getTileSize().height() * M_MAX_TILES_JUMP)) / m_dynamics->getMaxAbsSpeedY() * 50; // NOTE: m_update_timeout_ms = 50;
 
     connect(&m_path_finder, SIGNAL(pathFindingRes(QVector<QPoint>)), this, SLOT(setPathFindingResult(QVector<QPoint>)));
@@ -20,7 +20,7 @@ void Enemy::updateKinematics()
 {
     if (!isHit() && !isAttacking())
     {
-        followPath();
+//        followPath();
     }
 
     // NOTE: When not colling followPath when Attacking or hit -> acceleration is not updated, so the enemy keeps the last value
@@ -53,7 +53,7 @@ void Enemy::gameUpdate()
     if (sceneBoundingRect().marginsAdded(QMarginsF(3, 0, 3, 0)).intersects(m_player_rect))
     {
         //        qDebug()<<"Attack";
-        m_attacking = true;
+//        m_attacking = true;
         //        m_attack_timer.start(m_animation->getIdDuration(static_cast<uint8_t>(CharacterState::Attack)));
         //        m_state =CharacterState::Attack;
         //        //        updateAnimation();

@@ -13,14 +13,14 @@ enum class EntityDirection
 class EntityDynamics
 {
 public:
-    EntityDynamics(QGraphicsItem *parent = nullptr, qreal init_speed_x = 0, qreal init_speed_y = 0, qreal friction = 0.5, bool change_mvmt_dir = false, qreal speed_max_x = M_DEFAULT_SPEED_MAX, qreal speed_max_y = M_DEFAULT_SPEED_MAX);
+    EntityDynamics(QGraphicsItem *parent = nullptr, qreal init_speed_x = 0, qreal init_speed_y = 0, qreal friction = 0.5, bool change_mvmt_dir = false, qreal speed_max_x = M_DEFAULT_SPEED_MAX, qreal speed_max_y = M_DEFAULT_SPEED_MAX, qreal weight = 50);
 
     void updateKinematics();
     void updateDynamics();
 
     void setCollisionMargin(QMarginsF margin);
 
-    const CollisionRect *getCollisionRect() const;
+    CollisionRect *getCollisionRect();
 
     qreal getSpeedX() const;
     qreal getSpeedY() const;
@@ -42,6 +42,8 @@ public:
     qreal getMaxAbsAccelX() const;
     qreal getMaxAbsAccelY() const;
     //    qreal getMinAccel() const;
+
+    void setWeight(qreal weight);
 
     const EntityDirection &getDirection() const;
 
@@ -67,6 +69,8 @@ private:
     qreal m_speed_y;
     qreal m_acc_x;
     qreal m_acc_y;
+
+    qreal m_weight;
 
     EntityDirection m_direction;
 

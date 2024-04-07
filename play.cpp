@@ -51,9 +51,9 @@ PlayView::PlayView(QWidget *parent) : QGraphicsView(parent)
     //    Enemy *enemy_cucumber = new Enemy(QPointF(500, 200), ":/Pirate_bomb/Enemy-Cucumber", *m_platform, m_player_rect);
     //    m_scene->addItem(enemy_cucumber);
     //    m_enemies.append(enemy_cucumber);
-    //    Enemy *enemy_big_guy= new Enemy(QPointF(500, 200), ":/Pirate_bomb/Enemy-Big Guy", *m_platform, m_player_rect);
-    //    m_scene->addItem(enemy_big_guy);
-    //    m_enemies.append(enemy_big_guy);
+        Enemy *enemy_big_guy= new Enemy(QPointF(500, 200), ":/Pirate_bomb/Enemy-Big Guy", *m_platform, m_player_rect);
+        m_scene->addItem(enemy_big_guy);
+        m_enemies.append(enemy_big_guy);
 
     // Update
     m_update_timer = new QTimer(this);

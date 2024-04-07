@@ -78,7 +78,7 @@ void Character::updateKinematics()
     }
 }
 
-const CollisionRect *Character::getCollisionRect() const
+CollisionRect *Character::getCollisionRect()
 {
     return m_dynamics->getCollisionRect();
 }

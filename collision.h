@@ -10,16 +10,16 @@
 class CollisionRect : public QGraphicsRectItem
 {
 public:
-    CollisionRect(QGraphicsItem *parent, qreal &speed_x, qreal &speed_y);
+    CollisionRect(QGraphicsItem *parent, qreal &speed_x, qreal &speed_y, qreal &weight);
 
     QRectF boundingRect() const override;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
                QWidget *widget) override;
     QPainterPath shape() const override;
 
-    void handleCollision(const QRectF &new_rect, const QRectF &old_rect, qreal speed_x, qreal speed_y);
-    void handleDynamicCollision(const CollisionRect &other);
-    void handleDynamicCollision(QVector<const CollisionRect *>);
+    void handleCollision(const QRectF &new_rect, const QRectF &old_rect, qreal speed_x, qreal speed_y, qreal weight);
+    void handleDynamicCollision(CollisionRect &other);
+    void handleDynamicCollision(QVector<CollisionRect *>);
     void handleStaticCollision(QRectF rect);
     void handleStaticCollision(QVector<QRectF> rects);
     void handleCollision();
@@ -45,6 +45,9 @@ private:
     qreal &m_speed_x;
     qreal &m_speed_y;
 
+    qreal &m_weight;
+
+    bool m_collision_handeled;
     bool m_is_top_collision;
     bool m_is_bottom_collision;
     bool m_is_left_collision;

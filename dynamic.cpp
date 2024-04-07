@@ -1,6 +1,6 @@
 #include "dynamic.h"
 
-EntityDynamics::EntityDynamics(QGraphicsItem *parent, qreal init_speed_x, qreal init_speed_y, qreal friction, bool change_mvmt_dir, qreal speed_max_x, qreal speed_max_y)
+EntityDynamics::EntityDynamics(QGraphicsItem *parent, qreal init_speed_x, qreal init_speed_y, qreal friction, bool change_mvmt_dir, qreal speed_max_x, qreal speed_max_y, qreal weight): m_weight(weight)
 {
     m_speed_x = init_speed_x;
     m_speed_y = init_speed_y;
@@ -22,7 +22,7 @@ EntityDynamics::EntityDynamics(QGraphicsItem *parent, qreal init_speed_x, qreal 
 
     m_parent = parent;
 
-    m_collision_rect = new CollisionRect(parent, m_speed_x, m_speed_y);
+    m_collision_rect = new CollisionRect(parent, m_speed_x, m_speed_y, m_weight);
 
     m_entity_pos = m_collision_rect->getEntityPos() - m_parent->boundingRect().topLeft();
 
@@ -66,7 +66,7 @@ void EntityDynamics::setCollisionMargin(QMarginsF margin)
     m_collision_rect->setMargin(margin);
 }
 
-const CollisionRect *EntityDynamics::getCollisionRect() const
+CollisionRect *EntityDynamics::getCollisionRect()
 {
     return m_collision_rect;
 }
@@ -83,7 +83,7 @@ qreal EntityDynamics::getSpeedY() const
 
 void EntityDynamics::setSpeedX(qreal speed_x)
 {
-    m_speed_x = fmin(fmax(speed_x, getMinSpeed()), getMaxSpeed());
+    m_speed_x = fmin(fmax(speed_x, -m_speed_max_x), m_speed_max_x); // fmin(fmax(speed_x, -15), 15);//speed_x;//fmin(fmax(speed_x, getMinSpeed()), getMaxSpeed());
 }
 
 void EntityDynamics::setSpeedY(qreal speed_y)
@@ -143,11 +143,17 @@ qreal EntityDynamics::getMaxAbsAccelY() const
     return m_accel_max_y;
 }
 
+void EntityDynamics::setWeight(qreal weight)
+{
+    m_weight = weight;
+}
+
 void EntityDynamics::setMaxAbsSpeedX(qreal speed_max_x)
 {
     m_speed_max_x = speed_max_x;
 
     // IF the acceleration needs to be smaller, take it as arguments
+    //20
     m_accel_max_x = m_speed_max_x + m_speed_max_x * m_friction; // Speed_X_{k} = Speed_X_{k -1} * friction + Accel_X_{k} / Speed_X_{k} = S_MAX & Speed_X_{k - 1} = -S_MAX
 }
 

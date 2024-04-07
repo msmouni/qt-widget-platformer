@@ -4,7 +4,7 @@
 #include "tile.h"
 #include "bomb.h"
 
-CollisionRect::CollisionRect(QGraphicsItem *parent, qreal &speed_x, qreal &speed_y) : m_speed_x(speed_x), m_speed_y(speed_y)
+CollisionRect::CollisionRect(QGraphicsItem *parent, qreal &speed_x, qreal &speed_y, qreal &weight) : m_speed_x(speed_x), m_speed_y(speed_y), m_weight(weight)
 {
     this->setParentItem(parent);
 
@@ -12,6 +12,7 @@ CollisionRect::CollisionRect(QGraphicsItem *parent, qreal &speed_x, qreal &speed
     m_old_rect = m_bounding_rect;
     m_new_rect = m_bounding_rect;
 
+    m_collision_handeled = false;
     m_is_top_collision = false;
     m_is_bottom_collision = false;
     m_is_left_collision = false;
@@ -60,11 +61,13 @@ QRectF CollisionRect::getEntityRect()
 QPointF CollisionRect::getEntityPos()
 {
     //    return m_new_rect.marginsRemoved(m_margin).topLeft() + QPointF(m_speed_x, m_speed_y);
+    qDebug()<<m_speed_x<<m_speed_y;
     return m_new_rect.topLeft() + QPointF(m_speed_x, m_speed_y);
 }
 
 void CollisionRect::update()
 {
+    m_collision_handeled = false;
     m_is_top_collision = false;
     m_is_bottom_collision = false;
     m_is_left_collision = false;
@@ -88,118 +91,121 @@ bool CollisionRect::isBottomCollision()
     return m_is_bottom_collision;
 }
 
-void CollisionRect::handleCollision(const QRectF &new_rect, const QRectF &old_rect, qreal speed_x, qreal speed_y)
+void CollisionRect::handleCollision(const QRectF &new_rect, const QRectF &old_rect, qreal speed_x, qreal speed_y, qreal weight)
 {
-    bool bottom_collision = m_new_rect.bottom() + m_speed_y >= new_rect.top() && m_old_rect.bottom() < old_rect.top();
-    bool top_collision = m_new_rect.top() + m_speed_y <= new_rect.bottom() && m_old_rect.top() > old_rect.bottom();
-    bool right_collision = m_new_rect.right() + m_speed_x >= new_rect.left() && m_old_rect.right() < old_rect.left();
-    bool left_collision = m_new_rect.left() + m_speed_x <= new_rect.right() && m_old_rect.left() > old_rect.right();
+    // NOTE: it's the light one who should handle collision with the heavier one
+    if ((int)weight>=(int)m_weight){
+        bool bottom_collision = m_new_rect.bottom() + m_speed_y >= new_rect.top() + speed_y && m_old_rect.bottom() < old_rect.top();
+        bool top_collision = m_new_rect.top() + m_speed_y <= new_rect.bottom() + speed_y && m_old_rect.top() > old_rect.bottom();
+        bool right_collision = m_new_rect.right() + m_speed_x >= new_rect.left() + speed_x && m_old_rect.right() < old_rect.left();
+        bool left_collision = m_new_rect.left() + m_speed_x <= new_rect.right() + speed_x && m_old_rect.left() > old_rect.right();
 
-    bool vertical_collision = (bottom_collision | top_collision);
-    bool horizontal_collision = (right_collision | left_collision);
+        bool vertical_collision = (bottom_collision | top_collision);
+        bool horizontal_collision = (right_collision | left_collision);
 
-    if (!vertical_collision & !horizontal_collision)
-    {
-        return;
-    }
-    else if (vertical_collision & !horizontal_collision & (m_old_rect.right() >= new_rect.left() & m_old_rect.left() <= new_rect.right()))
-    {
-        if (bottom_collision)
+        if (!vertical_collision & !horizontal_collision)
         {
-            m_new_rect.moveBottom(new_rect.top() - M_COLLISION_MARGIN);
-            m_is_bottom_collision = true;
+            return;
         }
-        else
+        else if (vertical_collision & !horizontal_collision & (m_old_rect.right() >= new_rect.left() & m_old_rect.left() <= new_rect.right()))
         {
-            // top_collision
-            m_new_rect.moveTop(new_rect.bottom() + M_COLLISION_MARGIN);
-            m_is_top_collision = true;
-        }
-
-        m_speed_y = speed_y * m_speed_y < 0 ? speed_y : 0; // 0
-    }
-    else if (horizontal_collision & !vertical_collision & (m_old_rect.top() <= new_rect.bottom() & m_old_rect.bottom() >= new_rect.top()))
-    {
-        if (left_collision)
-        {
-            m_new_rect.moveLeft(new_rect.right() + M_COLLISION_MARGIN);
-            m_is_left_collision = true;
-        }
-        else
-        {
-            // right_collision
-            m_new_rect.moveRight(new_rect.left() - M_COLLISION_MARGIN);
-            m_is_right_collision = true;
-        }
-
-        m_speed_x = speed_x * m_speed_x < 0 ? speed_x : 0; // 0
-    }
-    else if (vertical_collision & horizontal_collision)
-    {
-        // y = (dy/dx)*(x-x0) + y0
-        // x = (dx/dy)*(y-y0) + x0
-
-        qreal dyx = m_speed_y / m_speed_x;
-        qreal dxy = m_speed_x / m_speed_y;
-
-        if (right_collision)
-        {
-            qreal y_top_right = dyx * (new_rect.left() - m_new_rect.right()) + m_new_rect.top();
-
-            qreal y_bottom_right = dyx * (new_rect.left() - m_new_rect.right()) + m_new_rect.bottom();
-
-            if ((y_top_right >= new_rect.top() && y_top_right <= new_rect.bottom()) || (y_bottom_right >= new_rect.top() && y_bottom_right <= new_rect.bottom()))
-            {
-                m_new_rect.moveRight(new_rect.left() - M_COLLISION_MARGIN);
-                m_speed_x = speed_x * m_speed_x < 0 ? speed_x : 0; // 0
-
-                m_is_right_collision = true;
-            }
-        }
-        else
-        {
-            // left_collision
-            qreal y_top_left = dyx * (new_rect.right() - m_new_rect.left()) + m_new_rect.top();
-
-            qreal y_bottom_left = dyx * (new_rect.right() - m_new_rect.left()) + m_new_rect.bottom();
-
-            if ((y_top_left >= new_rect.top() && y_top_left <= new_rect.bottom()) || (y_bottom_left >= new_rect.top() && y_bottom_left <= new_rect.bottom()))
-            {
-                m_new_rect.moveLeft(new_rect.right() + M_COLLISION_MARGIN);
-                m_speed_x = speed_x * m_speed_x < 0 ? speed_x : 0; // 0
-
-                m_is_left_collision = true;
-            }
-        }
-
-        ///////////////////////////////
-        if (bottom_collision)
-        {
-            qreal x_bottom_right = dxy * (new_rect.top() - m_new_rect.bottom()) + m_new_rect.right();
-
-            qreal x_bottom_left = dxy * (new_rect.top() - m_new_rect.bottom()) + m_new_rect.left();
-
-            if ((x_bottom_right >= new_rect.left() && x_bottom_right <= new_rect.right()) || (x_bottom_left >= new_rect.left() && x_bottom_left <= new_rect.right()))
+            if (bottom_collision)
             {
                 m_new_rect.moveBottom(new_rect.top() - M_COLLISION_MARGIN);
-                m_speed_y = speed_y * m_speed_y < 0 ? speed_y : 0; // 0
-
                 m_is_bottom_collision = true;
             }
-        }
-        else
-        {
-            // top_collision
-            qreal x_top_right = dxy * (new_rect.bottom() - m_new_rect.top()) + m_new_rect.right();
-
-            qreal x_top_left = dxy * (new_rect.bottom() - m_new_rect.top()) + m_new_rect.left();
-
-            if ((x_top_right >= new_rect.left() && x_top_right <= new_rect.right()) || (x_top_left >= new_rect.left() && x_top_left <= new_rect.right()))
+            else
             {
+                // top_collision
                 m_new_rect.moveTop(new_rect.bottom() + M_COLLISION_MARGIN);
-                m_speed_y = speed_y * m_speed_y < 0 ? speed_y : 0; // 0
-
                 m_is_top_collision = true;
+            }
+
+            m_speed_y = speed_y;// * m_speed_y < 0 ? speed_y : 0; // 0//0; //
+        }
+        else if (horizontal_collision & !vertical_collision & (m_old_rect.top() <= new_rect.bottom() & m_old_rect.bottom() >= new_rect.top()))
+        {
+            if (left_collision)
+            {
+                m_new_rect.moveLeft(new_rect.right() + M_COLLISION_MARGIN);
+                m_is_left_collision = true;
+            }
+            else
+            {
+                // right_collision
+                m_new_rect.moveRight(new_rect.left() - M_COLLISION_MARGIN);
+                m_is_right_collision = true;
+            }
+
+            m_speed_x = speed_x;// * m_speed_x < 0 ? speed_x : 0; // 0//0;//
+        }
+        else if (vertical_collision & horizontal_collision)
+        {
+            // y = (dy/dx)*(x-x0) + y0
+            // x = (dx/dy)*(y-y0) + x0
+
+            qreal dyx = m_speed_y / m_speed_x;
+            qreal dxy = m_speed_x / m_speed_y;
+
+            if (right_collision)
+            {
+                qreal y_top_right = dyx * (new_rect.left() - m_new_rect.right()) + m_new_rect.top();
+
+                qreal y_bottom_right = dyx * (new_rect.left() - m_new_rect.right()) + m_new_rect.bottom();
+
+                if ((y_top_right >= new_rect.top() && y_top_right <= new_rect.bottom()) || (y_bottom_right >= new_rect.top() && y_bottom_right <= new_rect.bottom()))
+                {
+                    m_new_rect.moveRight(new_rect.left() - M_COLLISION_MARGIN);
+                    m_speed_x = speed_x;// * m_speed_x < 0 ? speed_x : 0; // 0//0; //
+
+                    m_is_right_collision = true;
+                }
+            }
+            else
+            {
+                // left_collision
+                qreal y_top_left = dyx * (new_rect.right() - m_new_rect.left()) + m_new_rect.top();
+
+                qreal y_bottom_left = dyx * (new_rect.right() - m_new_rect.left()) + m_new_rect.bottom();
+
+                if ((y_top_left >= new_rect.top() && y_top_left <= new_rect.bottom()) || (y_bottom_left >= new_rect.top() && y_bottom_left <= new_rect.bottom()))
+                {
+                    m_new_rect.moveLeft(new_rect.right() + M_COLLISION_MARGIN);
+                    m_speed_x = speed_x;// * m_speed_x < 0 ? speed_x : 0; // 0//0; //
+
+                    m_is_left_collision = true;
+                }
+            }
+
+            ///////////////////////////////
+            if (bottom_collision)
+            {
+                qreal x_bottom_right = dxy * (new_rect.top() - m_new_rect.bottom()) + m_new_rect.right();
+
+                qreal x_bottom_left = dxy * (new_rect.top() - m_new_rect.bottom()) + m_new_rect.left();
+
+                if ((x_bottom_right >= new_rect.left() && x_bottom_right <= new_rect.right()) || (x_bottom_left >= new_rect.left() && x_bottom_left <= new_rect.right()))
+                {
+                    m_new_rect.moveBottom(new_rect.top() - M_COLLISION_MARGIN);
+                    m_speed_y = speed_y;// * m_speed_y < 0 ? speed_y : 0; // 0//0; //
+
+                    m_is_bottom_collision = true;
+                }
+            }
+            else
+            {
+                // top_collision
+                qreal x_top_right = dxy * (new_rect.bottom() - m_new_rect.top()) + m_new_rect.right();
+
+                qreal x_top_left = dxy * (new_rect.bottom() - m_new_rect.top()) + m_new_rect.left();
+
+                if ((x_top_right >= new_rect.left() && x_top_right <= new_rect.right()) || (x_top_left >= new_rect.left() && x_top_left <= new_rect.right()))
+                {
+                    m_new_rect.moveTop(new_rect.bottom() + M_COLLISION_MARGIN);
+                    m_speed_y = speed_y;// * m_speed_y < 0 ? speed_y : 0; // 0// 0; //
+
+                    m_is_top_collision = true;
+                }
             }
         }
     }
@@ -207,12 +213,12 @@ void CollisionRect::handleCollision(const QRectF &new_rect, const QRectF &old_re
 
 void CollisionRect::handleStaticCollision(QRectF rect)
 {
-    handleCollision(rect, rect, 0, 0);
+    handleCollision(rect, rect, 0, 0, 9999);
 }
 
-void CollisionRect::handleDynamicCollision(const CollisionRect &other)
+void CollisionRect::handleDynamicCollision(CollisionRect &other)
 {
-    handleCollision(other.m_new_rect, other.m_old_rect, other.m_speed_x, other.m_speed_y);
+    handleCollision(other.m_new_rect, other.m_old_rect, other.m_speed_x, other.m_speed_y, other.m_weight);
 }
 
 void CollisionRect::handleStaticCollision(QVector<QRectF> rects)
@@ -226,61 +232,68 @@ void CollisionRect::handleStaticCollision(QVector<QRectF> rects)
     }
 }
 
-void CollisionRect::handleDynamicCollision(QVector<const CollisionRect *> colliding_rects)
+void CollisionRect::handleDynamicCollision(QVector<CollisionRect *> colliding_rects)
 {
-    std::sort(colliding_rects.begin(), colliding_rects.end(), [&](const CollisionRect *item1, const CollisionRect *item2)
+    std::sort(colliding_rects.begin(), colliding_rects.end(), [&](CollisionRect *item1, CollisionRect *item2)
               { return compareDistance(item1->m_new_rect, item2->m_new_rect, m_old_rect); });
 
-    for (const CollisionRect *colliding_rect : colliding_rects)
+    for (CollisionRect *colliding_rect : colliding_rects)
     {
+        // TODO: colliding_rect->handleCollision() // not const *
+        colliding_rect->handleCollision();
         handleDynamicCollision(*colliding_rect);
     }
 }
 
 void CollisionRect::handleCollision()
 {
-    QVector<const CollisionRect *> dyn_collision_rects;
-    QVector<QRectF> static_collision_rects;
+    if (!m_collision_handeled){
+        m_collision_handeled = true;
 
-    for (QGraphicsItem *item : collidingItems())
-    {
-        if (item != this->parentItem())
+        QVector<CollisionRect *> dyn_collision_rects;
+        QVector<QRectF> static_collision_rects;
+
+        for (QGraphicsItem *item : collidingItems())
         {
-            if (item->data(0) == "Enemy" || item->data(0) == "Player")
+            if (item != this->parentItem())
             {
-                Character *chara = static_cast<Character *>(item);
-                // don't add if : (chara Enemy & chara isAttacking & this not Enemy) || (this Enemy & this isAttacking & chara not Enemy)
-                //                if (!(chara->data(0) == "Enemy" && chara->isAttacking() && this->data(0) != "Enemy") && !(chara->data(0) == "Enemy" && m isAttacking() && chara->data(0) != "Enemy")){
-                //                if (!chara->isAttacking() || this->data(0) != "Enemy"){
-                // TODO: if parentItem is Character & Attacking -> only handle collision with Tiles
-                dyn_collision_rects.append(chara->getCollisionRect());
-
-                //                }
-            }
-            else if (item->data(1) == "Bomb")
-            {
-                Bomb *bomb = static_cast<Bomb *>(item);
-                if (!bomb->isActive())
+                if (item->data(0) == "Enemy" || item->data(0) == "Player")
                 {
-                    dyn_collision_rects.append(bomb->getCollisionRect());
+                    Character *chara = static_cast<Character *>(item);
+                    // don't add if : (chara Enemy & chara isAttacking & this not Enemy) || (this Enemy & this isAttacking & chara not Enemy)
+                    //                if (!(chara->data(0) == "Enemy" && chara->isAttacking() && this->data(0) != "Enemy") && !(chara->data(0) == "Enemy" && m isAttacking() && chara->data(0) != "Enemy")){
+                    //                if (!chara->isAttacking() || this->data(0) != "Enemy"){
+                    // TODO: if parentItem is Character & Attacking -> only handle collision with Tiles
+                    dyn_collision_rects.append(chara->getCollisionRect());
+
+                    //                }
                 }
-            }
-            else if (item->data(0) == "Tile")
-            {
-                Tile *tile = static_cast<Tile *>(item);
-
-                QRectF tile_bnd_rect = tile->sceneBoundingRect();
-
-                if (tile->isSolid() | (!tile->isEmpty() & ((tile->checkUp() && m_speed_y < 0 && sceneBoundingRect().bottom() >= tile_bnd_rect.bottom()) | (tile->checkDown() && m_speed_y > 0 && sceneBoundingRect().top() <= tile_bnd_rect.top()))))
+                else if (item->data(1) == "Bomb")
                 {
-                    static_collision_rects.append(tile_bnd_rect);
+                    Bomb *bomb = static_cast<Bomb *>(item);
+                    if (!bomb->isActive())
+                    {
+                        dyn_collision_rects.append(bomb->getCollisionRect());
+                    }
+                }
+                else if (item->data(0) == "Tile")
+                {
+                    Tile *tile = static_cast<Tile *>(item);
+
+                    QRectF tile_bnd_rect = tile->sceneBoundingRect();
+
+                    if (tile->isSolid() | (!tile->isEmpty() & ((tile->checkUp() && m_speed_y < 0 && sceneBoundingRect().bottom() >= tile_bnd_rect.bottom()) | (tile->checkDown() && m_speed_y > 0 && sceneBoundingRect().top() <= tile_bnd_rect.top()))))
+                    {
+                        static_collision_rects.append(tile_bnd_rect);
+                    }
                 }
             }
         }
-    }
 
-    handleDynamicCollision(dyn_collision_rects);
-    handleStaticCollision(static_collision_rects);
+        handleDynamicCollision(dyn_collision_rects);
+        handleStaticCollision(static_collision_rects);
+        m_collision_handeled = false;
+    }
 }
 
 qreal CollisionRect::distance(const QRectF &rect1, const QRectF &rect2) const

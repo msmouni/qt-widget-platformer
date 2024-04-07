@@ -46,7 +46,7 @@ shape() returns the shape of the item as a QPainterPath. The shape represents th
     virtual void updateKinematics();
     virtual void gameUpdate() = 0;
 
-    const CollisionRect *getCollisionRect() const;
+    CollisionRect *getCollisionRect();
 
     bool isAttacking() const;
 
