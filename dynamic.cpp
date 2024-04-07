@@ -1,13 +1,24 @@
 #include "dynamic.h"
 
-EntityDynamics::EntityDynamics(QGraphicsItem *parent, qreal init_speed_x, qreal init_speed_y, qreal friction, bool change_mvmt_dir)
+EntityDynamics::EntityDynamics(QGraphicsItem *parent, qreal init_speed_x, qreal init_speed_y, qreal friction, bool change_mvmt_dir, qreal speed_max_x, qreal speed_max_y)
 {
     m_speed_x = init_speed_x;
     m_speed_y = init_speed_y;
+    //    m_speed_max_x = speed_max_x;
+    //    m_speed_max_y = speed_max_y;
+
+    m_friction = friction;
+
+    //    // IF the acceleration needs to be smaller, take it as arguments
+    //    m_accel_max_x = m_speed_max_x + m_speed_max_x*m_friction; // Speed_X_{k} = Speed_X_{k -1} * friction + Accel_X_{k} / Speed_X_{k} = S_MAX & Speed_X_{k - 1} = -S_MAX
+    //    m_accel_max_y = m_speed_max_y + m_speed_max_x*m_friction + M_GRAVITY; // Speed_Y_{k} = Speed_Y_{k -1} * friction + Accel_Y_{k} + GRAVITY / Speed_Y_{k} = -S_MAX & Speed_Y_{k - 1} = S_MAX
+
+    //    qDebug()<<m_speed_max_x<<m_speed_max_y<<m_accel_max_x<<m_accel_max_y;
     m_acc_x = 0;
     m_acc_y = 0;
 
-    m_friction = friction;
+    setMaxAbsSpeedX(speed_max_x);
+    setMaxAbsSpeedY(speed_max_y);
 
     m_parent = parent;
 
@@ -50,6 +61,11 @@ void EntityDynamics::updateDynamics()
     m_entity_pos = m_collision_rect->getEntityPos() - scene_adjustmnt;
 }
 
+void EntityDynamics::setCollisionMargin(QMarginsF margin)
+{
+    m_collision_rect->setMargin(margin);
+}
+
 const CollisionRect *EntityDynamics::getCollisionRect() const
 {
     return m_collision_rect;
@@ -72,7 +88,7 @@ void EntityDynamics::setSpeedX(qreal speed_x)
 
 void EntityDynamics::setSpeedY(qreal speed_y)
 {
-    m_speed_y = fmin(fmax(speed_y, getMinSpeed()), getMaxSpeed());
+    m_speed_y = speed_y; // fmin(fmax(speed_y, -m_speed_max_y), m_speed_max_y);//fmin(fmax(speed_y, -15), 15);//speed_y;//fmin(fmax(speed_y, getMinSpeed()), getMaxSpeed());
 }
 
 qreal EntityDynamics::getAccelX() const
@@ -87,12 +103,14 @@ qreal EntityDynamics::getAccelY() const
 
 void EntityDynamics::setAccelX(qreal accel_x)
 {
-    m_acc_x = accel_x;
+    // NOTE: ACCELERATION IS CONSTRAINED BY SPEED IN THE MODEL WE USE
+    // NOTE: Use min/max after seperating it from mvmt_accel + jump_accel (enemy/player): max_accel > max_speed*0.5 +gravity = 28
+    m_acc_x = accel_x; // fmin(fmax(accel_x, getMinAccel()), getMaxAccel());
 }
 
 void EntityDynamics::setAccelY(qreal accel_y)
 {
-    m_acc_y = accel_y;
+    m_acc_y = accel_y; // fmin(fmax(accel_y, getMinAccel()), getMaxAccel());
 }
 
 qreal EntityDynamics::getFriction() const
@@ -105,24 +123,40 @@ qreal EntityDynamics::getGravity() const
     return M_GRAVITY;
 }
 
-qreal EntityDynamics::getMaxSpeed() const
+qreal EntityDynamics::getMaxAbsSpeedX() const
 {
-    return M_SPEED_MAX;
+    return m_speed_max_x;
 }
 
-qreal EntityDynamics::getMinSpeed() const
+qreal EntityDynamics::getMaxAbsSpeedY() const
 {
-    return -M_SPEED_MAX;
+    return m_speed_max_y;
 }
 
-qreal EntityDynamics::getMaxAccel() const
+qreal EntityDynamics::getMaxAbsAccelX() const
 {
-    return M_ACCEL_MAX;
+    return m_accel_max_x;
 }
 
-qreal EntityDynamics::getMinAccel() const
+qreal EntityDynamics::getMaxAbsAccelY() const
 {
-    return -M_ACCEL_MAX;
+    return m_accel_max_y;
+}
+
+void EntityDynamics::setMaxAbsSpeedX(qreal speed_max_x)
+{
+    m_speed_max_x = speed_max_x;
+
+    // IF the acceleration needs to be smaller, take it as arguments
+    m_accel_max_x = m_speed_max_x + m_speed_max_x * m_friction; // Speed_X_{k} = Speed_X_{k -1} * friction + Accel_X_{k} / Speed_X_{k} = S_MAX & Speed_X_{k - 1} = -S_MAX
+}
+
+void EntityDynamics::setMaxAbsSpeedY(qreal speed_max_y)
+{
+    m_speed_max_y = speed_max_y;
+
+    // IF the acceleration needs to be smaller, take it as arguments
+    m_accel_max_y = m_speed_max_y + m_speed_max_y * m_friction + M_GRAVITY; // Speed_Y_{k} = Speed_Y_{k -1} * friction + Accel_Y_{k} + GRAVITY / Speed_Y_{k} = -S_MAX & Speed_Y_{k - 1} = S_MAX
 }
 
 const EntityDirection &EntityDynamics::getDirection() const

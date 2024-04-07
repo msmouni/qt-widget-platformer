@@ -6,6 +6,7 @@
 #include <QGraphicsRectItem>
 #include <QPainter>
 
+// To Rename : Dynamics (character + weapon ...)
 class CollisionRect : public QGraphicsRectItem
 {
 public:
@@ -30,6 +31,8 @@ public:
 
     void update();
 
+    void setMargin(QMarginsF margin);
+
     bool isBottomCollision();
 
 private:
@@ -46,6 +49,7 @@ private:
     bool m_is_bottom_collision;
     bool m_is_left_collision;
     bool m_is_right_collision;
+    QMarginsF m_margin;
 
     qreal distance(const QRectF &rect1, const QRectF &rect2) const;
     bool compareDistance(const QRectF &rect1, const QRectF &rect2, const QRectF &targetRect) const;

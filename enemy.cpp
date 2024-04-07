@@ -5,12 +5,33 @@ Enemy::Enemy(const QPointF &pos, const QString &res_path, const Platform &platfo
     setData(0, "Enemy");
     m_type = CharacterType::Enemy;
 
+    m_animation->addAnimationState((uint8_t)CharacterState::Attack, res_path + "/Attack");
+
+    //    m_animation->stop();
+
+    m_dynamics->setMaxAbsSpeedX(20);
+    m_dynamics->setMaxAbsSpeedY(20);
+    m_jump_timeout_ms = ((qreal)(m_platform.getTileSize().height() * M_MAX_TILES_JUMP)) / m_dynamics->getMaxAbsSpeedY() * 50; // NOTE: m_update_timeout_ms = 50;
+
     connect(&m_path_finder, SIGNAL(pathFindingRes(QVector<QPoint>)), this, SLOT(setPathFindingResult(QVector<QPoint>)));
 }
 
 void Enemy::updateKinematics()
 {
-    followPath();
+    if (!isHit() && !isAttacking())
+    {
+        followPath();
+    }
+
+    // NOTE: When not colling followPath when Attacking or hit -> acceleration is not updated, so the enemy keeps the last value
+    else if (isAttacking())
+    {
+        m_path_tiles.clear();
+        m_dynamics->setAccelX(0);
+        m_dynamics->setAccelY(0);
+        //        m_dynamics->setSpeedX(0);
+        //        m_dynamics->setSpeedY(0);
+    }
 
     Character::updateKinematics();
 }
@@ -18,6 +39,26 @@ void Enemy::updateKinematics()
 void Enemy::gameUpdate()
 {
     findPath();
+
+    if (isAttacking())
+    {
+        //        qDebug()<<"Collision margin";
+        m_dynamics->setCollisionMargin(QMarginsF(-15, 0, -15, 0));
+    }
+    else
+    {
+        m_dynamics->setCollisionMargin(QMarginsF(0, 0, 0, 0));
+    }
+
+    if (sceneBoundingRect().marginsAdded(QMarginsF(3, 0, 3, 0)).intersects(m_player_rect))
+    {
+        //        qDebug()<<"Attack";
+        m_attacking = true;
+        //        m_attack_timer.start(m_animation->getIdDuration(static_cast<uint8_t>(CharacterState::Attack)));
+        //        m_state =CharacterState::Attack;
+        //        //        updateAnimation();
+        //        m_animation->setId(static_cast<uint8_t>(m_state));
+    }
 
     updateCharacter();
 }
@@ -114,7 +155,7 @@ void Enemy::followPath()
 
         qreal accel_x = speed.x() - m_dynamics->getSpeedX() * m_dynamics->getFriction();
 
-        m_dynamics->setAccelX(fmin(fmax(accel_x, m_dynamics->getMinAccel()), m_dynamics->getMaxAccel()));
+        m_dynamics->setAccelX(accel_x); // fmin(fmax(accel_x, m_dynamics->getMinAccel()), m_dynamics->getMaxAccel()));
 
         if (speed.y() < 0)
         {
@@ -131,3 +172,18 @@ void Enemy::followPath()
         m_dynamics->setAccelY(0);
     }
 }
+
+// void Enemy::updateState()
+//{
+//     Character::updateState();
+
+////    bool attack=abs(m_player_rect.bottom() - sceneBoundingRect().bottom())<1 && m_player_rect.right() - sceneBoundingRect().right();
+
+//    // TODO: change it to pursued
+////    if (abs(m_player_rect.left() - sceneBoundingRect().left())<boundingRect().width()*1.5){
+//    if (sceneBoundingRect().marginsAdded(QMarginsF(3,0,3,0)).intersects(m_player_rect)){
+//        m_state =CharacterState::Attack;
+////        updateAnimation();
+//        m_animation->setId(static_cast<uint8_t>(m_state));
+//    }
+//}
