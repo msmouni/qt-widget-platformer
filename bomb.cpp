@@ -15,7 +15,7 @@ Bomb::Bomb(int id, const QPointF &pos, qreal speed_x, qreal speed_y, qreal power
     m_remaining_timer_time = 0;
 
     m_dynamics = new EntityDynamics(this, speed_x, speed_y, 0.7);
-//    m_dynamics->setWeight(30);
+    m_dynamics->setWeight(30);
 }
 
 void Bomb::start()

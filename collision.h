@@ -22,7 +22,7 @@ public:
     void handleDynamicCollision(QVector<CollisionRect *>);
     void handleStaticCollision(QRectF rect);
     void handleStaticCollision(QVector<QRectF> rects);
-    void handleCollision();
+    void handleCollision(CollisionRect* caller=nullptr);
 
     void setEntityRect(QRectF new_rect);
     QRectF getEntityRect();

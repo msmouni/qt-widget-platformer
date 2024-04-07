@@ -121,7 +121,8 @@ void CollisionRect::handleCollision(const QRectF &new_rect, const QRectF &old_re
                 m_is_top_collision = true;
             }
 
-            m_speed_y = speed_y;// * m_speed_y < 0 ? speed_y : 0; // 0//0; //
+            // NOTE: m_speed_y = (m_speed_y*m_weight + speed_y*weight)/(m_weight+weight);
+            m_speed_y =  speed_y;// * m_speed_y < 0 ? speed_y : 0; // 0//0; //
         }
         else if (horizontal_collision & !vertical_collision & (m_old_rect.top() <= new_rect.bottom() & m_old_rect.bottom() >= new_rect.top()))
         {
@@ -240,22 +241,22 @@ void CollisionRect::handleDynamicCollision(QVector<CollisionRect *> colliding_re
     for (CollisionRect *colliding_rect : colliding_rects)
     {
         // TODO: colliding_rect->handleCollision() // not const *
-        colliding_rect->handleCollision();
+        colliding_rect->handleCollision(this);
         handleDynamicCollision(*colliding_rect);
     }
 }
 
-void CollisionRect::handleCollision()
+void CollisionRect::handleCollision(CollisionRect* caller)
 {
     if (!m_collision_handeled){
-        m_collision_handeled = true;
+        m_collision_handeled = true; // Lock
 
         QVector<CollisionRect *> dyn_collision_rects;
         QVector<QRectF> static_collision_rects;
 
         for (QGraphicsItem *item : collidingItems())
         {
-            if (item != this->parentItem())
+            if (item != this->parentItem())// && (caller==nullptr))//  || item !=caller->parentItem()) )
             {
                 if (item->data(0) == "Enemy" || item->data(0) == "Player")
                 {
