@@ -59,9 +59,11 @@ protected slots:
     void dropWeapon(Weapon *);
     void jumpTimeout();
     void attackTimeout();
+    void hitTimeout();
 
 protected:
     const int M_JUMP_TIMEOUT_MS = 500;
+    const int M_HIT_TIMEOUT_MS = 500;
 
     QRectF m_bounding_rect;
     CharacterType m_type;
@@ -75,6 +77,10 @@ protected:
     int m_remaining_attack_time;
     bool m_attacking;
 
+    QTimer m_hit_timer;
+    int m_remaining_hit_time;
+    bool m_hit;
+
     EntityDynamics *m_dynamics;
 
     CharacterState m_state;
@@ -87,6 +93,7 @@ protected:
     virtual void updateAnimation();
 
     bool isOnGround();
+    bool isHit();
 
     void moveRight();
     void moveLeft();
@@ -94,6 +101,7 @@ protected:
     void stopRight();
     void stopLeft();
     void stopJump();
+    void hit(QPointF hit_pos, qreal power_x, qreal power_y);
 };
 
 #endif // CHARACTER_H

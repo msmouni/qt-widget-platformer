@@ -36,6 +36,11 @@ Character::Character(const QPointF &pos, const QString &res_path, const Platform
     m_effective_attack_duration = 7 * 50; // last 7 attack frames (TODO: specific to character)
     m_remaining_attack_time = 0;
     m_attacking = false;
+
+    m_hit_timer.setSingleShot(true);
+    connect(&m_hit_timer, &QTimer::timeout, this, &Character::hitTimeout);
+    m_remaining_hit_time = 0;
+    m_hit = false;
 }
 
 QRectF Character::boundingRect() const
@@ -92,6 +97,11 @@ void Character::attackTimeout()
     m_attacking = false;
 }
 
+void Character::hitTimeout()
+{
+    m_hit = false;
+}
+
 void Character::pause()
 {
     m_animation->pause();
@@ -133,6 +143,8 @@ void Character::updateCharacter()
 }
 
 void Character::updateState()
+{
+    if (!m_hit)
 {
     qreal speed_x = m_dynamics->getSpeedX();
     qreal speed_y = m_dynamics->getSpeedY();
@@ -177,25 +189,17 @@ void Character::updateState()
             Weapon *weapon = static_cast<Weapon *>(item);
             if (weapon->isActive())
             {
-                m_state = CharacterState::Hit;
-
-                QPointF diff_pos = this->sceneBoundingRect().center() - weapon->sceneBoundingRect().center();
-                qreal dir_x = 1;
-                qreal dir_y = -1;
-
-                if (diff_pos.x() < 0)
-                {
-                    dir_x = -1;
+                    hit(weapon->sceneBoundingRect().center(), weapon->getPowerX(), weapon->getPowerY());
                 }
+            }
+            else if (item->data(0) == "Enemy" && this->data(0) != "Enemy")
+            {
+                Character *enemy = static_cast<Character *>(item);
 
-                if (diff_pos.y() > 0)
+                if (enemy->isAttacking())
                 {
-                    dir_y = 1;
+                    hit(enemy->sceneBoundingRect().center(), 100, 100); // NOTE: SPEED LIMITS
                 }
-
-                m_dynamics->setSpeedX(speed_x + weapon->getPowerX() * dir_x);
-
-                m_dynamics->setSpeedY(speed_y + weapon->getPowerY() * dir_y);
             }
         }
     }
@@ -209,6 +213,11 @@ void Character::updateAnimation()
 bool Character::isOnGround()
 {
     return m_state != CharacterState::Init && m_state != CharacterState::Jump && m_state != CharacterState::Fall;
+}
+
+bool Character::isHit()
+{
+    return m_state == CharacterState::Hit;
 }
 
 void Character::moveRight()
@@ -246,4 +255,30 @@ void Character::stopLeft()
 void Character::stopJump()
 {
     m_dynamics->setAccelY(0);
+}
+
+void Character::hit(QPointF hit_pos, qreal power_x, qreal power_y)
+{
+    m_state = CharacterState::Hit;
+
+    QPointF diff_pos = this->sceneBoundingRect().center() - hit_pos;
+    qreal dir_x = 1;
+    qreal dir_y = -1;
+
+    if (diff_pos.x() < 0)
+    {
+        dir_x = -1;
+    }
+
+    if (diff_pos.y() > 0)
+    {
+        dir_y = 1;
+    }
+
+    m_dynamics->setSpeedX(m_dynamics->getSpeedX() + power_x * dir_x);
+
+    m_dynamics->setSpeedY(m_dynamics->getSpeedY() + power_y * dir_y);
+
+    m_hit = true;
+    m_hit_timer.start(M_HIT_TIMEOUT_MS);
 }

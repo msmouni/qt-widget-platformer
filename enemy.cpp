@@ -12,7 +12,7 @@ Enemy::Enemy(const QPointF &pos, const QString &res_path, const Platform &platfo
 
 void Enemy::updateKinematics()
 {
-    if (!isAttacking())
+    if (!isHit() && !isAttacking())
 {
     followPath();
     }
