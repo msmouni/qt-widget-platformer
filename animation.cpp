@@ -53,6 +53,11 @@ const QRectF &SpriteAnimation::getRect()
     return m_rect;
 }
 
+void SpriteAnimation::addAnimationState(uint8_t state_id, QString frames_path)
+{
+    loadFramesFromFolder(state_id, frames_path);
+}
+
 void SpriteAnimation::stop()
 {
     m_animation_timer->stop();
