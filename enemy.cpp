@@ -5,12 +5,24 @@ Enemy::Enemy(const QPointF &pos, const QString &res_path, const Platform &platfo
     setData(0, "Enemy");
     m_type = CharacterType::Enemy;
 
+    m_animation->addAnimationState((uint8_t)CharacterState::Attack, res_path + "/Attack");
+
     connect(&m_path_finder, SIGNAL(pathFindingRes(QVector<QPoint>)), this, SLOT(setPathFindingResult(QVector<QPoint>)));
 }
 
 void Enemy::updateKinematics()
 {
+    if (!isAttacking())
+{
     followPath();
+    }
+    else if (isAttacking())
+    {
+        // NOTE: When not colling followPath when Attacking or hit -> acceleration is not updated, so the enemy keeps the last value
+        m_path_tiles.clear();
+        m_dynamics->setAccelX(0);
+        m_dynamics->setAccelY(0);
+    }
 
     Character::updateKinematics();
 }
@@ -18,6 +30,12 @@ void Enemy::updateKinematics()
 void Enemy::gameUpdate()
 {
     findPath();
+
+    m_dynamics->setCollisionMargin(isAttacking() ? m_dynamics->getDirection() == EntityDirection::MovingRight ? QMarginsF(0, 0, -15, 0) : QMarginsF(-15, 0, 0, 0) : QMarginsF(0, 0, 0, 0));
+    if (sceneBoundingRect().marginsAdded(QMarginsF(3, 0, 3, 0)).intersects(m_player_rect))
+    {
+        m_attacking = true;
+    }
 
     updateCharacter();
 }

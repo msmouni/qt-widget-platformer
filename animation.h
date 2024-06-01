@@ -23,6 +23,8 @@ public:
     const QRectF &getRect();
 
     void addAnimationState(uint8_t state_id, QString frames_path);
+    int getIdDuration(int id);
+
 public slots:
     void pause();
     void resume();

@@ -18,6 +18,8 @@ public:
     void updateKinematics();
     void updateDynamics();
 
+    void setCollisionMargin(QMarginsF margin);
+
     const CollisionRect *getCollisionRect() const;
 
     qreal getSpeedX() const;

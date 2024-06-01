@@ -30,6 +30,12 @@ Character::Character(const QPointF &pos, const QString &res_path, const Platform
     m_jump_timer.setSingleShot(true);
     connect(&m_jump_timer, &QTimer::timeout, this, &Character::jumpTimeout);
     m_remaining_jump_time = 0;
+
+    m_attack_timer.setSingleShot(true);
+    connect(&m_attack_timer, &QTimer::timeout, this, &Character::attackTimeout);
+    m_effective_attack_duration = 7 * 50; // last 7 attack frames (TODO: specific to character)
+    m_remaining_attack_time = 0;
+    m_attacking = false;
 }
 
 QRectF Character::boundingRect() const
@@ -59,6 +65,11 @@ const CollisionRect *Character::getCollisionRect() const
     return m_dynamics->getCollisionRect();
 }
 
+bool Character::isAttacking() const
+{
+    return m_state == CharacterState::Attack && m_attack_timer.remainingTime() < m_effective_attack_duration;
+}
+
 void Character::updateView()
 {
     setPixmap(m_animation->getPixmap());
@@ -76,11 +87,18 @@ void Character::jumpTimeout()
     m_dynamics->setAccelY(0);
 }
 
+void Character::attackTimeout()
+{
+    m_attacking = false;
+}
+
 void Character::pause()
 {
     m_animation->pause();
     m_remaining_jump_time = m_jump_timer.isActive() ? m_jump_timer.remainingTime() : 0;
     m_jump_timer.stop();
+    m_remaining_attack_time = m_attack_timer.isActive() ? m_attack_timer.remainingTime() : 0;
+    m_attack_timer.stop();
 
     for (QHash<int, Weapon *>::const_iterator weapons_it = m_weapons.constBegin(); weapons_it != m_weapons.constEnd(); ++weapons_it)
     {
@@ -92,6 +110,7 @@ void Character::resume()
 {
     m_animation->resume();
     m_jump_timer.start(m_remaining_jump_time);
+    m_attack_timer.start(m_remaining_attack_time);
 
     for (QHash<int, Weapon *>::const_iterator weapons_it = m_weapons.constBegin(); weapons_it != m_weapons.constEnd(); ++weapons_it)
     {
@@ -118,7 +137,19 @@ void Character::updateState()
     qreal speed_x = m_dynamics->getSpeedX();
     qreal speed_y = m_dynamics->getSpeedY();
 
-    if (m_dynamics->isBottomCollision() && m_state == CharacterState::Fall)
+        if (m_attacking)
+        {
+            if (m_state != CharacterState::Attack)
+            {
+                m_attack_timer.start(m_animation->getIdDuration(static_cast<uint8_t>(CharacterState::Attack)));
+                m_state = CharacterState::Attack;
+            }
+            else if (!m_attack_timer.isActive())
+            {
+                m_attack_timer.start(m_animation->getIdDuration(static_cast<uint8_t>(CharacterState::Attack)));
+            }
+        }
+        else if (m_dynamics->isBottomCollision() && m_state == CharacterState::Fall)
     {
         m_state = CharacterState::Ground;
     }
@@ -192,7 +223,7 @@ void Character::moveLeft()
 
 void Character::jump()
 {
-    if (isOnGround())
+    if (isOnGround() && !isAttacking())
     {
         m_jump_timer.start(M_JUMP_TIMEOUT_MS);
         // Sp: cst & A: cst => TODO: Use A to decrease Sp (ex: Sp_{n} = 0.95 *Sp_{n-1})

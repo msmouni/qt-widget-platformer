@@ -50,6 +50,11 @@ void EntityDynamics::updateDynamics()
     m_entity_pos = m_collision_rect->getEntityPos() - scene_adjustmnt;
 }
 
+void EntityDynamics::setCollisionMargin(QMarginsF margin)
+{
+    m_collision_rect->setMargin(margin);
+}
+
 const CollisionRect *EntityDynamics::getCollisionRect() const
 {
     return m_collision_rect;

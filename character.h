@@ -24,6 +24,7 @@ enum class CharacterState : uint8_t
     Ground = 5,
     Hit = 6,
     DeadHit = 7,
+    Attack = 8,
 };
 
 class Character : public QObject, public QGraphicsPixmapItem
@@ -47,6 +48,8 @@ shape() returns the shape of the item as a QPainterPath. The shape represents th
 
     const CollisionRect *getCollisionRect() const;
 
+    bool isAttacking() const;
+
 public slots:
     virtual void pause();
     virtual void resume();
@@ -55,6 +58,7 @@ protected slots:
     void updateView();
     void dropWeapon(Weapon *);
     void jumpTimeout();
+    void attackTimeout();
 
 protected:
     const int M_JUMP_TIMEOUT_MS = 500;
@@ -66,6 +70,11 @@ protected:
     QTimer m_jump_timer;
     int m_remaining_jump_time;
 
+    QTimer m_attack_timer;
+    int m_effective_attack_duration;
+    int m_remaining_attack_time;
+    bool m_attacking;
+
     EntityDynamics *m_dynamics;
 
     CharacterState m_state;
@@ -74,7 +83,7 @@ protected:
     QHash<int, Weapon *> m_weapons;
 
     void updateCharacter();
-    void updateState();
+    virtual void updateState();
     virtual void updateAnimation();
 
     bool isOnGround();

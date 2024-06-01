@@ -16,6 +16,8 @@ CollisionRect::CollisionRect(QGraphicsItem *parent, qreal &speed_x, qreal &speed
     m_is_bottom_collision = false;
     m_is_left_collision = false;
     m_is_right_collision = false;
+
+    m_margin = QMarginsF(0, 0, 0, 0);
 }
 
 QRectF CollisionRect::boundingRect() const
@@ -37,7 +39,7 @@ QPainterPath CollisionRect::shape() const
 void CollisionRect::setEntityRect(QRectF new_rect)
 {
     m_old_rect = m_new_rect;
-    m_new_rect = new_rect;
+    m_new_rect = new_rect.marginsAdded(m_margin);
 }
 
 QRectF CollisionRect::getEntityRect()
@@ -47,7 +49,7 @@ QRectF CollisionRect::getEntityRect()
 
 QPointF CollisionRect::getEntityPos()
 {
-    return m_new_rect.topLeft() + QPointF(m_speed_x, m_speed_y);
+    return m_new_rect.marginsRemoved(m_margin).topLeft() + QPointF(m_speed_x, m_speed_y);
 }
 
 void CollisionRect::update()
@@ -62,6 +64,11 @@ void CollisionRect::update()
     setEntityRect(this->mapRectToScene(entity_bounding_rect));
 
     m_bounding_rect = entity_bounding_rect.marginsAdded(QMarginsF(entity_bounding_rect.width() / 2, m_speed_y < 0 ? -m_speed_y + entity_bounding_rect.height() : entity_bounding_rect.height() / 2, abs(m_speed_x) + entity_bounding_rect.width(), m_speed_y > 0 ? m_speed_y + entity_bounding_rect.height() : entity_bounding_rect.height() / 2)); // QRectF(-250,-250,500,500));
+}
+
+void CollisionRect::setMargin(QMarginsF margin)
+{
+    m_margin = margin;
 }
 
 bool CollisionRect::isBottomCollision()
