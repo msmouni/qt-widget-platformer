@@ -6,10 +6,12 @@
 
 CollisionRect::CollisionRect(QGraphicsItem *parent, qreal &speed_x, qreal &speed_y) : m_speed_x(speed_x), m_speed_y(speed_y)
 {
+    this->setData(0, "CollisionRect");
+
     this->setParentItem(parent);
 
     m_bounding_rect = parent->sceneBoundingRect();
-    m_old_rect = m_bounding_rect;
+    m_old_rect = QRectF(m_bounding_rect.center(), QSizeF(0, 0));
     m_new_rect = m_bounding_rect;
 
     m_is_top_collision = false;
@@ -109,7 +111,7 @@ void CollisionRect::handleCollision(const QRectF &new_rect, const QRectF &old_re
             m_is_top_collision = true;
         }
 
-        m_speed_y = speed_y * m_speed_y < 0 ? speed_y : 0; // 0
+        m_speed_y = 0; // speed_y * m_speed_y < 0 ? speed_y : 0; // 0
     }
     else if (horizontal_collision & !vertical_collision & (m_old_rect.top() <= new_rect.bottom() & m_old_rect.bottom() >= new_rect.top()))
     {
@@ -125,7 +127,7 @@ void CollisionRect::handleCollision(const QRectF &new_rect, const QRectF &old_re
             m_is_right_collision = true;
         }
 
-        m_speed_x = speed_x * m_speed_x < 0 ? speed_x : 0; // 0
+        m_speed_x = 0; // speed_x * m_speed_x < 0 ? speed_x : 0; // 0
     }
     else if (vertical_collision & horizontal_collision)
     {
@@ -144,7 +146,7 @@ void CollisionRect::handleCollision(const QRectF &new_rect, const QRectF &old_re
             if ((y_top_right >= new_rect.top() && y_top_right <= new_rect.bottom()) || (y_bottom_right >= new_rect.top() && y_bottom_right <= new_rect.bottom()))
             {
                 m_new_rect.moveRight(new_rect.left() - M_COLLISION_MARGIN);
-                m_speed_x = speed_x * m_speed_x < 0 ? speed_x : 0; // 0
+                m_speed_x = 0; // speed_x * m_speed_x < 0 ? speed_x : 0; // 0
 
                 m_is_right_collision = true;
             }
@@ -159,7 +161,7 @@ void CollisionRect::handleCollision(const QRectF &new_rect, const QRectF &old_re
             if ((y_top_left >= new_rect.top() && y_top_left <= new_rect.bottom()) || (y_bottom_left >= new_rect.top() && y_bottom_left <= new_rect.bottom()))
             {
                 m_new_rect.moveLeft(new_rect.right() + M_COLLISION_MARGIN);
-                m_speed_x = speed_x * m_speed_x < 0 ? speed_x : 0; // 0
+                m_speed_x = 0; // speed_x * m_speed_x < 0 ? speed_x : 0; // 0
 
                 m_is_left_collision = true;
             }
@@ -175,7 +177,7 @@ void CollisionRect::handleCollision(const QRectF &new_rect, const QRectF &old_re
             if ((x_bottom_right >= new_rect.left() && x_bottom_right <= new_rect.right()) || (x_bottom_left >= new_rect.left() && x_bottom_left <= new_rect.right()))
             {
                 m_new_rect.moveBottom(new_rect.top() - M_COLLISION_MARGIN);
-                m_speed_y = speed_y * m_speed_y < 0 ? speed_y : 0; // 0
+                m_speed_y = 0; // speed_y * m_speed_y < 0 ? speed_y : 0; // 0
 
                 m_is_bottom_collision = true;
             }
@@ -190,7 +192,7 @@ void CollisionRect::handleCollision(const QRectF &new_rect, const QRectF &old_re
             if ((x_top_right >= new_rect.left() && x_top_right <= new_rect.right()) || (x_top_left >= new_rect.left() && x_top_left <= new_rect.right()))
             {
                 m_new_rect.moveTop(new_rect.bottom() + M_COLLISION_MARGIN);
-                m_speed_y = speed_y * m_speed_y < 0 ? speed_y : 0; // 0
+                m_speed_y = 0; // speed_y * m_speed_y < 0 ? speed_y : 0; // 0
 
                 m_is_top_collision = true;
             }
@@ -242,19 +244,20 @@ void CollisionRect::handleCollision()
 
     for (QGraphicsItem *item : collidingItems())
     {
-        if (item != this->parentItem())
+        if (item->data(0) == "CollisionRect")
         {
-            if (item->data(0) == "Enemy" || item->data(0) == "Player")
+            if (item->parentItem()->data(0) == "Enemy" || item->parentItem()->data(0) == "Player")
             {
-                Character *chara = static_cast<Character *>(item);
+                Character *chara = static_cast<Character *>(item->parentItem());
                 dyn_collision_rects.append(chara->getCollisionRect());
             }
-            else if (item->data(1) == "Bomb")
+            else if (item->parentItem()->data(1) == "Bomb")
             {
-                Bomb *bomb = static_cast<Bomb *>(item);
+                Bomb *bomb = static_cast<Bomb *>(item->parentItem());
                 if (!bomb->isActive())
                 {
                     dyn_collision_rects.append(bomb->getCollisionRect());
+                }
                 }
             }
             else if (item->data(0) == "Tile")
@@ -266,7 +269,6 @@ void CollisionRect::handleCollision()
                 if (tile->isSolid() | (!tile->isEmpty() & ((tile->checkUp() && m_speed_y < 0 && sceneBoundingRect().bottom() >= tile_bnd_rect.bottom()) | (tile->checkDown() && m_speed_y > 0 && sceneBoundingRect().top() <= tile_bnd_rect.top()))))
                 {
                     static_collision_rects.append(tile_bnd_rect);
-                }
             }
         }
     }
