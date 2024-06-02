@@ -28,8 +28,20 @@ Character::Character(const QPointF &pos, const QString &res_path, const Platform
     m_dynamics = new EntityDynamics(this, 0, 0, 0.5, true);
 
     m_jump_timer.setSingleShot(true);
+    m_jump_timeout_ms = ((qreal)(m_platform.getTileSize().height() * M_MAX_TILES_JUMP)) / m_dynamics->getMaxAbsSpeedY() * 50; // NOTE: m_update_timeout_ms = 50;
+                                                                                                                              //    qDebug()<<"m_jump_timeout_ms"<<m_jump_timeout_ms;
     connect(&m_jump_timer, &QTimer::timeout, this, &Character::jumpTimeout);
     m_remaining_jump_time = 0;
+
+    m_attack_timer.setSingleShot(true);
+    connect(&m_attack_timer, &QTimer::timeout, this, &Character::attackTimeout);
+    m_remaining_attack_time = 0;
+    m_attacking = false;
+
+    m_hit_timer.setSingleShot(true);
+    connect(&m_hit_timer, &QTimer::timeout, this, &Character::hitTimeout);
+    m_remaining_hit_time = 0;
+    m_hit = false;
 }
 
 QRectF Character::boundingRect() const
@@ -40,6 +52,18 @@ QRectF Character::boundingRect() const
 void Character::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
     painter->drawPixmap(m_bounding_rect, pixmap(), this->shape().boundingRect());
+
+    // Set the pen and brush for the rectangle
+    QPen pen(Qt::green);
+    pen.setWidth(2);
+    painter->setPen(pen);
+    //    painter->drawRect(this->boundingRect());
+
+    painter->drawPath(this->shape());
+
+    pen.setWidth(9);
+    painter->setPen(pen);
+    painter->drawPoint(this->mapFromScene(sceneBoundingRect().topLeft()));
 }
 
 void Character::updateKinematics()
@@ -54,9 +78,14 @@ void Character::updateKinematics()
     }
 }
 
-const CollisionRect *Character::getCollisionRect() const
+CollisionRect *Character::getCollisionRect()
 {
     return m_dynamics->getCollisionRect();
+}
+
+bool Character::isAttacking() const
+{
+    return m_state == CharacterState::Attack;
 }
 
 void Character::updateView()
@@ -76,11 +105,24 @@ void Character::jumpTimeout()
     m_dynamics->setAccelY(0);
 }
 
+void Character::attackTimeout()
+{
+    qDebug() << "Attack Timeout";
+    m_attacking = false;
+}
+
+void Character::hitTimeout()
+{
+    m_hit = false;
+}
+
 void Character::pause()
 {
     m_animation->pause();
     m_remaining_jump_time = m_jump_timer.isActive() ? m_jump_timer.remainingTime() : 0;
     m_jump_timer.stop();
+    m_remaining_attack_time = m_attack_timer.isActive() ? m_attack_timer.remainingTime() : 0;
+    m_attack_timer.stop();
 
     for (QHash<int, Weapon *>::const_iterator weapons_it = m_weapons.constBegin(); weapons_it != m_weapons.constEnd(); ++weapons_it)
     {
@@ -92,6 +134,7 @@ void Character::resume()
 {
     m_animation->resume();
     m_jump_timer.start(m_remaining_jump_time);
+    m_attack_timer.start(m_remaining_attack_time);
 
     for (QHash<int, Weapon *>::const_iterator weapons_it = m_weapons.constBegin(); weapons_it != m_weapons.constEnd(); ++weapons_it)
     {
@@ -115,56 +158,66 @@ void Character::updateCharacter()
 
 void Character::updateState()
 {
-    qreal speed_x = m_dynamics->getSpeedX();
-    qreal speed_y = m_dynamics->getSpeedY();
+    if (!m_hit)
+    {
+        qreal speed_x = m_dynamics->getSpeedX();
+        qreal speed_y = m_dynamics->getSpeedY();
 
-    if (m_dynamics->isBottomCollision() && m_state == CharacterState::Fall)
-    {
-        m_state = CharacterState::Ground;
-    }
-    else if (speed_y > 0.01)
-    {
-        m_state = CharacterState::Fall;
-    }
-    else if (speed_y < -0.01)
-    {
-        m_state = CharacterState::Jump;
-    }
-    else if (abs(speed_x) > 1)
-    {
-        m_state = CharacterState::Run;
-    }
-    else
-    {
-        m_state = CharacterState::Idle;
-    }
-
-    for (QGraphicsItem *item : this->collidingItems())
-    {
-        if (item->data(0) == "Weapon")
+        if (m_attacking)
         {
-            Weapon *weapon = static_cast<Weapon *>(item);
-            if (weapon->isActive())
+            // && m_attack_timer not expired
+            if (m_state != CharacterState::Attack)
             {
-                m_state = CharacterState::Hit;
+                qDebug() << "Attack timer start";
+                m_attack_timer.start(m_animation->getIdDuration(static_cast<uint8_t>(CharacterState::Attack)));
+                m_state = CharacterState::Attack;
+            }
+            else if (!m_attack_timer.isActive())
+            {
+                // continue attacking
+                //            qDebug() << "Check";
+                m_attack_timer.start(m_animation->getIdDuration(static_cast<uint8_t>(CharacterState::Attack)));
+            }
+        }
+        else if (m_dynamics->isBottomCollision() && m_state == CharacterState::Fall)
+        {
+            m_state = CharacterState::Ground;
+        }
+        else if (speed_y > 0.01)
+        {
+            m_state = CharacterState::Fall;
+        }
+        else if (speed_y < -0.01)
+        {
+            m_state = CharacterState::Jump;
+        }
+        else if (abs(speed_x) > 1)
+        {
+            m_state = CharacterState::Run;
+        }
+        else
+        {
+            m_state = CharacterState::Idle;
+        }
 
-                QPointF diff_pos = this->sceneBoundingRect().center() - weapon->sceneBoundingRect().center();
-                qreal dir_x = 1;
-                qreal dir_y = -1;
-
-                if (diff_pos.x() < 0)
+        for (QGraphicsItem *item : this->collidingItems())
+        {
+            if (item->data(0) == "Weapon")
+            {
+                Weapon *weapon = static_cast<Weapon *>(item);
+                if (weapon->isActive())
                 {
-                    dir_x = -1;
+                    hit(weapon->sceneBoundingRect().center(), weapon->getPowerX(), weapon->getPowerY());
                 }
+            }
+            else if (item->data(0) == "Enemy" && this->data(0) != "Enemy")
+            {
+                Character *enemy = static_cast<Character *>(item);
 
-                if (diff_pos.y() > 0)
+                if (enemy->isAttacking())
                 {
-                    dir_y = 1;
+                    hit(enemy->sceneBoundingRect().center(), 100, 100); // NOTE: SPEED LIMITS
                 }
-
-                m_dynamics->setSpeedX(speed_x + weapon->getPowerX() * dir_x);
-
-                m_dynamics->setSpeedY(speed_y + weapon->getPowerY() * dir_y);
             }
         }
     }
@@ -180,25 +233,35 @@ bool Character::isOnGround()
     return m_state != CharacterState::Init && m_state != CharacterState::Jump && m_state != CharacterState::Fall;
 }
 
+bool Character::isHit()
+{
+    return m_state == CharacterState::Hit;
+}
+
 void Character::moveRight()
 {
-    m_dynamics->setAccelX(m_dynamics->getMaxAccel());
+    //    if (!isHit()){
+    m_dynamics->setAccelX(m_dynamics->getMaxAbsAccelX());
+    //    }
 }
 
 void Character::moveLeft()
 {
-    m_dynamics->setAccelX(m_dynamics->getMinAccel());
+    //    if (!isHit()){
+    m_dynamics->setAccelX(-m_dynamics->getMaxAbsAccelX());
+    //    }
 }
 
 void Character::jump()
 {
-    if (isOnGround())
+    //    if (!isHit() && isOnGround() && !isAttacking())
+    if (isOnGround() && !isAttacking())
     {
-        m_jump_timer.start(M_JUMP_TIMEOUT_MS);
+        m_jump_timer.start(m_jump_timeout_ms); // M_JUMP_TIMEOUT_MS);
         // Sp: cst & A: cst => TODO: Use A to decrease Sp (ex: Sp_{n} = 0.95 *Sp_{n-1})
         // Sp= Sp * friction + A + G
-        m_dynamics->setAccelY(m_dynamics->getMinSpeed() * (1 - m_dynamics->getFriction()) - m_dynamics->getGravity());
-        m_dynamics->setSpeedY(m_dynamics->getMinSpeed());
+        m_dynamics->setAccelY(-m_dynamics->getMaxAbsSpeedY() * (1 - m_dynamics->getFriction()) - m_dynamics->getGravity());
+        m_dynamics->setSpeedY(-m_dynamics->getMaxAbsSpeedY());
     }
 }
 
@@ -215,4 +278,30 @@ void Character::stopLeft()
 void Character::stopJump()
 {
     m_dynamics->setAccelY(0);
+}
+
+void Character::hit(QPointF hit_pos, qreal power_x, qreal power_y)
+{
+    m_state = CharacterState::Hit;
+
+    QPointF diff_pos = this->sceneBoundingRect().center() - hit_pos;
+    qreal dir_x = 1;
+    qreal dir_y = -1;
+
+    if (diff_pos.x() < 0)
+    {
+        dir_x = -1;
+    }
+
+    if (diff_pos.y() > 0)
+    {
+        dir_y = 1;
+    }
+
+    m_dynamics->setSpeedX(m_dynamics->getSpeedX() + power_x * dir_x);
+
+    m_dynamics->setSpeedY(m_dynamics->getSpeedY() + power_y * dir_y);
+
+    m_hit = true;
+    m_hit_timer.start(M_HIT_TIMEOUT_MS);
 }

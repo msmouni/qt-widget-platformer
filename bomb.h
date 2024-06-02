@@ -16,7 +16,7 @@ public:
     void updateKinematics() override;
     void updateWeapon() override;
 
-    const CollisionRect *getCollisionRect() const;
+    CollisionRect *getCollisionRect();
 
 public slots:
     void pause() override;

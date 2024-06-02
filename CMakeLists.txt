@@ -13,10 +13,10 @@ find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
 
 set(PROJECT_SOURCES
-        main.cpp
-        app.cpp
-        app.h
-        app.ui
+    main.cpp
+    app.cpp
+    app.h
+    app.ui
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
@@ -32,6 +32,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         tile.h tile.cpp
         animation.h animation.cpp
         enemy.h enemy.cpp
+        shared.h
         find.h find.cpp
         path_finding.h path_finding.cpp
         a_star.h a_star.cpp
@@ -42,20 +43,21 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         progressbar.h progressbar.cpp
     )
 
-# https://stackoverflow.com/questions/18471827/qtcreator-cant-find-the-class-header-file-after-promoting-a-widget-to-that-clas
-include_directories(${CMAKE_CURRENT_SOURCE_DIR})
+    # https://stackoverflow.com/questions/18471827/qtcreator-cant-find-the-class-header-file-after-promoting-a-widget-to-that-clas
+    include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
 # Define target properties for Android with Qt 6 as:
-#    set_property(TARGET qt-widget-platformer APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
-#                 ${CMAKE_CURRENT_SOURCE_DIR}/android)
+# set_property(TARGET qt-widget-platformer APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
+# ${CMAKE_CURRENT_SOURCE_DIR}/android)
 # For more information, see https://doc.qt.io/qt-6/qt-add-executable.html#target-creation
 else()
     if(ANDROID)
         add_library(qt-widget-platformer SHARED
             ${PROJECT_SOURCES}
         )
-# Define properties for Android with Qt 5 after find_package() calls as:
-#    set(ANDROID_PACKAGE_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/android")
+
+    # Define properties for Android with Qt 5 after find_package() calls as:
+    # set(ANDROID_PACKAGE_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/android")
     else()
         add_executable(qt-widget-platformer
             ${PROJECT_SOURCES}
@@ -69,8 +71,9 @@ target_link_libraries(qt-widget-platformer PRIVATE Qt${QT_VERSION_MAJOR}::Widget
 # If you are developing for iOS or macOS you should consider setting an
 # explicit, fixed bundle identifier manually though.
 if(${QT_VERSION} VERSION_LESS 6.1.0)
-  set(BUNDLE_ID_OPTION MACOSX_BUNDLE_GUI_IDENTIFIER com.example.qt-widget-platformer)
+    set(BUNDLE_ID_OPTION MACOSX_BUNDLE_GUI_IDENTIFIER com.example.qt-widget-platformer)
 endif()
+
 set_target_properties(qt-widget-platformer PROPERTIES
     ${BUNDLE_ID_OPTION}
     MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION}

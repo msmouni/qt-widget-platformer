@@ -15,6 +15,7 @@ Bomb::Bomb(int id, const QPointF &pos, qreal speed_x, qreal speed_y, qreal power
     m_remaining_timer_time = 0;
 
     m_dynamics = new EntityDynamics(this, speed_x, speed_y, 0.7);
+    m_dynamics->setWeight(30);
 }
 
 void Bomb::start()
@@ -38,7 +39,18 @@ void Bomb::updateWeapon()
 {
     if (!isActive())
     {
+        qreal speed_x_prev = m_dynamics->getSpeedX();
+        qreal speed_y_prev = m_dynamics->getSpeedY();
+
         m_dynamics->updateDynamics();
+        qreal speed_x = m_dynamics->getSpeedX();
+        qreal speed_y = m_dynamics->getSpeedY();
+
+        //        if (abs(speed_y - speed_y_prev) > 1)
+        //        {
+        //            m_dynamics->setSpeedY((speed_y - speed_y_prev));
+        //        }
+
         this->setPos(m_dynamics->getEntityPos());
     }
 
@@ -51,7 +63,7 @@ void Bomb::updateWeapon()
     }
 }
 
-const CollisionRect *Bomb::getCollisionRect() const
+CollisionRect *Bomb::getCollisionRect()
 {
     return m_dynamics->getCollisionRect();
 }
