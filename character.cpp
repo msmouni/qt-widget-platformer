@@ -28,6 +28,7 @@ Character::Character(const QPointF &pos, const QString &res_path, const Platform
     m_dynamics = new EntityDynamics(this, 0, 0, 0.5, true);
 
     m_jump_timer.setSingleShot(true);
+    m_jump_timeout_ms = ((qreal)(m_platform.getTileSize().height() * M_MAX_TILES_JUMP)) / m_dynamics->getMaxAbsSpeedY() * 50; // NOTE: m_update_timeout_ms = 50;
     connect(&m_jump_timer, &QTimer::timeout, this, &Character::jumpTimeout);
     m_remaining_jump_time = 0;
 
@@ -244,7 +245,7 @@ void Character::jump()
 {
     if (isOnGround() && !isAttacking())
     {
-        m_jump_timer.start(M_JUMP_TIMEOUT_MS);
+        m_jump_timer.start(m_jump_timeout_ms);
         // Sp: cst & A: cst => TODO: Use A to decrease Sp (ex: Sp_{n} = 0.95 *Sp_{n-1})
         // Sp= Sp * friction + A + G
         m_dynamics->setAccelY(-m_dynamics->getMaxAbsSpeedY() * (1 - m_dynamics->getFriction()) - m_dynamics->getGravity());

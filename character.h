@@ -65,13 +65,15 @@ protected slots:
     void hitTimeout();
 
 protected:
-    const int M_JUMP_TIMEOUT_MS = 500;
+    const int M_MAX_TILES_JUMP = 5;
     const int M_HIT_TIMEOUT_MS = 500;
 
     QRectF m_bounding_rect;
     CharacterType m_type;
     SpriteAnimation *m_animation;
     const Platform &m_platform; // Only used by Enemy (path following)
+
+    int m_jump_timeout_ms;
     QTimer m_jump_timer;
     int m_remaining_jump_time;
 

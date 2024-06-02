@@ -10,6 +10,7 @@ Enemy::Enemy(const QPointF &pos, const QString &res_path, const Platform &platfo
 
     m_dynamics->setMaxAbsSpeedX(20);
     m_dynamics->setMaxAbsSpeedY(20);
+    m_jump_timeout_ms = ((qreal)(m_platform.getTileSize().height() * M_MAX_TILES_JUMP)) / m_dynamics->getMaxAbsSpeedY() * 50; // NOTE: m_update_timeout_ms = 50;
 
     m_idle_pos_set = false;
     m_idle_pos = pos;
