@@ -73,6 +73,7 @@ protected:
     SpriteAnimation *m_animation;
     const Platform &m_platform; // Only used by Enemy (path following)
 
+    // TODO: USE the same Timer
     int m_jump_timeout_ms;
     QTimer m_jump_timer;
     int m_remaining_jump_time;

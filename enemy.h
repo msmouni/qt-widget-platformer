@@ -14,6 +14,10 @@ public:
     void updateKinematics() override;
     void gameUpdate() override;
 
+    // TMP
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
+               QWidget *widget) override;
+
 protected slots:
     void setPathFindingResult(QVector<QPoint>);
 
@@ -34,6 +38,7 @@ private:
     void checkPathNodeReached();
     void followPath();
     bool checkAttackZone();
+    //    void updateState() override;
 };
 
 #endif // ENEMY_H

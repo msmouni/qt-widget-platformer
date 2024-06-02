@@ -29,6 +29,16 @@ QRectF CollisionRect::boundingRect() const
 
 void CollisionRect::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
+    QPen pen(Qt::yellow);
+    pen.setWidth(2);
+    painter->setPen(pen);
+    painter->drawPath(this->shape());
+
+    ////////////////////::
+    QPen pen2(Qt::red);
+    pen.setWidth(2);
+    painter->setPen(pen2);
+    painter->drawRect(this->mapRectFromScene(m_new_rect.translated(m_speed_x, m_speed_y)));
 }
 
 QPainterPath CollisionRect::shape() const
@@ -95,6 +105,8 @@ void CollisionRect::handleCollision(const QRectF &new_rect, const QRectF &old_re
 
     if (!vertical_collision & !horizontal_collision)
     {
+        //        m_new_rect.setX(m_new_rect.x() + m_speed_x);
+        //        m_new_rect.setY(m_new_rect.y() + m_speed_y);
         return;
     }
     else if (vertical_collision & !horizontal_collision & (m_old_rect.right() >= new_rect.left() & m_old_rect.left() <= new_rect.right()))
@@ -258,17 +270,17 @@ void CollisionRect::handleCollision()
                 {
                     dyn_collision_rects.append(bomb->getCollisionRect());
                 }
-                }
             }
-            else if (item->data(0) == "Tile")
+        }
+        else if (item->data(0) == "Tile")
+        {
+            Tile *tile = static_cast<Tile *>(item);
+
+            QRectF tile_bnd_rect = tile->sceneBoundingRect();
+
+            if (tile->isSolid() | (!tile->isEmpty() & ((tile->checkUp() && m_speed_y < 0 && sceneBoundingRect().bottom() >= tile_bnd_rect.bottom()) | (tile->checkDown() && m_speed_y > 0 && sceneBoundingRect().top() <= tile_bnd_rect.top()))))
             {
-                Tile *tile = static_cast<Tile *>(item);
-
-                QRectF tile_bnd_rect = tile->sceneBoundingRect();
-
-                if (tile->isSolid() | (!tile->isEmpty() & ((tile->checkUp() && m_speed_y < 0 && sceneBoundingRect().bottom() >= tile_bnd_rect.bottom()) | (tile->checkDown() && m_speed_y > 0 && sceneBoundingRect().top() <= tile_bnd_rect.top()))))
-                {
-                    static_collision_rects.append(tile_bnd_rect);
+                static_collision_rects.append(tile_bnd_rect);
             }
         }
     }

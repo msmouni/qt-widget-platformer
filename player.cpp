@@ -40,21 +40,21 @@ void Player::keyPressEvent(QKeyEvent *event)
     {
         if (m_weapons.size() < M_NB_BOMB_MAX)
         {
-        qreal dir_x = 1;
-        if (m_dynamics->getDirection() == EntityDirection::MovingLeft)
-        {
-            dir_x = -1;
-        }
+            qreal dir_x = 1;
+            if (m_dynamics->getDirection() == EntityDirection::MovingLeft)
+            {
+                dir_x = -1;
+            }
 
-        // Note: pixmap pos (-50 ...)
-        Bomb *wpn = new Bomb(m_weapons_count, sceneBoundingRect().topLeft() - QPointF(50, 50), dir_x * 100, -100, 250, 250, ":/Pirate_bomb/Objects/BOMB");
+            // Note: pixmap pos (-50 ...)
+            Bomb *wpn = new Bomb(m_weapons_count, sceneBoundingRect().topLeft() - QPointF(50, 50), dir_x * 100, -100, 250, 250, ":/Pirate_bomb/Objects/BOMB");
 
-        wpn->start();
-        this->scene()->addItem(wpn);
-        connect(wpn, SIGNAL(terminate(Weapon *)), this, SLOT(dropWeapon(Weapon *)));
-        m_weapons.insert(m_weapons_count, wpn);
+            wpn->start();
+            this->scene()->addItem(wpn);
+            connect(wpn, SIGNAL(terminate(Weapon *)), this, SLOT(dropWeapon(Weapon *)));
+            m_weapons.insert(m_weapons_count, wpn);
 
-        m_weapons_count += 1;
+            m_weapons_count += 1;
         }
     }
 }
@@ -81,6 +81,7 @@ void Player::keyReleaseEvent(QKeyEvent *event)
     }
     else if (key == Qt::Key_Space)
     {
+        //        qDebug()<<"Space released";
         stopJump();
     }
 }

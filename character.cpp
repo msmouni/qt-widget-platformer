@@ -29,6 +29,7 @@ Character::Character(const QPointF &pos, const QString &res_path, const Platform
 
     m_jump_timer.setSingleShot(true);
     m_jump_timeout_ms = ((qreal)(m_platform.getTileSize().height() * M_MAX_TILES_JUMP)) / m_dynamics->getMaxAbsSpeedY() * 50; // NOTE: m_update_timeout_ms = 50;
+                                                                                                                              //    qDebug()<<"m_jump_timeout_ms"<<m_jump_timeout_ms;
     connect(&m_jump_timer, &QTimer::timeout, this, &Character::jumpTimeout);
     m_remaining_jump_time = 0;
 
@@ -52,6 +53,18 @@ QRectF Character::boundingRect() const
 void Character::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
     painter->drawPixmap(m_bounding_rect, pixmap(), this->shape().boundingRect());
+
+    // Set the pen and brush for the rectangle
+    QPen pen(Qt::green);
+    pen.setWidth(2);
+    painter->setPen(pen);
+    //    painter->drawRect(this->boundingRect());
+
+    painter->drawPath(this->shape());
+
+    pen.setWidth(9);
+    painter->setPen(pen);
+    painter->drawPoint(this->mapFromScene(sceneBoundingRect().topLeft()));
 }
 
 void Character::updateKinematics()
@@ -156,9 +169,9 @@ void Character::updateCharacter()
 void Character::updateState()
 {
     if (!m_hit)
-{
-    qreal speed_x = m_dynamics->getSpeedX();
-    qreal speed_y = m_dynamics->getSpeedY();
+    {
+        qreal speed_x = m_dynamics->getSpeedX();
+        qreal speed_y = m_dynamics->getSpeedY();
 
         if (m_attacking)
         {
@@ -173,33 +186,33 @@ void Character::updateState()
             }
         }
         else if (m_dynamics->isBottomCollision() && m_state == CharacterState::Fall)
-    {
-        m_state = CharacterState::Ground;
-    }
-    else if (speed_y > 0.01)
-    {
-        m_state = CharacterState::Fall;
-    }
-    else if (speed_y < -0.01)
-    {
-        m_state = CharacterState::Jump;
-    }
-    else if (abs(speed_x) > 1)
-    {
-        m_state = CharacterState::Run;
-    }
-    else
-    {
-        m_state = CharacterState::Idle;
-    }
-
-    for (QGraphicsItem *item : this->collidingItems())
-    {
-        if (item->data(0) == "Weapon")
         {
-            Weapon *weapon = static_cast<Weapon *>(item);
-            if (weapon->isActive())
+            m_state = CharacterState::Ground;
+        }
+        else if (speed_y > 0.01)
+        {
+            m_state = CharacterState::Fall;
+        }
+        else if (speed_y < -0.01)
+        {
+            m_state = CharacterState::Jump;
+        }
+        else if (abs(speed_x) > 1)
+        {
+            m_state = CharacterState::Run;
+        }
+        else
+        {
+            m_state = CharacterState::Idle;
+        }
+
+        for (QGraphicsItem *item : this->collidingItems())
+        {
+            if (item->data(0) == "Weapon")
             {
+                Weapon *weapon = static_cast<Weapon *>(item);
+                if (weapon->isActive())
+                {
                     hit(weapon->sceneBoundingRect().center(), weapon->getPowerX(), weapon->getPowerY());
                 }
             }
@@ -224,6 +237,7 @@ void Character::updateAnimation()
 bool Character::isOnGround()
 {
     return m_dynamics->isBottomCollision();
+    //    return m_state != CharacterState::Init && m_state != CharacterState::Jump && m_state != CharacterState::Fall;
 }
 
 bool Character::isHit()
@@ -233,16 +247,21 @@ bool Character::isHit()
 
 void Character::moveRight()
 {
+    //    if (!isHit()){
     m_dynamics->setAccelX(m_dynamics->getMaxAbsAccelX());
+    //    }
 }
 
 void Character::moveLeft()
 {
+    //    if (!isHit()){
     m_dynamics->setAccelX(-m_dynamics->getMaxAbsAccelX());
+    //    }
 }
 
 void Character::jump()
 {
+    //    if (!isHit() && isOnGround() && !isAttacking())
     if (isOnGround() && !isAttacking())
     {
         m_jump_timer.start(m_jump_timeout_ms);

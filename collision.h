@@ -6,6 +6,7 @@
 #include <QGraphicsRectItem>
 #include <QPainter>
 
+// To Rename : Dynamics (character + weapon ...)
 class CollisionRect : public QGraphicsRectItem
 {
 public:

@@ -4,9 +4,16 @@ EntityDynamics::EntityDynamics(QGraphicsItem *parent, qreal init_speed_x, qreal 
 {
     m_speed_x = init_speed_x;
     m_speed_y = init_speed_y;
+    //    m_speed_max_x = speed_max_x;
+    //    m_speed_max_y = speed_max_y;
 
     m_friction = friction;
 
+    //    // IF the acceleration needs to be smaller, take it as arguments
+    //    m_accel_max_x = m_speed_max_x + m_speed_max_x*m_friction; // Speed_X_{k} = Speed_X_{k -1} * friction + Accel_X_{k} / Speed_X_{k} = S_MAX & Speed_X_{k - 1} = -S_MAX
+    //    m_accel_max_y = m_speed_max_y + m_speed_max_x*m_friction + M_GRAVITY; // Speed_Y_{k} = Speed_Y_{k -1} * friction + Accel_Y_{k} + GRAVITY / Speed_Y_{k} = -S_MAX & Speed_Y_{k - 1} = S_MAX
+
+    //    qDebug()<<m_speed_max_x<<m_speed_max_y<<m_accel_max_x<<m_accel_max_y;
     m_acc_x = 0;
     m_acc_y = 0;
 
@@ -98,12 +105,12 @@ void EntityDynamics::setAccelX(qreal accel_x)
 {
     // NOTE: ACCELERATION IS CONSTRAINED BY SPEED IN THE MODEL WE USE
     // NOTE: Use min/max after seperating mvmt_accel + jump_accel (enemy/player): max_accel > max_speed*0.5 +gravity = 28
-    m_acc_x = accel_x;
+    m_acc_x = accel_x; // fmin(fmax(accel_x, getMinAccel()), getMaxAccel());
 }
 
 void EntityDynamics::setAccelY(qreal accel_y)
 {
-    m_acc_y = accel_y;
+    m_acc_y = accel_y; // fmin(fmax(accel_y, getMinAccel()), getMaxAccel());
 }
 
 qreal EntityDynamics::getFriction() const

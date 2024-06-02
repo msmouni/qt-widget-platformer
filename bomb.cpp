@@ -52,7 +52,18 @@ void Bomb::updateWeapon()
 
     if (!isActive())
     {
+        qreal speed_x_prev = m_dynamics->getSpeedX();
+        qreal speed_y_prev = m_dynamics->getSpeedY();
+
         m_dynamics->updateDynamics();
+        qreal speed_x = m_dynamics->getSpeedX();
+        qreal speed_y = m_dynamics->getSpeedY();
+
+        if (abs(speed_y - speed_y_prev) > 1)
+        {
+            m_dynamics->setSpeedY((speed_y - speed_y_prev));
+        }
+
         this->setPos(m_dynamics->getEntityPos());
     }
 

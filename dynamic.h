@@ -9,7 +9,22 @@ enum class EntityDirection
     MovingLeft,
     MovingRight,
 };
+/*
+NOTES:
 
+    Kinematics:
+        Definition: Kinematics is the study of motion of objects without considering the forces causing the motion or the properties of the objects (like mass or friction).
+        Focus: It describes motion in terms of displacement, velocity, acceleration, and time, without delving into the reasons why the motion occurs.
+        Equations: The primary equations used in kinematics are the equations of motion, such as the kinematic equations for uniformly accelerated motion.
+        Questions Addressed: Kinematics answers questions like "How far did the object move?", "What was its speed?", or "How fast was it accelerating?".
+
+    Dynamics:
+        Definition: Dynamics is the study of motion of objects in relation to the forces acting upon them and the resulting motion changes (acceleration).
+        Focus: It considers the forces, masses, and accelerations of objects to predict or explain motion.
+        Equations: Newton's laws of motion are the fundamental equations used in dynamics. They relate the net force acting on an object to its acceleration.
+        Questions Addressed: Dynamics answers questions like "What forces are acting on the object?", "What is the resulting acceleration?", or "What will happen to the motion if a certain force is applied?".
+
+*/
 class EntityDynamics
 {
 public:
@@ -51,6 +66,8 @@ public:
     void hit(QPointF hit_pos, qreal power_x, qreal power_y);
 
 private:
+    //    const qreal M_SPEED_MAX = 30;
+    //    const qreal M_ACCEL_MAX = 15;
     constexpr static const qreal M_DEFAULT_SPEED_MAX = 30;
     const qreal M_GRAVITY = 13;
 
