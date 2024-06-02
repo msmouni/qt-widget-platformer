@@ -173,5 +173,6 @@
         <file>Pirate_bomb/Objects/BOMB/Starting/10.png</file>
         <file>Pirate_bomb/Objects/BOMB/Starting/1.png</file>
         <file>Pirate_bomb/Objects/BOMB/Idle/1.png</file>
+        <file>Pirate_bomb/Background.jpg</file>
     </qresource>
 </RCC>

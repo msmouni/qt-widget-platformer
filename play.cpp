@@ -8,7 +8,18 @@ PlayView::PlayView(QWidget *parent) : QGraphicsView(parent)
     // Scene
     m_scene = new QGraphicsScene(this);
     this->setScene(m_scene);
-    m_scene->setBackgroundBrush(Qt::blue); // TMP
+
+    QPixmap background_image(":Pirate_bomb/Background.jpg");
+
+    if (!background_image.isNull())
+    {
+        m_scene->setBackgroundBrush(QBrush(background_image));
+    }
+    else
+    {
+        m_scene->setBackgroundBrush(Qt::blue);
+        qWarning("Failed to load background image.");
+    }
 
     // Tiles
     QHash<int, TileType> tiles_hash;
