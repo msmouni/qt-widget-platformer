@@ -1,17 +1,26 @@
 #include "enemy.h"
+#include "bomb.h"
 
-Enemy::Enemy(const QPointF &pos, const QString &res_path, const Platform &platform, const QRectF &player_rect) : Character(pos, res_path, platform), m_path_finder(platform), m_player_rect(player_rect)
+Enemy::Enemy(const QPointF &pos, const QString &res_path, const Platform &platform) : Character(pos, res_path, platform), m_path_finder(platform)
 {
     setData(0, "Enemy");
     m_type = CharacterType::Enemy;
 
     m_animation->addAnimationState((uint8_t)CharacterState::Attack, res_path + "/Attack");
 
+    m_idle_pos_set = false;
+    m_idle_pos = pos;
+
+    m_attack_zone.setParentItem(this);
+    m_attack_zone.setVisible(false);
+
     connect(&m_path_finder, SIGNAL(pathFindingRes(QVector<QPoint>)), this, SLOT(setPathFindingResult(QVector<QPoint>)));
 }
 
 void Enemy::updateKinematics()
 {
+    m_attack_zone.setRect(boundingRect().marginsAdded(QMarginsF(300, 300, 300, 300)));
+
     if (!isHit() && !isAttacking())
 {
     followPath();
@@ -29,13 +38,35 @@ void Enemy::updateKinematics()
 
 void Enemy::gameUpdate()
 {
+    if (!m_idle_pos_set && isOnGround())
+    {
+        m_idle_pos_set = true;
+        m_idle_pos = this->sceneBoundingRect().topLeft();
+    }
+
+    if (checkAttackZone())
+{
     findPath();
 
-    m_dynamics->setCollisionMargin(isAttacking() ? m_dynamics->getDirection() == EntityDirection::MovingRight ? QMarginsF(0, 0, -15, 0) : QMarginsF(-15, 0, 0, 0) : QMarginsF(0, 0, 0, 0));
-    if (sceneBoundingRect().marginsAdded(QMarginsF(3, 0, 3, 0)).intersects(m_player_rect))
-    {
-        m_attacking = true;
+        if (m_path_tiles.length() <= 2 && m_dynamics->isFrontCollision())
+        {
+            m_attacking = true;
+        }
     }
+    else
+    {
+        m_go_to_pos = m_idle_pos;
+        if ((sceneBoundingRect().topLeft() - m_idle_pos).manhattanLength() > 30)
+        {
+            findPath();
+        }
+        else
+        {
+            m_path_tiles.clear();
+        }
+    }
+
+    m_dynamics->setCollisionMargin(isAttacking() ? m_dynamics->getDirection() == EntityDirection::MovingRight ? QMarginsF(0, 0, -15, 0) : QMarginsF(-15, 0, 0, 0) : QMarginsF(0, 0, 0, 0));
 
     updateCharacter();
 }
@@ -56,7 +87,7 @@ void Enemy::findPath()
 
     if (on_ground)
     {
-        m_path_finder.findPath(pos, m_player_rect.topLeft());
+        m_path_finder.findPath(pos, m_go_to_pos);
     }
 }
 
@@ -125,4 +156,28 @@ void Enemy::followPath()
         m_dynamics->setAccelX(0);
         m_dynamics->setAccelY(0);
     }
+}
+
+bool Enemy::checkAttackZone()
+{
+    for (QGraphicsItem *item : m_attack_zone.collidingItems())
+    {
+        if (item->data(1) == "Bomb")
+        {
+            Bomb *bomb = static_cast<Bomb *>(item);
+
+            if (!bomb->isActive())
+            {
+                m_go_to_pos = item->sceneBoundingRect().topLeft();
+                return true;
+            }
+        }
+        else if (item->data(0) == "Player")
+        {
+            m_go_to_pos = item->sceneBoundingRect().topLeft();
+            return true;
+        }
+    }
+
+    return false;
 }

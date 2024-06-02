@@ -1,7 +1,7 @@
 #include "character.h"
 #include <QGraphicsScene>
 
-Character::Character(const QPointF &pos, const QString &res_path, const Platform &platform) : m_platform(platform)
+Character::Character(const QPointF &pos, const QString &res_path, const Platform &platform, int attack_power_x, int attack_power_y) : m_platform(platform), m_attack_power_x(attack_power_x), m_attack_power_y(attack_power_y)
 {
     QHash<uint8_t, QString> animations_ids;
     animations_ids.insert((uint8_t)CharacterState::Idle, res_path + "/Idle");
@@ -17,7 +17,7 @@ Character::Character(const QPointF &pos, const QString &res_path, const Platform
     m_bounding_rect = m_animation->getRect();
     this->setPos(pos);
 
-    m_state = CharacterState::Idle;
+    m_state = CharacterState::Init;
 
     m_animation->setId(static_cast<uint8_t>(m_state));
 
@@ -73,6 +73,16 @@ const CollisionRect *Character::getCollisionRect() const
 bool Character::isAttacking() const
 {
     return m_state == CharacterState::Attack && m_attack_timer.remainingTime() < m_effective_attack_duration;
+}
+
+int Character::getAttackPowerX()
+{
+    return m_attack_power_x;
+}
+
+int Character::getAttackPowerY()
+{
+    return m_attack_power_y;
 }
 
 void Character::updateView()
@@ -198,7 +208,7 @@ void Character::updateState()
 
                 if (enemy->isAttacking())
                 {
-                    hit(enemy->sceneBoundingRect().center(), 100, 100); // NOTE: SPEED LIMITS
+                    hit(enemy->sceneBoundingRect().center(), enemy->getAttackPowerX(), enemy->getAttackPowerY());
                 }
             }
         }
@@ -261,23 +271,7 @@ void Character::hit(QPointF hit_pos, qreal power_x, qreal power_y)
 {
     m_state = CharacterState::Hit;
 
-    QPointF diff_pos = this->sceneBoundingRect().center() - hit_pos;
-    qreal dir_x = 1;
-    qreal dir_y = -1;
-
-    if (diff_pos.x() < 0)
-    {
-        dir_x = -1;
-    }
-
-    if (diff_pos.y() > 0)
-    {
-        dir_y = 1;
-    }
-
-    m_dynamics->setSpeedX(m_dynamics->getSpeedX() + power_x * dir_x);
-
-    m_dynamics->setSpeedY(m_dynamics->getSpeedY() + power_y * dir_y);
+    m_dynamics->hit(hit_pos, power_x, power_y);
 
     m_hit = true;
     m_hit_timer.start(M_HIT_TIMEOUT_MS);

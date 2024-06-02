@@ -44,6 +44,9 @@ public:
     QPointF getEntityPos() const;
 
     bool isBottomCollision();
+    bool isFrontCollision();
+
+    void hit(QPointF hit_pos, qreal power_x, qreal power_y);
 
 private:
     const qreal M_SPEED_MAX = 30;

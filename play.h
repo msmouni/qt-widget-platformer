@@ -31,7 +31,6 @@ private:
 
     QPointF m_camera_pos;
 
-    QRectF m_player_rect;
     QVector<Enemy *> m_enemies;
 
     void updateCam();

@@ -31,7 +31,7 @@ class Character : public QObject, public QGraphicsPixmapItem
 {
     Q_OBJECT
 public:
-    Character(const QPointF &pos, const QString &res_path, const Platform &platform);
+    Character(const QPointF &pos, const QString &res_path, const Platform &platform, int attack_power_x = 300, int attack_power_y = 300); // NOTE (power): SPEED LIMITS
 
     QRectF boundingRect() const override;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
@@ -49,6 +49,9 @@ shape() returns the shape of the item as a QPainterPath. The shape represents th
     const CollisionRect *getCollisionRect() const;
 
     bool isAttacking() const;
+
+    int getAttackPowerX();
+    int getAttackPowerY();
 
 public slots:
     virtual void pause();
@@ -76,6 +79,8 @@ protected:
     int m_effective_attack_duration;
     int m_remaining_attack_time;
     bool m_attacking;
+    int m_attack_power_x;
+    int m_attack_power_y;
 
     QTimer m_hit_timer;
     int m_remaining_hit_time;

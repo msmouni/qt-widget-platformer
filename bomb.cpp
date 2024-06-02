@@ -1,4 +1,5 @@
 #include "bomb.h"
+#include "enemy.h"
 
 Bomb::Bomb(int id, const QPointF &pos, qreal speed_x, qreal speed_y, qreal power_x, qreal power_y, const QString &res_path) : Weapon(id, pos, power_x, power_y, res_path)
 {
@@ -36,6 +37,19 @@ void Bomb::updateKinematics()
 
 void Bomb::updateWeapon()
 {
+    for (QGraphicsItem *item : this->collidingItems())
+    {
+        if (item->data(0) == "Enemy")
+        {
+            Enemy *enemy = static_cast<Enemy *>(item);
+
+            if (enemy->isAttacking())
+            {
+                m_dynamics->hit(enemy->sceneBoundingRect().center(), enemy->getAttackPowerX(), enemy->getAttackPowerY());
+            }
+        }
+    }
+
     if (!isActive())
     {
         m_dynamics->updateDynamics();

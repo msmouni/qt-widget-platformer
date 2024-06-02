@@ -54,11 +54,6 @@ QPointF CollisionRect::getEntityPos()
 
 void CollisionRect::update()
 {
-    m_is_top_collision = false;
-    m_is_bottom_collision = false;
-    m_is_left_collision = false;
-    m_is_right_collision = false;
-
     QRectF entity_bounding_rect = this->parentItem()->boundingRect();
 
     setEntityRect(this->mapRectToScene(entity_bounding_rect));
@@ -74,6 +69,16 @@ void CollisionRect::setMargin(QMarginsF margin)
 bool CollisionRect::isBottomCollision()
 {
     return m_is_bottom_collision;
+}
+
+bool CollisionRect::isLeftCollision()
+{
+    return m_is_left_collision;
+}
+
+bool CollisionRect::isRightCollision()
+{
+    return m_is_right_collision;
 }
 
 void CollisionRect::handleCollision(const QRectF &new_rect, const QRectF &old_rect, qreal speed_x, qreal speed_y)
@@ -227,6 +232,11 @@ void CollisionRect::handleDynamicCollision(QVector<const CollisionRect *> collid
 
 void CollisionRect::handleCollision()
 {
+    m_is_top_collision = false;
+    m_is_bottom_collision = false;
+    m_is_left_collision = false;
+    m_is_right_collision = false;
+
     QVector<const CollisionRect *> dyn_collision_rects;
     QVector<QRectF> static_collision_rects;
 

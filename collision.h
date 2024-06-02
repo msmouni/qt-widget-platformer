@@ -33,6 +33,8 @@ public:
     void setMargin(QMarginsF margin);
 
     bool isBottomCollision();
+    bool isLeftCollision();
+    bool isRightCollision();
 
 private:
     const qreal M_COLLISION_MARGIN = 1e-3;

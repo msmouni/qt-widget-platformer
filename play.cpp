@@ -34,10 +34,9 @@ PlayView::PlayView(QWidget *parent) : QGraphicsView(parent)
     m_player = new Player(QPointF(200, 200), ":/Pirate_bomb/Player-Bomb Guy", *m_platform);
     m_scene->addItem(m_player);
     m_camera_pos = m_player->pos();
-    m_player_rect = m_player->sceneBoundingRect();
 
     // Enemies
-    Enemy *enemy = new Enemy(QPointF(150, 200), ":/Pirate_bomb/Enemy-Bald Pirate", *m_platform, m_player_rect);
+    Enemy *enemy = new Enemy(QPointF(150, 200), ":/Pirate_bomb/Enemy-Bald Pirate", *m_platform);
     m_scene->addItem(enemy);
     m_enemies.append(enemy);
 
@@ -127,8 +126,6 @@ void PlayView::updateItems()
     }
     ////////////////////////////////////////////////////////
     m_player->gameUpdate();
-
-    m_player_rect = m_player->sceneBoundingRect();
 
     for (Enemy *enemy : m_enemies)
     {

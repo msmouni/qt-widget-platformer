@@ -145,6 +145,42 @@ bool EntityDynamics::isBottomCollision()
     return m_collision_rect->isBottomCollision();
 }
 
+bool EntityDynamics::isFrontCollision()
+{
+    switch (m_direction)
+    {
+    case EntityDirection::MovingLeft:
+        return m_collision_rect->isLeftCollision();
+    case EntityDirection::MovingRight:
+        return m_collision_rect->isRightCollision();
+    case EntityDirection::NoDirection:
+        return m_collision_rect->isLeftCollision() || m_collision_rect->isRightCollision();
+    default:
+        break;
+    }
+}
+
+void EntityDynamics::hit(QPointF hit_pos, qreal power_x, qreal power_y)
+{
+    QPointF diff_pos = m_parent->sceneBoundingRect().center() - hit_pos;
+    qreal dir_x = 1;
+    qreal dir_y = -1;
+
+    if (diff_pos.x() < 0)
+    {
+        dir_x = -1;
+    }
+
+    if (diff_pos.y() > 0)
+    {
+        dir_y = 1;
+    }
+
+    setSpeedX(getSpeedX() + power_x * dir_x);
+
+    setSpeedY(getSpeedY() + power_y * dir_y);
+}
+
 void EntityDynamics::updateDirection()
 {
     if (m_direction != EntityDirection::NoDirection)
