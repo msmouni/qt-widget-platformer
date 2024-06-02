@@ -13,6 +13,7 @@ public:
     void gameUpdate() override;
 
 private:
+    const int M_NB_BOMB_MAX = 3;
     void keyPressEvent(QKeyEvent *event) override;
     void keyReleaseEvent(QKeyEvent *event) override;
 };

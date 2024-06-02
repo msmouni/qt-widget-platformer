@@ -38,6 +38,8 @@ void Player::keyPressEvent(QKeyEvent *event)
     }
     else if (key == Qt::Key_B)
     {
+        if (m_weapons.size() < M_NB_BOMB_MAX)
+        {
         qreal dir_x = 1;
         if (m_dynamics->getDirection() == EntityDirection::MovingLeft)
         {
@@ -53,6 +55,7 @@ void Player::keyPressEvent(QKeyEvent *event)
         m_weapons.insert(m_weapons_count, wpn);
 
         m_weapons_count += 1;
+        }
     }
 }
 
