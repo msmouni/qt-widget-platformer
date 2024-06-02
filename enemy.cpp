@@ -8,6 +8,9 @@ Enemy::Enemy(const QPointF &pos, const QString &res_path, const Platform &platfo
 
     m_animation->addAnimationState((uint8_t)CharacterState::Attack, res_path + "/Attack");
 
+    m_dynamics->setMaxAbsSpeedX(20);
+    m_dynamics->setMaxAbsSpeedY(20);
+
     m_idle_pos_set = false;
     m_idle_pos = pos;
 
@@ -140,13 +143,13 @@ void Enemy::followPath()
 
         qreal accel_x = speed.x() - m_dynamics->getSpeedX() * m_dynamics->getFriction();
 
-        m_dynamics->setAccelX(fmin(fmax(accel_x, m_dynamics->getMinAccel()), m_dynamics->getMaxAccel()));
+        m_dynamics->setAccelX(accel_x);
 
         if (speed.y() < 0)
         {
             jump();
         }
-        else if (m_path_tiles.length() == 1 || m_path_tiles.length() > 1 && m_path_tiles[1].y() >= m_path_tiles[0].y())
+        else if (m_path_tiles.length() == 1 || (m_path_tiles.length() > 1 && m_path_tiles[1].y() >= m_path_tiles[0].y()))
         {
             stopJump();
         }
