@@ -223,7 +223,7 @@ void Character::updateAnimation()
 
 bool Character::isOnGround()
 {
-    return m_state != CharacterState::Init && m_state != CharacterState::Jump && m_state != CharacterState::Fall;
+    return m_dynamics->isBottomCollision();
 }
 
 bool Character::isHit()
