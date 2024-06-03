@@ -13,3 +13,7 @@ The project prioritizes the implementation of key components through a game exam
 External tools like "Tiled" (https://github.com/mapeditor/tiled) may be utilized for functions such as Level Editing.
 
 Currently, this project is in its early stages.
+
+
+# Game preview
+<img src="Doc/Illustration.gif" alt="Game preview"/>
