@@ -15,5 +15,5 @@ External tools like "Tiled" (https://github.com/mapeditor/tiled) may be utilized
 Currently, this project is in its early stages.
 
 
-# Game preview
+## Game preview
 <img src="Doc/Illustration.gif" alt="Game preview"/>
