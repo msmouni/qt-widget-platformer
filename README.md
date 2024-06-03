@@ -1,4 +1,4 @@
-![Continuous Integration](https://github.com/msmouni/qt-widget-platforme/actions/workflows/qt.yaml/badge.svg?branch=main) 
+![Continuous Integration](https://github.com/msmouni/qt-widget-platformer/actions/workflows/qt.yaml/badge.svg?branch=main) 
 
 # Qt Widget platformer Game
 
